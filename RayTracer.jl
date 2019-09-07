@@ -1,4 +1,5 @@
 module RayTracer
     include("homogeneous_coordinates.jl")
-    import .HomogeneousCoordinates
+    include("colors.jl")
+    include("canvas.jl")
 end
