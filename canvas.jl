@@ -1,6 +1,8 @@
 using StaticArrays
 using Images
 
+export Canvas, write_pixel!, pixel_at
+
 struct Canvas
     width::Int64
     height::Int64

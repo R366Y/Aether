@@ -1,6 +1,8 @@
 import Base: +, -, *, /
 using StaticArrays
 
+export Color
+
 struct Color{T<:AbstractFloat}
     r::T
     g::T

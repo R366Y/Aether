@@ -3,6 +3,7 @@ using StaticArrays
 using LinearAlgebra
 
 using .RayTracer
+using .HomogeneousCoordinates
 
 @testset "matrix equality" begin
    A = [
@@ -19,14 +20,14 @@ using .RayTracer
       4 3 2 1
    ]
    @test A == B
-   @test A!=C
+   @test A != C
 end
 
 @testset "translations" begin
    @testset "Multiplyng by a translation matrix" begin
       transform = translation(5.0, -3.0, 2.0)
       p = point3D(Float64[-3, 4, 5])
-      @test transform * p ≈ point3D(Float64[2,1,7])
+      @test transform * p ≈ point3D(Float64[2, 1, 7])
    end
 
    @testset "Multiplyng by the inverse of a translation matrix" begin
@@ -39,14 +40,40 @@ end
 
 @testset "scaling" begin
    @testset "scaling matrix applied to a point" begin
-      transform = scaling(2.,3.,4.)
-      p = point3D(-4.,6.,8.)
+      transform = scaling(2., 3., 4.)
+      p = point3D(-4., 6., 8.)
       @test transform * p ≈ point3D(-8., 18., 32.)
    end
 
    @testset "reflection is scaling by a negative value" begin
-      transform = scaling(-1.,1.,1.)
-      p = point3D(2.,3.,4.)
-      @test transform * p ≈ point3D(-2.,3.,4.)
+      transform = scaling(-1., 1., 1.)
+      p = point3D(2., 3., 4.)
+      @test transform * p ≈ point3D(-2., 3., 4.)
+   end
+end
+
+@testset "Rotations" begin
+   @testset "Rotating a point around the x axis" begin
+      p = point3D(0., 1., 0.)
+      half_quarter = rotation_x(π / 4)
+      full_quarter = rotation_x(π / 2)
+      @test half_quarter * p ≈ point3D(0., √2/2, √2/2)
+      @test full_quarter * p ≈ point3D(0., 0., 1.)
+   end
+
+   @testset "Rotating a point around the y axis" begin
+      p = point3D(0., 0., 1.)
+      half_quarter = rotation_y(π / 4)
+      full_quarter = rotation_y(π / 2)
+      @test half_quarter * p ≈ point3D(√2/2, 0., √2/2)
+      @test full_quarter * p ≈ point3D(1., 0., 0.)
+   end
+
+   @testset "Rotating a pont around z axis" begin
+      p = point3D(0., 1., 0.)
+      half_quarter = rotation_z(π / 4)
+      full_quarter = rotation_z(π / 2)
+      @test half_quarter * p ≈ point3D(-√2/2, √2/2, 0.)
+      @test full_quarter * p ≈ point3D(-1., 0., 0.)
    end
 end
