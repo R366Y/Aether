@@ -2,8 +2,7 @@ using Test
 using StaticArrays
 using LinearAlgebra
 
-include("../homogeneous_coordinates.jl")
-using .HomogeneousCoordinates
+using Aether.HomogeneousCoordinates
 
 @testset "coordinates" begin
     @test point3D(4.0, -4.0, 3.0) == SVector{4,Float64}(4.0, -4.0, 3.0, 1.0)

@@ -3,8 +3,7 @@ using StaticArrays
 using LinearAlgebra
 using Plots
 
-include("../homogeneous_coordinates.jl")
-using .HomogeneousCoordinates
+using Aether.HomogeneousCoordinates
 
 struct Projectile{T<:AbstractArray}
     position::T

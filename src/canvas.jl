@@ -1,3 +1,5 @@
+module CanvasModule
+
 using StaticArrays
 using Images
 
@@ -28,4 +30,6 @@ function show_image(canvas::Canvas)
         w,
         h
     ) |> transpose);
+end
+
 end

@@ -2,8 +2,8 @@ using Test
 using StaticArrays
 using LinearAlgebra
 
-using .RayTracer
-using .HomogeneousCoordinates
+using Aether.HomogeneousCoordinates
+using Aether.MatrixTransformations
 
 @testset "matrix equality" begin
    A = [

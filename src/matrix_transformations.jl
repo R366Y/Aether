@@ -1,3 +1,5 @@
+module MatrixTransformations
+
 using StaticArrays
 
 export translation, scaling,
@@ -59,4 +61,6 @@ function shearing(x_x::T, x_z::T, y_x::T, y_z::T, z_x::T, z_y::T) where T <: Abs
         z_x z_y 1 0;
         0   0  0  1
     ]
+end
+
 end

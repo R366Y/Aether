@@ -1,3 +1,5 @@
+module ColorsModule
+
 import Base: +, -, *, /
 using StaticArrays
 
@@ -7,7 +9,6 @@ struct Color{T<:AbstractFloat}
     r::T
     g::T
     b::T
-    #__data::SVector{3,T}
 
     function Color(r::T=0.0, g::T=0.0, b::T=0.0) where T<:AbstractFloat
         new{T}(r,g,b)
@@ -38,4 +39,6 @@ for op in (:+, :-, :*, :/)
             return Color($(op)(c1.r, k), $(op)(c1.g, k), $(op)(c1.b, k))
         end
     end
+end
+
 end
