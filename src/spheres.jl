@@ -4,16 +4,17 @@ export Sphere, default_sphere, r_intersect
 
 using Aether.HomogeneousCoordinates
 using Aether.Rays
+using Aether.Intersections
 using LinearAlgebra
-import Aether: float_equal, ϵ
+import Aether: float_equal, ϵ, GeometricObject
 
-struct Sphere{T<:AbstractFloat}
+struct Sphere{T<:AbstractFloat} <: GeometricObject
     center::Vec3D
     radius::T
 end
 
 function default_sphere()
-    return Sphere(point3D(0.,0.,0.), 1.)
+    return Sphere(point3D(0., 0., 0.), 1.)
 end
 
 function r_intersect(s::Sphere, r::Ray)
@@ -26,9 +27,9 @@ function r_intersect(s::Sphere, r::Ray)
     if discriminant < -ϵ
         return ()
     else
-        t1::Float64 = (-b -√(discriminant)) / 2 * a
-        t2::Float64 = (-b +√(discriminant)) / 2 * a
-        return (t1, t2)
+        t1::Float64 = (-b - √(discriminant)) / 2 * a
+        t2::Float64 = (-b + √(discriminant)) / 2 * a
+        return (Intersection(t1, s), Intersection(t2, s))
     end
 end
 

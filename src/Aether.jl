@@ -1,6 +1,8 @@
 module Aether
 
-export ϵ, float_equal
+export ϵ, float_equal, GeometricObject
+
+abstract type GeometricObject end
 
 const ϵ = 0.00001
 
@@ -17,6 +19,7 @@ include("colors.jl")
 include("canvas.jl")
 include("matrix_transformations.jl")
 include("rays.jl")
+include("intersections.jl")
 include("spheres.jl")
 
 
