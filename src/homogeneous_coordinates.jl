@@ -2,7 +2,6 @@ module HomogeneousCoordinates
 
 export point3D, vector3D, cross_product, Vec3D
 
-import Base: getproperty
 using StaticArrays
 using LinearAlgebra
 
