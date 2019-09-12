@@ -4,5 +4,6 @@ include("homogeneous_coordinates.jl")
 include("colors.jl")
 include("canvas.jl")
 include("matrix_transformations.jl")
+include("rays.jl")
 
 end # module

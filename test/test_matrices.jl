@@ -5,7 +5,7 @@ using LinearAlgebra
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
 
-@testset "matrix equality" begin
+@testset "Matrix equality" begin
    A = [
       1 2 3 4;
       5 6 7 8;
@@ -23,7 +23,7 @@ using Aether.MatrixTransformations
    @test A != C
 end
 
-@testset "translations" begin
+@testset "Translation Matrix" begin
    @testset "Multiplyng by a translation matrix" begin
       transform = translation(5.0, -3.0, 2.0)
       p = point3D(Float64[-3, 4, 5])
@@ -38,7 +38,7 @@ end
    end
 end
 
-@testset "scaling" begin
+@testset "Scaling Matrix" begin
    @testset "scaling matrix applied to a point" begin
       transform = scaling(2., 3., 4.)
       p = point3D(-4., 6., 8.)
@@ -52,7 +52,7 @@ end
    end
 end
 
-@testset "Rotations" begin
+@testset "Rotation Matrix" begin
    @testset "Rotating a point around the x axis" begin
       p = point3D(0., 1., 0.)
       half_quarter = rotation_x(π / 4)
