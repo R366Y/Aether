@@ -19,16 +19,16 @@ end
 
 function r_intersect(s::Sphere, r::Ray)
     sphere_to_ray::Vec3D = r.origin - s.center
-    a::Float64 = dot(r.direction, r.direction)
-    b::Float64 = 2 * dot(r.direction, sphere_to_ray)
-    c::Float64 = dot(sphere_to_ray, sphere_to_ray) - 1
+    a = dot(r.direction, r.direction)
+    b = 2. * dot(r.direction, sphere_to_ray)
+    c = dot(sphere_to_ray, sphere_to_ray) - 1.
 
-    discriminant::Float64 = b^2 - 4 * a * c
+    discriminant = b^2 - 4. * a * c
     if discriminant < -ϵ
         return ()
     else
-        t1::Float64 = (-b - √(discriminant)) / 2 * a
-        t2::Float64 = (-b + √(discriminant)) / 2 * a
+        t1 = (-b - √(discriminant)) / 2. * a
+        t2 = (-b + √(discriminant)) / 2. * a
         return (Intersection(t1, s), Intersection(t2, s))
     end
 end
