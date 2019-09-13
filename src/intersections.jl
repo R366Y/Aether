@@ -1,6 +1,6 @@
 module Intersections
 
-export Intersection, hit
+export Intersection, hit, hit2
 
 import Aether: GeometricObject
 
@@ -12,7 +12,7 @@ end
 function hit(is::Tuple{Vararg{Intersection}})
     idx = 1
     t_min = Inf
-    for i in eachindex(is)
+    @inbounds for i in eachindex(is)
         t = is[i].t
         if t > 0. && t < t_min
             idx = i

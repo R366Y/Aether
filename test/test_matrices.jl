@@ -45,6 +45,13 @@ end
       @test transform * p ≈ point3D(-8., 18., 32.)
    end
 
+   @testset "Multiplyng by the inverse of a scaling matrix" begin
+      transform = scaling(2., 3., 4.)
+      v = vector3D(-4., 6., 8.)
+      inverse = inv(transform)
+      @test inverse * v ≈ vector3D(-2., 2., 2.)
+   end
+
    @testset "reflection is scaling by a negative value" begin
       transform = scaling(-1., 1., 1.)
       p = point3D(2., 3., 4.)

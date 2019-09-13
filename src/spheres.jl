@@ -6,11 +6,17 @@ using Aether.HomogeneousCoordinates
 using Aether.Rays
 using Aether.Intersections
 using LinearAlgebra
+using StaticArrays
 import Aether: float_equal, ϵ, GeometricObject
 
 struct Sphere{T<:AbstractFloat} <: GeometricObject
     center::Vec3D
     radius::T
+    transform::SMatrix
+
+    function Sphere(center::Vec3D, radius::T) where T <: AbstractFloat
+        new{T}(center, radius, SMatrix{4,4,T}(I))
+    end
 end
 
 function default_sphere()
@@ -18,7 +24,7 @@ function default_sphere()
 end
 
 function r_intersect(s::Sphere, r::Ray)
-    sphere_to_ray::Vec3D = r.origin - s.center
+    sphere_to_ray = r.origin - s.center
     a = dot(r.direction, r.direction)
     b = 2. * dot(r.direction, sphere_to_ray)
     c = dot(sphere_to_ray, sphere_to_ray) - 1.
@@ -27,8 +33,8 @@ function r_intersect(s::Sphere, r::Ray)
     if discriminant < -ϵ
         return ()
     else
-        t1 = (-b - √(discriminant)) / 2. * a
-        t2 = (-b + √(discriminant)) / 2. * a
+        t1 = (-b - √(discriminant)) / (2. * a)
+        t2 = (-b + √(discriminant)) / (2. * a)
         return (Intersection(t1, s), Intersection(t2, s))
     end
 end
