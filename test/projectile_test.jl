@@ -5,14 +5,14 @@ using Plots
 
 using Aether.HomogeneousCoordinates
 
-struct Projectile{T<:AbstractArray}
-    position::T
-    velocity::T
+struct Projectile
+    position::Vec3D
+    velocity::Vec3D
 end
 
-struct Environment{T<:AbstractArray}
-    gravity::T
-    wind::T
+struct Environment
+    gravity::Vec3D
+    wind::Vec3D
 end
 
 
