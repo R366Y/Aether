@@ -1,7 +1,10 @@
 module Intersections
 
-export Intersection, hit, hit2
+export Intersection, hit, reflect
 
+using LinearAlgebra
+
+using Aether.HomogeneousCoordinates
 import Aether: GeometricObject
 
 struct Intersection{T<:AbstractFloat, O<:GeometricObject}
@@ -23,6 +26,10 @@ function hit(is::Tuple{Vararg{Intersection}})
         return nothing
     end
     return is[idx]
+end
+
+function reflect(v::Vec3D, normal::Vec3D)
+    return v - normal * 2 * dot(v, normal)
 end
 
 end

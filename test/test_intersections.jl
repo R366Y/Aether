@@ -1,6 +1,7 @@
 using Test
 using Aether.Spheres
 using Aether.Intersections
+using Aether.HomogeneousCoordinates
 
 @testset "Intersections" begin
     @testset "Intersection encapsulates t and object" begin
@@ -25,7 +26,7 @@ using Aether.Intersections
         i = hit((i2,i1))
         @test i === nothing
     end
-    
+
     @testset "Hit is always the lowest nonnegative intersection" begin
         s = default_sphere()
         i1 = Intersection(5., s)
@@ -34,5 +35,20 @@ using Aether.Intersections
         i4 = Intersection(2., s)
         i = hit((i2,i1,i4,i3))
         @test i === i4
+    end
+end
+
+@testset "Reflecting vectors" begin
+    @testset "Reflecting a vector approaching at 45°" begin
+        v = vector3D(1., -1., 0.)
+        n = vector3D(0., 1., 0.)
+        r = reflect(v, n)
+        @test r == vector3D(1., 1., 0.)
+    end
+    @testset "Reflecting a vector off a slanted surface" begin
+        v = vector3D(0., -1., 0.)
+        n = vector3D(√2/2, √2/2, 0.)
+        r = reflect(v, n)
+        @test r ≈ vector3D(1., 0., 0.)
     end
 end

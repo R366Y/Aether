@@ -5,6 +5,8 @@ using Aether.Spheres
 using Aether.Rays
 using Test
 
+import Aether: ϵ
+
 @testset "Spheres" begin
     @testset "A ray intersects a sphere in two points" begin
         r = Ray(point3D(0.,0.,-5.), vector3D(0.,0.,1.))
@@ -70,5 +72,34 @@ using Test
         s.transform = translation(5., 0., 0.)
         xs = r_intersect(s, r)
         @test length(xs) == 0
+    end
+end
+
+@testset "Sphere Normal" begin
+    @testset "The normal on a sphere at a point on the x y z axis" begin
+        s = default_sphere()
+        n = normal_at(s, point3D(1., 0., 0.))
+        @test n == vector3D(1., 0., 0.)
+
+        n = normal_at(s, point3D(0., 1., 0.))
+        @test n == vector3D(0., 1., 0.)
+
+        n = normal_at(s, point3D(0., 0., 1.))
+        @test n == vector3D(0., 0., 1.)
+    end
+
+    @testset "Computing the normal on a translated sphere" begin
+        s = default_sphere()
+        s.transform = translation(0., 1., 0.)
+        n = normal_at(s, point3D(0., 1.70711, -0.70711))
+        @test isapprox(n,vector3D(0., 0.70711, -0.70711),rtol=ϵ)
+    end
+
+    @testset "Computing the normal on a transformed sphere" begin
+        s = default_sphere()
+        m = scaling(1., 0.5, 1.) * rotation_z(pi\5)
+        s.transform = m
+        n = normal_at(s, point3D(0., √2/2, -√2/2))
+        @test isapprox(n, vector3D(0., 0.97014, -0.24254), rtol=ϵ)
     end
 end

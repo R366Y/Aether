@@ -13,6 +13,10 @@ struct Vec3D{T} <: FieldVector{4,T}
     function Vec3D(x::T, y::T, z::T, w::T) where T <: AbstractFloat
         new{T}(x, y, z, w)
     end # function
+
+    function Vec3D(v::SArray{Tuple{4},T}) where T <: AbstractFloat
+        new{T}(v[1], v[2], v[3], v[4])
+    end
 end
 
 function point3D(x::T, y::T, z::T) where T <: AbstractFloat

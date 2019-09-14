@@ -1,6 +1,6 @@
 module Spheres
 
-export Sphere, default_sphere, r_intersect
+export Sphere, default_sphere, r_intersect, normal_at
 
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
@@ -42,7 +42,14 @@ function r_intersect(s::Sphere, r::Ray)
         return (Intersection(t1, s), Intersection(t2, s))
     end
     return ()
+end
 
+function normal_at(sphere::Sphere, world_point::Vec3D)
+    object_point = inv(sphere.transform) * world_point
+    object_normal = object_point - sphere.center
+    sarray = transpose(inv(sphere.transform)) * object_normal
+    world_normal = Vec3D(sarray[1], sarray[2], sarray[3], 0.)
+    return normalize(world_normal)
 end
 
 
