@@ -4,6 +4,7 @@ export Sphere, default_sphere, r_intersect, normal_at
 
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
+using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Rays
 
@@ -15,9 +16,10 @@ mutable struct Sphere{T<:AbstractFloat} <: GeometricObject
     center::Vec3D
     radius::T
     transform::SMatrix
+    material::Material
 
     function Sphere(center::Vec3D, radius::T) where T <: AbstractFloat
-        new{T}(center, radius, identity_matrix(T))
+        new{T}(center, radius, identity_matrix(T), default_material())
     end
 end
 

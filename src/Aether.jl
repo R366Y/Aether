@@ -20,7 +20,9 @@ include("canvas.jl")
 include("matrix_transformations.jl")
 include("rays.jl")
 include("intersections.jl")
-include("spheres.jl")
 
+include("lights.jl")
+include("materials.jl")
+include("spheres.jl")
 
 end # module

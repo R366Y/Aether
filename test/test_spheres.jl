@@ -1,5 +1,6 @@
 using Aether.Intersections
 using Aether.HomogeneousCoordinates
+using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Spheres
 using Aether.Rays
@@ -9,7 +10,7 @@ import Aether: ϵ
 
 @testset "Spheres" begin
     @testset "A ray intersects a sphere in two points" begin
-        r = Ray(point3D(0.,0.,-5.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
         xs = r_intersect(s, r)
         @test length(xs) == 2
@@ -18,7 +19,7 @@ import Aether: ϵ
     end
 
     @testset "A ray intersects a sphere at a tangent" begin
-        r = Ray(point3D(0.,1.,-5.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 1., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
         xs = r_intersect(s, r)
         @test length(xs) == 2
@@ -27,14 +28,14 @@ import Aether: ϵ
     end
 
     @testset "A ray misses a sphere" begin
-        r = Ray(point3D(0.,2.,-5.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 2., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
         xs = r_intersect(s, r)
         @test length(xs) == 0
     end
 
     @testset "A ray originates inside a sphere" begin
-        r = Ray(point3D(0.,0.,0.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
         s = default_sphere()
         xs = r_intersect(s, r)
         @test length(xs) == 2
@@ -43,7 +44,7 @@ import Aether: ϵ
     end
 
     @testset "A sphere is behind the ray" begin
-        r = Ray(point3D(0.,0.,5.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 0., 5.), vector3D(0., 0., 1.))
         s = default_sphere()
         xs = r_intersect(s, r)
         @test length(xs) == 2
@@ -57,7 +58,7 @@ import Aether: ϵ
     end
 
     @testset "Intersecting a scaled sphere with a ray" begin
-        r = Ray(point3D(0.,0.,-5.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
         s.transform = scaling(2., 2., 2.)
         xs = r_intersect(s, r)
@@ -67,11 +68,25 @@ import Aether: ϵ
     end
 
     @testset "Intersect a translated sphere with a ray" begin
-        r = Ray(point3D(0.,0.,-5.), vector3D(0.,0.,1.))
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
         s.transform = translation(5., 0., 0.)
         xs = r_intersect(s, r)
         @test length(xs) == 0
+    end
+
+    @testset "A sphere has a default material" begin
+        s = default_sphere()
+        m = s.material
+        @test compare_materials(m, default_material())
+    end
+
+    @testset "A sphere may be assigned a material" begin
+        s = default_sphere()
+        m = default_material()
+        m.ambient = 1.
+        s.material = m
+        @test compare_materials(s.material, m)
     end
 end
 
@@ -92,14 +107,14 @@ end
         s = default_sphere()
         s.transform = translation(0., 1., 0.)
         n = normal_at(s, point3D(0., 1.70711, -0.70711))
-        @test isapprox(n,vector3D(0., 0.70711, -0.70711),rtol=ϵ)
+        @test isapprox(n, vector3D(0., 0.70711, -0.70711), rtol = ϵ)
     end
 
     @testset "Computing the normal on a transformed sphere" begin
         s = default_sphere()
-        m = scaling(1., 0.5, 1.) * rotation_z(pi\5)
+        m = scaling(1., 0.5, 1.) * rotation_z(pi \ 5)
         s.transform = m
-        n = normal_at(s, point3D(0., √2/2, -√2/2))
-        @test isapprox(n, vector3D(0., 0.97014, -0.24254), rtol=ϵ)
+        n = normal_at(s, point3D(0., √2 / 2, -√2 / 2))
+        @test isapprox(n, vector3D(0., 0.97014, -0.24254), rtol = ϵ)
     end
 end
