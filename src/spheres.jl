@@ -3,8 +3,9 @@ module Spheres
 export Sphere, default_sphere, r_intersect
 
 using Aether.HomogeneousCoordinates
-using Aether.Rays
 using Aether.Intersections
+using Aether.MatrixTransformations
+using Aether.Rays
 
 using LinearAlgebra
 using StaticArrays
@@ -16,7 +17,7 @@ mutable struct Sphere{T<:AbstractFloat} <: GeometricObject
     transform::SMatrix
 
     function Sphere(center::Vec3D, radius::T) where T <: AbstractFloat
-        new{T}(center, radius, SMatrix{4,4,T}(I))
+        new{T}(center, radius, identity_matrix(T))
     end
 end
 

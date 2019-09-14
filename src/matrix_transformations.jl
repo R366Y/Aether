@@ -1,10 +1,15 @@
 module MatrixTransformations
 
+using LinearAlgebra
 using StaticArrays
 
-export translation, scaling,
+export identity_matrix, translation, scaling,
        rotation_x, rotation_y, rotation_z,
        shearing
+
+function identity_matrix(T::Type)
+    return SMatrix{4,4,T}(I)
+end
 
 function translation(x::T, y::T, z::T) where T <: AbstractFloat
     return @SMatrix T[
@@ -54,7 +59,7 @@ function rotation_z(θ::T) where T <: AbstractFloat
     ]
 end
 
-function shearing(x_x::T, x_z::T, y_x::T, y_z::T, z_x::T, z_y::T) where T <: AbstractFloat
+function shearing(x_y::T, x_z::T, y_x::T, y_z::T, z_x::T, z_y::T) where T <: AbstractFloat
     return @SMatrix T[
         1 x_y x_z 0;
         y_x 1 y_z 0;

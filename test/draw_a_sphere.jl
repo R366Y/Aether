@@ -9,7 +9,7 @@ using Aether.Spheres
 using StaticArrays
 using LinearAlgebra
 
-function draw_sphere()
+function draw_sphere(matrix_transformation::SMatrix)
     ray_origin = point3D(0., 0., -5.)
     wall_z = 10.
     wall_size = 7.0
@@ -21,10 +21,11 @@ function draw_sphere()
     canvas = Canvas(canvas_pixels, canvas_pixels, ColorRGB())
     color = ColorRGB(1., 0., 0.)
     shape = default_sphere()
+    shape.transform = matrix_transformation
 
-    for y in 1:canvas_pixels
+    for y = 1:canvas_pixels
         world_y = half - pixel_size * y
-        for x in 1:canvas_pixels
+        for x = 1:canvas_pixels
             world_x = -half + pixel_size * x
             position = point3D(world_x, world_y, wall_z)
             r = Ray(ray_origin, normalize(position - ray_origin))
@@ -38,6 +39,22 @@ function draw_sphere()
 end
 
 function show_sphere()
-    canvas = draw_sphere()
+    canvas = draw_sphere(identity_matrix(Float64))
+    show_image(canvas)
+end
+
+function show_scaled_sphere()
+    canvas = draw_sphere(scaling(1., 0.5, 1.))
+    show_image(canvas)
+end
+
+function show_shrinked_rotated_sphere()
+    canvas = draw_sphere(rotation_z(pi / 4) * scaling(0.5, 1., 1.))
+    show_image(canvas)
+end
+
+function show_shrinked_skewed_sphere()
+    canvas = draw_sphere(shearing(1., 0., 0., 0., 0., 0.) *
+                         scaling(0.5, 1., 1.))
     show_image(canvas)
 end
