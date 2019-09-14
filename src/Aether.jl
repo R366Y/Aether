@@ -25,4 +25,6 @@ include("lights.jl")
 include("materials.jl")
 include("spheres.jl")
 
+include("shaders.jl")
+
 end # module
