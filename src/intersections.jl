@@ -13,19 +13,13 @@ struct Intersection{T<:AbstractFloat, O<:GeometricObject}
 end
 
 function hit(is::Tuple{Vararg{Intersection}})
-    idx = 1
-    t_min = Inf
-    @inbounds for i in eachindex(is)
-        t = is[i].t
-        if t > 0. && t < t_min
-            idx = i
-            t_min = is[idx].t
-        end
-    end
-    if t_min === Inf
+    t_values = [h.t for h in is if h.t>=0.]
+    if length(t_values) == 0
         return nothing
+    else
+        idx = findmin(t_values)[2]
+        return is[idx]
     end
-    return is[idx]
 end
 
 function reflect(v::Vec3D, normal::Vec3D)

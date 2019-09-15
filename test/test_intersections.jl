@@ -27,6 +27,13 @@ using Aether.HomogeneousCoordinates
         @test i === nothing
     end
 
+    @testset "Hit one intersection have negative t" begin
+        s = default_sphere()
+        i1 = Intersection(-1., s)
+        i = hit((i1,))
+        @test i === nothing
+    end
+
     @testset "Hit is always the lowest nonnegative intersection" begin
         s = default_sphere()
         i1 = Intersection(5., s)
