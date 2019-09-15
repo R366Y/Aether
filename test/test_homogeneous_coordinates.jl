@@ -9,6 +9,23 @@ using Aether.HomogeneousCoordinates
         @test vector3D(4.0, -4.0, 3.0) == Vec3D(4.0, -4.0, 3.0, 0.0)
     end
 
+    @testset "set and get x y z w" begin
+        v = vector3D(1., 2., 3.)
+        @test v.x == 1.
+        @test v.y == 2.
+        @test v.z == 3.
+        @test v.w == 0.
+
+        v.x = 5.
+        v.y = 6.
+        v.z = 7.
+        v.w = 8.
+        @test v.x == 5.
+        @test v.y == 6.
+        @test v.z == 7.
+        @test v.w == 8.
+    end
+
     @testset "operations" begin
         a1 = point3D(3.0, -2.0, 5.0)
         a2 = vector3D(-2.0, 3.0, 1.0)
@@ -17,6 +34,14 @@ using Aether.HomogeneousCoordinates
         v1 = vector3D(Float64[3, 2, 1])
         v2 = vector3D(Float64[5, 6, 7])
         @test v1 - v2 == vector3D(-2.0, -4.0, -6.0)
+
+        v1 = vector3D(Float64[3, 2, 1])
+        a = 3.
+        @test v1 * a == vector3D(Float64[9, 6, 3])
+
+        v1 = vector3D(Float64[9, 6, 3])
+        a = 3.
+        @test v1 / a == vector3D(Float64[3, 2, 1])
     end
 
     @testset "magnitude" begin

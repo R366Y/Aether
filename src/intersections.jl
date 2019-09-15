@@ -29,7 +29,7 @@ function hit(is::Tuple{Vararg{Intersection}})
 end
 
 function reflect(v::Vec3D, normal::Vec3D)
-    return v - normal * 2 * dot(v, normal)
+    return v - normal * 2. * dot(v, normal)
 end
 
 end

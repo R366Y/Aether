@@ -4,6 +4,7 @@ using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Spheres
 using Aether.Rays
+
 using Test
 
 import Aether: ϵ
@@ -54,7 +55,7 @@ import Aether: ϵ
 
     @testset "A sphere default transformation" begin
         s = default_sphere()
-        @test s.transform == SMatrix{4,4,eltype(s.radius)}(I)
+        @test s.transform == identity_matrix(Float64)
     end
 
     @testset "Intersecting a scaled sphere with a ray" begin

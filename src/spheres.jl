@@ -49,8 +49,8 @@ end
 function normal_at(sphere::Sphere, world_point::Vec3D)
     object_point = inv(sphere.transform) * world_point
     object_normal = object_point - sphere.center
-    sarray = transpose(inv(sphere.transform)) * object_normal
-    world_normal = Vec3D(sarray[1], sarray[2], sarray[3], 0.)
+    world_normal = transpose(inv(sphere.transform)) * object_normal
+    world_normal.w = 0.
     return normalize(world_normal)
 end
 

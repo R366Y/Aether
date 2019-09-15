@@ -6,14 +6,15 @@ using Images
 
 export Canvas, write_pixel!, pixel_at, show_image
 
-struct Canvas
+struct Canvas{T<:AbstractFloat}
     width::Int64
     height::Int64
-    __data::Array
+    __data::Array{T, 2}
 
     function Canvas(width::Int64, height::Int64, c::ColorRGB)
         size = width * height
-        new(width, height, Array{eltype(c.r),2}(repeat([c.r c.g c.b], size)))
+        T = eltype(c)
+        new{T}(width, height, Array{T,2}(repeat([c.r c.g c.b], size)))
     end
 end
 

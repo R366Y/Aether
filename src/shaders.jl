@@ -20,7 +20,7 @@ function lighting(
 # combine the surface color with the light's color/intensity
 effective_color = material.color .* light.intensity
 # find the direction to the light source
-lightv = Vec3D(normalize(light.position - point))
+lightv = normalize(light.position - point)
 # compute the ambient contribution
 ambient = effective_color * material.ambient
 
@@ -36,7 +36,7 @@ if light_dot_normal >= 0.
     # reflect_dot_eye represents the cosine of the angle between the
     # reflection vector and the eye vector. A negative number means the
     # light reflects away from the eye.
-    reflectv = reflect(Vec3D(-lightv), normalv)
+    reflectv = reflect(-lightv, normalv)
     reflect_dot_eye = dot(reflectv, eyev)
     if reflect_dot_eye > 0.
         # compute the specular contribution

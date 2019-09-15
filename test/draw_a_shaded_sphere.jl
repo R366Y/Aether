@@ -40,9 +40,9 @@ function draw_sphere(matrix_transformation::SMatrix)
             xs = r_intersect(shape, r)
             h = hit(xs)
             if h !== nothing
-                point = Vec3D(positionr(r, h.t))
-                normal = Vec3D(normal_at(h.object, point))
-                eye = Vec3D(-r.direction)
+                point = positionr(r, h.t)
+                normal = normal_at(h.object, point)
+                eye = -r.direction
                 color = lighting(h.object.material, light, point, eye, normal)
                 write_pixel!(canvas, x, y, ColorRGB(color[1], color[2], color[3]))
             end
