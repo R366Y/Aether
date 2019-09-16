@@ -9,11 +9,11 @@ export Canvas, write_pixel!, pixel_at, show_image
 struct Canvas{T<:AbstractFloat}
     width::Int64
     height::Int64
-    __data::Array{T, 2}
+    __data::Array{T,2}
 
     function Canvas(width::Int64, height::Int64, c::ColorRGB)
         size = width * height
-        T = eltype(c)
+        T = eltype(c.r)
         new{T}(width, height, Array{T,2}(repeat([c.r c.g c.b], size)))
     end
 end

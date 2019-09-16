@@ -18,7 +18,7 @@ function lighting(
     normalv::Vec3D
 )
 # combine the surface color with the light's color/intensity
-effective_color = material.color .* light.intensity
+effective_color = material.color * light.intensity
 # find the direction to the light source
 lightv = normalize(light.position - point)
 # compute the ambient contribution
