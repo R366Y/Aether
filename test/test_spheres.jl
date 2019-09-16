@@ -61,7 +61,7 @@ import Aether: ϵ
     @testset "Intersecting a scaled sphere with a ray" begin
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
-        s.transform = scaling(2., 2., 2.)
+        set_transform(s, scaling(2., 2., 2.))
         xs = r_intersect(s, r)
         @test length(xs) == 2
         @test xs[1].t ≈ 3.
@@ -71,7 +71,7 @@ import Aether: ϵ
     @testset "Intersect a translated sphere with a ray" begin
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         s = default_sphere()
-        s.transform = translation(5., 0., 0.)
+        set_transform(s, translation(5., 0., 0.))
         xs = r_intersect(s, r)
         @test length(xs) == 0
     end

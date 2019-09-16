@@ -1,6 +1,6 @@
 module Spheres
 
-export Sphere, default_sphere, r_intersect, normal_at
+export Sphere, default_sphere, r_intersect, normal_at, set_transform
 
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
@@ -15,11 +15,12 @@ import Aether: float_equal, ϵ, GeometricObject
 mutable struct Sphere{T<:AbstractFloat} <: GeometricObject
     center::Vec3D
     radius::T
-    transform::SMatrix
+    transform::SMatrix{4,4,T}
+    inverse::SMatrix{4,4,T}
     material::Material
 
     function Sphere(center::Vec3D, radius::T) where T <: AbstractFloat
-        new{T}(center, radius, identity_matrix(T), default_material())
+        new{T}(center, radius, identity_matrix(T), identity_matrix(T), default_material())
     end
 end
 
@@ -27,8 +28,13 @@ function default_sphere()
     return Sphere(point3D(0., 0., 0.), 1.)
 end
 
+function set_transform(sphere::Sphere, matrix::SMatrix{4,4,T}) where T <: AbstractFloat
+    sphere.transform = matrix
+    sphere.inverse = inv(matrix)
+end
+
 function r_intersect(s::Sphere, r::Ray)
-    r = transform(r, inv(s.transform))
+    r = transform(r, s.inverse)
 
     sphere_to_ray = r.origin - s.center
     a = dot(r.direction, r.direction)
