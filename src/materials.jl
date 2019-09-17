@@ -4,12 +4,12 @@ export Material, default_material, compare_materials
 
 using Aether.ColorsModule
 
-mutable struct Material{T<:AbstractFloat}
+mutable struct Material
     color::ColorRGB
-    ambient::T
-    diffuse::T
-    specular::T
-    shininess::T
+    ambient::Float64
+    diffuse::Float64
+    specular::Float64
+    shininess::Float64
 end
 
 function default_material()

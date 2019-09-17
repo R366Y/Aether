@@ -12,15 +12,15 @@ using LinearAlgebra
 using StaticArrays
 import Aether: float_equal, ϵ, GeometricObject
 
-mutable struct Sphere{T<:AbstractFloat} <: GeometricObject
-    center::Vec3D
-    radius::T
-    transform::SMatrix{4,4,T}
-    inverse::SMatrix{4,4,T}
+mutable struct Sphere <: GeometricObject
+    center::Vec3D{Float64}
+    radius::Float64
+    transform::SMatrix{4,4,Float64}
+    inverse::SMatrix{4,4,Float64}
     material::Material
 
-    function Sphere(center::Vec3D, radius::T) where T <: AbstractFloat
-        new{T}(center, radius, identity_matrix(T), identity_matrix(T), default_material())
+    function Sphere(center::Vec3D, radius::Float64)
+        new(center, radius, identity_matrix(Float64), identity_matrix(Float64), default_material())
     end
 end
 
@@ -28,7 +28,7 @@ function default_sphere()
     return Sphere(point3D(0., 0., 0.), 1.)
 end
 
-function set_transform(sphere::Sphere, matrix::SMatrix{4,4,T}) where T <: AbstractFloat
+function set_transform(sphere::Sphere, matrix::SMatrix{4,4,Float64})
     sphere.transform = matrix
     sphere.inverse = inv(matrix)
 end
@@ -53,9 +53,9 @@ function r_intersect(s::Sphere, r::Ray)
 end
 
 function normal_at(sphere::Sphere, world_point::Vec3D)
-    object_point = inv(sphere.transform) * world_point
+    object_point = sphere.inverse * world_point
     object_normal = object_point - sphere.center
-    world_normal = transpose(inv(sphere.transform)) * object_normal
+    world_normal = transpose(sphere.inverse) * object_normal
     world_normal.w = 0.
     return normalize(world_normal)
 end

@@ -2,6 +2,7 @@ using Test
 using Aether.Spheres
 using Aether.Intersections
 using Aether.HomogeneousCoordinates
+using Aether.Rays
 
 @testset "Intersections" begin
     @testset "Intersection encapsulates t and object" begin

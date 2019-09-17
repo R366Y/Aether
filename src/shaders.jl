@@ -6,7 +6,7 @@ using Aether.ColorsModule
 using Aether.Materials
 using Aether.Lights
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
+using Aether.Rays
 
 using LinearAlgebra
 

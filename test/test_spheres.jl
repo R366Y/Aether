@@ -106,7 +106,7 @@ end
 
     @testset "Computing the normal on a translated sphere" begin
         s = default_sphere()
-        s.transform = translation(0., 1., 0.)
+        set_transform(s, translation(0., 1., 0.))
         n = normal_at(s, point3D(0., 1.70711, -0.70711))
         @test isapprox(n, vector3D(0., 0.70711, -0.70711), rtol = ϵ)
     end
@@ -114,7 +114,7 @@ end
     @testset "Computing the normal on a transformed sphere" begin
         s = default_sphere()
         m = scaling(1., 0.5, 1.) * rotation_z(pi \ 5)
-        s.transform = m
+        set_transform(s, m)
         n = normal_at(s, point3D(0., √2 / 2, -√2 / 2))
         @test isapprox(n, vector3D(0., 0.97014, -0.24254), rtol = ϵ)
     end

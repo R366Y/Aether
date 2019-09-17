@@ -6,9 +6,9 @@ using StaticArrays
 import LinearAlgebra: norm, normalize, dot, cross
 import Base: +, -, *, /,==, isapprox, eps, getproperty,setproperty!
 
-mutable struct Vec3D{T}
+struct Vec3D{T}
     data::MArray{Tuple{4}, T}
-    
+
     function Vec3D(x::T, y::T, z::T, w::T) where T <: AbstractFloat
         new{T}(MArray{Tuple{4}, T}(x, y, z, w))
     end # function
