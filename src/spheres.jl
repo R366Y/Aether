@@ -11,6 +11,7 @@ using Aether.Rays
 using LinearAlgebra
 using StaticArrays
 import Aether: float_equal, ϵ, GeometricObject
+import Base: ==
 
 mutable struct Sphere <: GeometricObject
     center::Vec3D{Float64}
@@ -23,6 +24,11 @@ mutable struct Sphere <: GeometricObject
         new(center, radius, identity_matrix(Float64), identity_matrix(Float64), default_material())
     end
 end
+
+@inline ==(s1::Sphere, s2::Sphere) = s1.center == s2.center &&
+                                     s1.radius == s2.radius &&
+                                     s1.transform == s2.transform
+
 
 function default_sphere()
     return Sphere(point3D(0., 0., 0.), 1.)

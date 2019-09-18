@@ -1,7 +1,8 @@
 using Test
-using Aether.Spheres
-using Aether.Intersections
+using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
+using Aether.Intersections
+using Aether.Spheres
 using Aether.Rays
 
 @testset "Intersections" begin
@@ -58,5 +59,19 @@ end
         n = vector3D(√2/2, √2/2, 0.)
         r = reflect(v, n)
         @test r ≈ vector3D(1., 0., 0.)
+    end
+end
+
+@testset "Computations" begin
+    @testset "Precomputing the test of an intersection" begin
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+        shape = default_sphere()
+        i = Intersection(4., shape)
+        comps = prepare_computations(i, r)
+        @test comps.t == i.t
+        @test comps.object == shape
+        @test comps.point == point3D(0., 0., -1.)
+        @test comps.eyev == vector3D(0., 0., -1.)
+        @test comps.normalv == vector3D(0., 0., -1.)
     end
 end

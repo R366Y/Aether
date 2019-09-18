@@ -3,8 +3,6 @@ module Intersections
 export Intersection, hit
 
 using LinearAlgebra
-
-using Aether.HomogeneousCoordinates
 import Aether: GeometricObject
 
 struct Intersection{O<:GeometricObject}

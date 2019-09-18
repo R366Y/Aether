@@ -3,6 +3,7 @@ module Materials
 export Material, default_material, compare_materials
 
 using Aether.ColorsModule
+import Base: ==
 
 mutable struct Material
     color::ColorRGB
@@ -11,6 +12,8 @@ mutable struct Material
     specular::Float64
     shininess::Float64
 end
+
+@inline ==(m1::Material, m2::Material) = compare_materials(m1, m2)
 
 function default_material()
     return Material(ColorRGB(1., 1., 1.), 0.1, 0.9, 0.9, 200.)
