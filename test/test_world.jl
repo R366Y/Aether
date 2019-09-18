@@ -1,8 +1,12 @@
 using Test
+using Aether.ColorsModule
+using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
+using Aether.Intersections
 using Aether.Lights
 using Aether.Spheres
 using Aether.WorldModule
+import Aether: ϵ
 
 @testset "World" begin
     @testset "The default world" begin
@@ -30,5 +34,51 @@ using Aether.WorldModule
         @test xs[2].t == 4.5
         @test xs[3].t == 5.5
         @test xs[4].t == 6.
+    end
+
+    @testset "Shading an intersection" begin
+        w = default_world()
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+        shape = w.objects[1]
+        i = Intersection(4., shape)
+        comps = prepare_computations(i, r)
+        c = shade_hit(w, comps)
+        @test isapprox(c, ColorRGB(0.38066, 0.47583, 0.2855), rtol=1.0e-4)
+    end
+
+    @testset "Shading an intersection from the inside" begin
+        w = default_world()
+        w.light = PointLight(point3D(0., 0.25, 0.), ColorRGB(1., 1., 1.))
+        r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
+        shape = w.objects[2]
+        i = Intersection(0.5, shape)
+        comps = prepare_computations(i, r)
+        c = shade_hit(w, comps)
+        @test isapprox(c, ColorRGB(0.90498, 0.90498, 0.90498), rtol=ϵ)
+    end
+
+    @testset "The color when a ray misses" begin
+        w = default_world()
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 1., 0.))
+        c = color_at(w, r)
+        @test c == ColorRGB(0., 0., 0.)
+    end
+
+    @testset "The color when a ray hits" begin
+        w = default_world()
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+        c = color_at(w, r)
+        @test isapprox(c,ColorRGB(0.38066, 0.47583, 0.2855), rtol=1.0e-4)
+    end
+
+    @testset "The color when a ray hits" begin
+        w = default_world()
+        outer = w.objects[1]
+        outer.material.ambient = 1.
+        inner = w.objects[2]
+        inner.material.ambient = 1.
+        r = Ray(point3D(0., 0., 0.75), vector3D(0., 0., -1.))
+        c = color_at(w, r)
+        @test isapprox(c,inner.material.color, rtol=1.0e-4)
     end
 end

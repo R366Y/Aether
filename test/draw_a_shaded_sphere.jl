@@ -23,7 +23,7 @@ function draw_sphere(matrix_transformation::SMatrix)
 
     canvas = Canvas(canvas_pixels, canvas_pixels, ColorRGB())
     shape = default_sphere()
-    shape.transform = matrix_transformation
+    set_transform(shape, matrix_transformation)
     shape.material = default_material()
     shape.material.color = ColorRGB(1., 0.2, 1.)
 

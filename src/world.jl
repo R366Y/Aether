@@ -1,14 +1,16 @@
 module  WorldModule
 
-export World, default_world, add_objects, intersect_world
+export World, default_world, add_objects, intersect_world, color_at, shade_hit
 
 using Aether
 using Aether.ColorsModule
+using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
 using Aether.Lights
 using Aether.MatrixTransformations
 using Aether.Rays
+using Aether.Shaders
 using Aether.Spheres
 
 mutable struct World{T<:GeometricObject}
@@ -53,4 +55,19 @@ function intersect_world(world::World, ray::Ray)
     return result
 end
 
+function shade_hit(world::World, comps::Computations)
+    return lighting(comps.object.material, world.light,
+                    comps.point, comps.eyev, comps.normalv)
+end
+
+function color_at(world::World, ray::Ray)
+    intersections = intersect_world(world, ray)
+    i = hit(Tuple(intersections))
+    color = ColorRGB(0., 0., 0.)
+    if i != nothing
+        comps = prepare_computations(i, ray)
+        color = shade_hit(world, comps)
+    end
+    return color
+end
 end  # module WorldModule
