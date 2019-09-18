@@ -74,4 +74,24 @@ end
         @test comps.eyev == vector3D(0., 0., -1.)
         @test comps.normalv == vector3D(0., 0., -1.)
     end
+
+    @testset "The hit when an intersection occurs on the outside" begin
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+        shape = default_sphere()
+        i = Intersection(4., shape)
+        comps = prepare_computations(i, r)
+        @test !comps.inside
+    end
+
+    @testset "The hit when an intersection occurs on the inside" begin
+        r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
+        shape = default_sphere()
+        i = Intersection(1., shape)
+        comps = prepare_computations(i, r)
+        @test comps.inside
+        @test comps.point == point3D(0., 0., 1.)
+        @test comps.eyev == vector3D(0., 0., -1.)
+        # normal is inverted becaus it is inside hit
+        @test comps.normalv == vector3D(0., 0., -1.)
+    end
 end
