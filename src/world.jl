@@ -1,6 +1,7 @@
 module  WorldModule
 
-export World, default_world, add_objects, intersect_world, color_at, shade_hit
+export World, default_world, add_objects, intersect_world,
+       color_at, shade_hit
 
 using Aether
 using Aether.ColorsModule
@@ -70,4 +71,5 @@ function color_at(world::World, ray::Ray)
     end
     return color
 end
+
 end  # module WorldModule

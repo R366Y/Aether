@@ -85,3 +85,41 @@ end
       @test float_equal(full_quarter * p, point3D(-1., 0., 0.))
    end
 end
+
+@testset "View Transformation" begin
+   @testset "The transformation matrix for the default orientation" begin
+      from = point3D(0., 0., 0.)
+      to = point3D(0., 0., -1.)
+      up = vector3D(0., 1., 0.)
+      t = view_transform(from, to, up)
+      @test t == identity_matrix(Float64)
+   end
+
+   @testset "A view transformation matrix looking in positive z direction" begin
+      from = point3D(0., 0., 0.)
+      to = point3D(0., 0., 1.)
+      up = vector3D(0., 1., 0.)
+      t = view_transform(from, to, up)
+      @test t == scaling(-1., 1., -1.)
+   end
+
+   @testset "A view transformation moves the world" begin
+      from = point3D(0., 0., 8.)
+      to = point3D(0., 0., 1.)
+      up = vector3D(0., 1., 0.)
+      t = view_transform(from, to, up)
+      @test t == translation(0., 0., -8.)
+   end
+
+   @testset "An arbitrary view transformation" begin
+      from = point3D(1., 3., 2.)
+      to = point3D(4., -2., 8.)
+      up = vector3D(1., 1., 0.)
+      t = view_transform(from, to, up)
+      @test round.(t, digits=5) ==
+                  SMatrix{4,4,Float64}([ -0.50709 0.50709  0.67612 -2.36643;
+                                     0.76772 0.60609  0.12122 -2.82843;
+                                     -0.35857 0.59761 -0.71714 0.00000;
+                                     0.00000 0.00000 0.00000 1.00000 ])
+   end
+end
