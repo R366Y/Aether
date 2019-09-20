@@ -52,13 +52,13 @@ end
         v = vector3D(1., -1., 0.)
         n = vector3D(0., 1., 0.)
         r = reflect(v, n)
-        @test r == vector3D(1., 1., 0.)
+        @test float_equal(r, vector3D(1., 1., 0.))
     end
     @testset "Reflecting a vector off a slanted surface" begin
         v = vector3D(0., -1., 0.)
         n = vector3D(√2/2, √2/2, 0.)
         r = reflect(v, n)
-        @test r ≈ vector3D(1., 0., 0.)
+        @test float_equal(r,vector3D(1., 0., 0.))
     end
 end
 

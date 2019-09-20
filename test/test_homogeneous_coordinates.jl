@@ -70,6 +70,6 @@ using Aether.HomogeneousCoordinates
     @testset "cross product" begin
         a = vector3D(Float64[1, 2, 3])
         b = vector3D(Float64[2, 3, 4])
-        @test cross_product(a, b) == vector3D(Float64[-1, 2, -1])
+        @test cross(a, b) == vector3D(Float64[-1, 2, -1])
     end
 end

@@ -4,6 +4,7 @@ using LinearAlgebra
 
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
+import Aether: ϵ, float_equal
 
 @testset "Matrix equality" begin
    A = [
@@ -64,23 +65,23 @@ end
       p = point3D(0., 1., 0.)
       half_quarter = rotation_x(π / 4)
       full_quarter = rotation_x(π / 2)
-      @test half_quarter * p ≈ point3D(0., √2/2, √2/2)
-      @test full_quarter * p ≈ point3D(0., 0., 1.)
+      @test float_equal(half_quarter * p, point3D(0., √2/2, √2/2))
+      @test float_equal(full_quarter * p, point3D(0., 0., 1.))
    end
 
    @testset "Rotating a point around the y axis" begin
       p = point3D(0., 0., 1.)
       half_quarter = rotation_y(π / 4)
       full_quarter = rotation_y(π / 2)
-      @test half_quarter * p ≈ point3D(√2/2, 0., √2/2)
-      @test full_quarter * p ≈ point3D(1., 0., 0.)
+      @test float_equal(half_quarter * p,point3D(√2/2, 0., √2/2))
+      @test float_equal(full_quarter * p, point3D(1., 0., 0.))
    end
 
    @testset "Rotating a pont around z axis" begin
       p = point3D(0., 1., 0.)
       half_quarter = rotation_z(π / 4)
       full_quarter = rotation_z(π / 2)
-      @test half_quarter * p ≈ point3D(-√2/2, √2/2, 0.)
-      @test full_quarter * p ≈ point3D(-1., 0., 0.)
+      @test float_equal(half_quarter * p, point3D(-√2/2, √2/2, 0.))
+      @test float_equal(full_quarter * p, point3D(-1., 0., 0.))
    end
 end
