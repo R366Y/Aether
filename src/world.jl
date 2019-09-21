@@ -1,9 +1,11 @@
 module  WorldModule
 
 export World, default_world, add_objects, intersect_world,
-       color_at, shade_hit
+       color_at, shade_hit, render
 
 using Aether
+using Aether.CameraModule
+using Aether.CanvasModule
 using Aether.ColorsModule
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
@@ -72,4 +74,16 @@ function color_at(world::World, ray::Ray)
     return color
 end
 
+function render(camera::Camera, world::World)
+    image = empty_canvas(camera.hsize, camera.vsize)
+
+    for y in 1:camera.vsize
+        for x in 1:camera.hsize
+            ray = ray_for_pixel(camera, x, y)
+            color = color_at(world, ray)
+            write_pixel!(image, x, y, color)
+        end
+    end
+    return image
+end
 end  # module WorldModule
