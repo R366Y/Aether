@@ -15,7 +15,8 @@ function lighting(
     light::PointLight,
     point::Vec3D,
     eyev::Vec3D,
-    normalv::Vec3D
+    normalv::Vec3D,
+    in_shadow::Bool
 )
 # combine the surface color with the light's color/intensity
 effective_color = material.color * light.intensity
@@ -30,7 +31,7 @@ ambient = effective_color * material.ambient
 light_dot_normal = dot(lightv, normalv)
 diffuse = ColorRGB()
 specular = ColorRGB()
-if light_dot_normal >= 0.
+if light_dot_normal >= 0. && !in_shadow
     diffuse = effective_color * material.diffuse * light_dot_normal
 
     # reflect_dot_eye represents the cosine of the angle between the

@@ -25,7 +25,7 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv)
+        result = lighting(m, light, position, eyev, normalv, false)
         @test isapprox(result, ColorRGB(1.9, 1.9, 1.9), rtol = ϵ)
     end
 
@@ -35,7 +35,7 @@ using Test
         eyev = vector3D(0., √2 / 2, -√2 / 2)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv)
+        result = lighting(m, light, position, eyev, normalv, false)
         @test isapprox(result, ColorRGB(1., 1., 1.), rtol = ϵ)
     end
 
@@ -45,7 +45,7 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv)
+        result = lighting(m, light, position, eyev, normalv, false)
         @test isapprox(result, ColorRGB(0.7364, 0.7364, 0.7364), rtol = ϵ)
     end
 
@@ -55,7 +55,7 @@ using Test
         eyev = vector3D(0., -√2 / 2, -√2 / 2)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv)
+        result = lighting(m, light, position, eyev, normalv, false)
         @test isapprox(result, ColorRGB(1.6364, 1.6364, 1.6364), rtol = ϵ)
     end
 
@@ -65,7 +65,18 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., 10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv)
+        result = lighting(m, light, position, eyev, normalv, false)
         @test isapprox(result, ColorRGB(0.1, 0.1, 0.1), rtol = ϵ)
+    end
+
+    @testset "Lighting with the surface in shadow" begin
+        m = default_material()
+        position = point3D(0., 0., 0.)
+        eyev = vector3D(0., 0., -1.)
+        normalv = vector3D(0., 0., -1.)
+        light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
+        in_shadow = true
+        result = lighting(m, light, position, eyev, normalv, in_shadow)
+        @test float_equal(result, ColorRGB(0.1, 0.1, 0.1))
     end
 end

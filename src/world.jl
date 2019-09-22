@@ -1,7 +1,7 @@
 module  WorldModule
 
 export World, default_world, add_objects, intersect_world,
-       color_at, shade_hit, render
+       color_at, shade_hit, render, is_shadowed
 
 using Aether
 using Aether.CameraModule
@@ -15,6 +15,8 @@ using Aether.MatrixTransformations
 using Aether.Rays
 using Aether.Shaders
 using Aether.Spheres
+
+using LinearAlgebra
 
 mutable struct World{T<:GeometricObject}
     objects::Array{T}
@@ -55,17 +57,33 @@ function intersect_world(world::World, ray::Ray)
     if length(result) != 0
         sort!(result, by = i->i.t)
     end
-    return result
+    return Tuple(result)
+end
+
+function is_shadowed(world::World, point::Vec3D)
+    v = world.light.position - point
+    distance = norm(v)
+    direction = normalize(v)
+
+    r = Ray(point, direction)
+    intersections = intersect_world(world, r)
+
+    h = hit(intersections)
+    if h != nothing && h.t < distance
+        return true
+    end
+    return false
 end
 
 function shade_hit(world::World, comps::Computations)
     return lighting(comps.object.material, world.light,
-                    comps.point, comps.eyev, comps.normalv)
+                    comps.over_point, comps.eyev, comps.normalv,
+                    is_shadowed(world, comps.over_point))
 end
 
 function color_at(world::World, ray::Ray)
     intersections = intersect_world(world, ray)
-    i = hit(Tuple(intersections))
+    i = hit(intersections)
     color = ColorRGB(0., 0., 0.)
     if i != nothing
         comps = prepare_computations(i, ray)

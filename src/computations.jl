@@ -7,7 +7,7 @@ using Aether.Intersections
 using Aether.Rays
 using Aether.Spheres
 using LinearAlgebra
-import Aether: GeometricObject
+import Aether: GeometricObject, ϵ
 
 mutable struct Computations{O<:GeometricObject}
     t::Float64
@@ -16,6 +16,7 @@ mutable struct Computations{O<:GeometricObject}
     eyev::Vec3D{Float64}
     normalv::Vec3D{Float64}
     inside::Bool
+    over_point::Vec3D{Float64}
 
     Computations() = new{GeometricObject}()
 end
@@ -37,6 +38,7 @@ function prepare_computations(intersection::Intersection, ray::Ray)
     else
         comps.inside = false
     end
+    comps.over_point = comps.point + comps.normalv * ϵ
     return comps
 end
 
