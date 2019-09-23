@@ -22,11 +22,15 @@ function empty_canvas(width::Int64, height::Int64)
 end
 
 function write_pixel!(canvas::Canvas, x::Int64, y::Int64, color::ColorRGB)
-    canvas.__data[x+(y-1)*canvas.width, :] = [color.r, color.g, color.b]
+    i = x + (y - 1) * canvas.width
+    @inbounds canvas.__data[i, 1] = color.r
+    @inbounds canvas.__data[i, 2] = color.g
+    @inbounds canvas.__data[i, 3] = color.b
 end
 
 function pixel_at(canvas::Canvas, x::Int64, y::Int64)
-    color_array = canvas.__data[x+(y-1)*canvas.width, :]
+    i = x + (y - 1) * canvas.width
+    color_array = @view(canvas.__data[i, :])
     return ColorRGB(color_array[1], color_array[2], color_array[3])
 end
 
