@@ -3,7 +3,6 @@ module  WorldModule
 export World, default_world, add_objects, intersect_world,
        color_at, shade_hit, render, is_shadowed
 
-using Aether
 using Aether.CameraModule
 using Aether.CanvasModule
 using Aether.ColorsModule
@@ -17,6 +16,8 @@ using Aether.Shaders
 using Aether.Spheres
 
 using LinearAlgebra
+
+import Aether.Shapes: GeometricObject
 
 mutable struct World{T<:GeometricObject}
     objects::Array{T}

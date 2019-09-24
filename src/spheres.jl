@@ -10,7 +10,8 @@ using Aether.Rays
 
 using LinearAlgebra
 using StaticArrays
-import Aether: float_equal, ϵ, GeometricObject
+import Aether: float_equal, ϵ
+import Aether.Shapes: GeometricObject
 import Base: ==
 
 mutable struct Sphere <: GeometricObject

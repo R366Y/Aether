@@ -3,7 +3,7 @@ module Intersections
 export Intersection, hit
 
 using LinearAlgebra
-import Aether: GeometricObject
+import Aether.Shapes: GeometricObject
 
 struct Intersection{O<:GeometricObject}
     t::Float64

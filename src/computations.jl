@@ -7,7 +7,9 @@ using Aether.Intersections
 using Aether.Rays
 using Aether.Spheres
 using LinearAlgebra
-import Aether: GeometricObject, ϵ
+
+import Aether: ϵ
+import Aether.Shapes: GeometricObject
 
 mutable struct Computations{O<:GeometricObject}
     t::Float64

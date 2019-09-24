@@ -1,8 +1,6 @@
 module Aether
 
-export ϵ, float_equal, GeometricObject
-
-abstract type GeometricObject end
+export ϵ, float_equal
 
 const ϵ = 0.00001
 
@@ -14,6 +12,7 @@ function float_equal(a::T, b::T) where T <: AbstractFloat
     end
 end
 
+include("shapes.jl")
 include("homogeneous_coordinates.jl")
 include("matrix_transformations.jl")
 include("colors.jl")
