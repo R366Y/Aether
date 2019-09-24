@@ -17,7 +17,7 @@ using Aether.Rays
         s = default_sphere()
         i1 = Intersection(1., s)
         i2 = Intersection(2., s)
-        i = hit((i2,i1))
+        i = hit([i2,i1])
         @test i === i1
     end
 
@@ -25,14 +25,14 @@ using Aether.Rays
         s = default_sphere()
         i1 = Intersection(-1., s)
         i2 = Intersection(-2., s)
-        i = hit((i2,i1))
+        i = hit([i2,i1])
         @test i === nothing
     end
 
     @testset "Hit one intersection have negative t" begin
         s = default_sphere()
         i1 = Intersection(-1., s)
-        i = hit((i1,))
+        i = hit([i1])
         @test i === nothing
     end
 
@@ -42,7 +42,7 @@ using Aether.Rays
         i2 = Intersection(7., s)
         i3 = Intersection(-3., s)
         i4 = Intersection(2., s)
-        i = hit((i2,i1,i4,i3))
+        i = hit([i2,i1,i4,i3])
         @test i === i4
     end
 end

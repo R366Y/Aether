@@ -16,8 +16,8 @@ import Base: ==
 mutable struct Sphere <: GeometricObject
     center::Vec3D{Float64}
     radius::Float64
-    transform::SMatrix{4,4,Float64}
-    inverse::SMatrix{4,4,Float64}
+    transform::Matrix4x4
+    inverse::Matrix4x4
     material::Material
 
     function Sphere(center::Vec3D, radius::Float64)
@@ -34,7 +34,7 @@ function default_sphere()
     return Sphere(point3D(0., 0., 0.), 1.)
 end
 
-function set_transform(sphere::Sphere, matrix::SMatrix{4,4,Float64})
+function set_transform(sphere::Sphere, matrix::Matrix4x4)
     sphere.transform = matrix
     sphere.inverse = inv(matrix)
 end
@@ -48,14 +48,13 @@ function r_intersect(s::Sphere, r::Ray)
     c = dot(sphere_to_ray, sphere_to_ray) - 1.
 
     discriminant = b^2 - 4. * a * c
-    t1 = 0.
-    t2 = 0.
+    result = Intersection{Sphere}[]
     if discriminant >= 0.
         t1 = (-b - √(discriminant)) / (2. * a)
         t2 = (-b + √(discriminant)) / (2. * a)
-        return (Intersection(t1, s), Intersection(t2, s))
+        push!(result, Intersection(t1, s), Intersection(t2, s))
     end
-    return ()
+    return result
 end
 
 function normal_at(sphere::Sphere, world_point::Vec3D)

@@ -31,12 +31,11 @@ function prepare_computations(intersection::Intersection, ray::Ray)
     comps.eyev = -ray.direction
     comps.normalv = normal_at(comps.object, comps.point)
 
+    comps.inside = false
     # compute if the intersection occurs on the inside
-    if dot(comps.normalv, comps.eyev) < 0
+    if dot(comps.normalv, comps.eyev) < 0.
         comps.inside = true
         comps.normalv = -comps.normalv
-    else
-        comps.inside = false
     end
     comps.over_point = comps.point + comps.normalv * ϵ
     return comps

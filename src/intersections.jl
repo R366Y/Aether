@@ -10,7 +10,7 @@ struct Intersection{O<:GeometricObject}
     object::O
 end
 
-function hit(is::Tuple{Vararg{Intersection}})
+function hit(is::Array)
     t_values = [h for h in is if h.t>=0.]
     if length(t_values) == 0
         return nothing

@@ -57,7 +57,7 @@ function intersect_world(world::World, ray::Ray)
     if length(result) != 0
         sort!(result, by = i->i.t)
     end
-    return Tuple(result)
+    return result
 end
 
 function is_shadowed(world::World, point::Vec3D)
