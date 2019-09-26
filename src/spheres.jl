@@ -1,6 +1,6 @@
 module Spheres
 
-export Sphere, default_sphere, r_intersect, normal_at, set_transform
+export Sphere, default_sphere
 
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
@@ -11,7 +11,8 @@ using Aether.Rays
 using LinearAlgebra
 using StaticArrays
 import Aether: float_equal, ϵ
-import Aether.Shapes: GeometricObject
+import Aether.BaseGeometricType: GeometricObject, set_transform,
+                                 local_intersect, local_normal_at
 import Base: ==
 
 mutable struct Sphere <: GeometricObject
@@ -35,14 +36,8 @@ function default_sphere()
     return Sphere(point3D(0., 0., 0.), 1.)
 end
 
-function set_transform(sphere::Sphere, matrix::Matrix4x4)
-    sphere.transform = matrix
-    sphere.inverse = inv(matrix)
-end
-
-function r_intersect(s::Sphere, r::Ray)
-    r = transform(r, s.inverse)
-
+function local_intersect(s::Sphere, r::Ray)
+    #r = transform(r, s.inverse)
     sphere_to_ray = r.origin - s.center
     a = dot(r.direction, r.direction)
     b = 2. * dot(r.direction, sphere_to_ray)
@@ -58,13 +53,16 @@ function r_intersect(s::Sphere, r::Ray)
     return result
 end
 
-function normal_at(sphere::Sphere, world_point::Vec3D)
-    object_point = sphere.inverse * world_point
-    object_normal = object_point - sphere.center
-    world_normal = transpose(sphere.inverse) * object_normal
-    world_normal.w = 0.
-    return normalize(world_normal)
-end
+# function normal_at(sphere::Sphere, world_point::Vec3D)
+#     object_point = sphere.inverse * world_point
+#     object_normal = object_point - sphere.center
+#     world_normal = transpose(sphere.inverse) * object_normal
+#     world_normal.w = 0.
+#     return normalize(world_normal)
+# end
 
+function local_normal_at(sphere::Sphere, local_point::Vec3D)
+    return local_point - sphere.center
+end
 
 end  # module Spheres

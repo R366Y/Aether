@@ -9,6 +9,8 @@ using Aether.Spheres
 using StaticArrays
 using LinearAlgebra
 
+import Aether.BaseGeometricType: r_intersect, set_transform
+
 function draw_sphere(matrix_transformation::SMatrix)
     ray_origin = point3D(0., 0., -5.)
     wall_z = 10.
@@ -21,7 +23,7 @@ function draw_sphere(matrix_transformation::SMatrix)
     canvas = Canvas(canvas_pixels, canvas_pixels, ColorRGB())
     color = ColorRGB(1., 0., 0.)
     shape = default_sphere()
-    shape.transform = matrix_transformation
+    set_transform(shape, matrix_transformation)
 
     for y = 1:canvas_pixels
         world_y = half - pixel_size * y

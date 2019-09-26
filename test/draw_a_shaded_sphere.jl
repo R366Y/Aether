@@ -12,6 +12,8 @@ using Aether.Spheres
 using StaticArrays
 using LinearAlgebra
 
+import Aether.BaseGeometricType: r_intersect, set_transform, normal_at
+
 function draw_sphere(matrix_transformation::SMatrix)
     ray_origin = point3D(0., 0., -5.)
     wall_z = 10.

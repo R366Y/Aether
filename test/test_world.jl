@@ -8,6 +8,7 @@ using Aether.Spheres
 using Aether.WorldModule
 using Aether.Rays
 import Aether: ϵ
+import Aether.BaseGeometricType: set_transform
 
 @testset "World" begin
     @testset "The default world" begin

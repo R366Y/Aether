@@ -8,6 +8,8 @@ using Aether.MatrixTransformations
 using Aether.Spheres
 using Aether.WorldModule
 
+import Aether.BaseGeometricType: set_transform
+
 function draw_world()
     floor_sphere = default_sphere()
     set_transform(floor_sphere, scaling(10., 0.01, 10.))

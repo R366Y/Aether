@@ -5,11 +5,10 @@ export Computations, prepare_computations
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
 using Aether.Rays
-using Aether.Spheres
 using LinearAlgebra
 
 import Aether: ϵ
-import Aether.Shapes: GeometricObject
+import Aether.BaseGeometricType: GeometricObject, normal_at
 
 mutable struct Computations{O<:GeometricObject}
     t::Float64

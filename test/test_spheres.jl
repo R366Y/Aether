@@ -4,6 +4,7 @@ using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Spheres
 using Aether.Rays
+import Aether.BaseGeometricType: r_intersect, normal_at, set_transform
 
 using Test
 

@@ -12,18 +12,21 @@ function float_equal(a::T, b::T) where T <: AbstractFloat
     end
 end
 
-include("shapes.jl")
+
 include("homogeneous_coordinates.jl")
 include("matrix_transformations.jl")
 include("colors.jl")
-include("materials.jl")
-include("rays.jl")
-include("camera.jl")
 include("canvas.jl")
 include("lights.jl")
+include("materials.jl")
+include("rays.jl")
+include("base_geometric_type.jl")
+
+include("camera.jl")
 include("shaders.jl")
 
 include("intersections.jl")
+include("shapes.jl")
 include("spheres.jl")
 include("computations.jl")
 

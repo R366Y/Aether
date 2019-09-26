@@ -17,7 +17,7 @@ using Aether.Spheres
 
 using LinearAlgebra
 
-import Aether.Shapes: GeometricObject
+import Aether.BaseGeometricType: GeometricObject, r_intersect, set_transform
 
 mutable struct World{T<:GeometricObject}
     objects::Array{T}
