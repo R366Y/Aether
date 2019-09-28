@@ -4,7 +4,7 @@ using StaticArrays
 import Base: +, -, *, /, ==, isapprox
 import Aether: float_equal
 
-export ColorRGB
+export ColorRGB, black, white
 
 struct ColorRGB
     r::Float64
@@ -15,6 +15,9 @@ struct ColorRGB
         new(r,g,b)
     end
 end
+
+const black = ColorRGB(0., 0., 0.)
+const white = ColorRGB(1., 1., 1.)
 
 for op in (:+, :*, :-)
     @eval begin
@@ -58,7 +61,7 @@ end
 function float_equal(c1::ColorRGB, c2::ColorRGB)
     return float_equal(c1.r, c2.r) &&
            float_equal(c1.g, c2.g) &&
-           float_equal(c1.b, c2.b) 
+           float_equal(c1.b, c2.b)
 end
 
 end

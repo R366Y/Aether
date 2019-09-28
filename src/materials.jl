@@ -2,7 +2,8 @@ module Materials
 
 export Material, default_material, compare_materials
 
-using Aether.ColorsModule
+import Aether.ColorsModule: ColorRGB
+import Aether.Patterns: Pattern
 import Base: ==
 
 mutable struct Material
@@ -11,6 +12,12 @@ mutable struct Material
     diffuse::Float64
     specular::Float64
     shininess::Float64
+    pattern::Union{Nothing,Pattern}
+
+    function Material(color::ColorRGB, ambient::Float64, diffuse::Float64,
+                      specular::Float64, shininess::Float64)
+        new(color, ambient, diffuse, specular, shininess, nothing)
+    end
 end
 
 @inline ==(m1::Material, m2::Material) = compare_materials(m1, m2)

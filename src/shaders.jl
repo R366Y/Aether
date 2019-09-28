@@ -7,19 +7,18 @@ using Aether.Materials
 using Aether.Lights
 using Aether.HomogeneousCoordinates
 using Aether.Rays
+import Aether.Patterns: stripe_at
 
 using LinearAlgebra
 
-function lighting(
-    material::Material,
-    light::PointLight,
-    point::Vec3D,
-    eyev::Vec3D,
-    normalv::Vec3D,
-    in_shadow::Bool
-)
+function lighting(material::Material, light::PointLight, point::Vec3D,
+                  eyev::Vec3D, normalv::Vec3D, in_shadow::Bool)
+color = material.color
+if material.pattern != nothing
+    color = stripe_at(material.pattern, point)
+end
 # combine the surface color with the light's color/intensity
-effective_color = material.color * light.intensity
+effective_color = color * light.intensity
 # find the direction to the light source
 lightv = normalize(light.position - point)
 # compute the ambient contribution

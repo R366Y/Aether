@@ -16,6 +16,7 @@ end
 include("homogeneous_coordinates.jl")
 include("matrix_transformations.jl")
 include("colors.jl")
+include("patterns.jl")
 include("canvas.jl")
 include("lights.jl")
 include("materials.jl")

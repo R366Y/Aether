@@ -2,6 +2,7 @@ using Aether.ColorsModule
 using Aether.HomogeneousCoordinates
 using Aether.Lights
 using Aether.Materials
+using Aether.Patterns
 using Aether.Shaders
 using Aether.Spheres
 
@@ -78,5 +79,20 @@ using Test
         in_shadow = true
         result = lighting(m, light, position, eyev, normalv, in_shadow)
         @test float_equal(result, ColorRGB(0.1, 0.1, 0.1))
+    end
+
+    @testset "Lighting with a pattern applied" begin
+        m = default_material()
+        m.pattern = stripe_pattern(white, black)
+        m.ambient = 1.
+        m.diffuse = 0.
+        m.specular = 0.
+        eyev = vector3D(0., 0., -1.)
+        normalv = vector3D(0., 0., -1.)
+        light = PointLight(point3D(0., 0., -10.), white)
+        c1 = lighting(m, light, point3D(0.9, 0., 0.), eyev, normalv, false)
+        c2 = lighting(m, light, point3D(1.1, 0., 0.), eyev, normalv, false)
+        @test float_equal(c1, white)
+        @test float_equal(c2, black)
     end
 end
