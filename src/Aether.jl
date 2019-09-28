@@ -20,15 +20,17 @@ include("canvas.jl")
 include("lights.jl")
 include("materials.jl")
 include("rays.jl")
+
 include("base_geometric_type.jl")
+include("intersections.jl")
+include("computations.jl")
 
 include("camera.jl")
 include("shaders.jl")
 
-include("intersections.jl")
 include("shapes.jl")
+include("planes.jl")
 include("spheres.jl")
-include("computations.jl")
 
 include("world.jl")
 
