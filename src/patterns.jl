@@ -1,7 +1,8 @@
 module Patterns
 
-export Pattern, StripePattern, TestPattern, stripe_pattern, pattern_at,
-       pattern_at_shape, set_pattern_transform
+export Pattern, StripePattern, TestPattern, GradientPattern, RingPattern,
+       CheckerPattern, stripe_pattern, pattern_at, pattern_at_shape,
+       set_pattern_transform
 
 import Aether.BaseGeometricType: GeometricObject
 import Aether.ColorsModule: ColorRGB, black, white
@@ -46,6 +47,58 @@ function pattern_at(pattern::StripePattern, point::Vec3D)
     return pattern.b
 end
 
+mutable struct GradientPattern <: Pattern
+    a::ColorRGB
+    b::ColorRGB
+    transform::Matrix4x4
+    inverse::Matrix4x4
+
+    function GradientPattern(a::ColorRGB, b::ColorRGB)
+        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+    end
+end
+
+function pattern_at(gradient::GradientPattern, point::Vec3D)
+    distance = gradient.b - gradient.a
+    fraction = point.x - floor(point.x)
+    return gradient.a + distance * fraction
+end
+
+mutable struct RingPattern <: Pattern
+    a::ColorRGB
+    b::ColorRGB
+    transform::Matrix4x4
+    inverse::Matrix4x4
+
+    function RingPattern(a::ColorRGB, b::ColorRGB)
+        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+    end
+end
+
+function pattern_at(ring::RingPattern, point::Vec3D)
+    if mod(floor(√(point.x^2 + point.z^2)), 2) == 0
+        return ring.a
+    end
+    return ring.b
+end
+
+mutable struct CheckerPattern <: Pattern
+    a::ColorRGB
+    b::ColorRGB
+    transform::Matrix4x4
+    inverse::Matrix4x4
+
+    function CheckerPattern(a::ColorRGB, b::ColorRGB)
+        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+    end
+end
+
+function pattern_at(checker::CheckerPattern, point::Vec3D)
+    if mod(floor(point.x) + floor(point.y) + floor(point.z), 2) == 0
+        return checker.a
+    end
+    return checker.b
+end
 
 mutable struct TestPattern <: Pattern
     a::Union{Nothing,ColorRGB}
