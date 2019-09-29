@@ -77,7 +77,7 @@ function is_shadowed(world::World, point::Vec3D)
 end
 
 function shade_hit(world::World, comps::Computations)
-    return lighting(comps.object.material, world.light,
+    return lighting(comps.object.material,comps.object, world.light,
                     comps.over_point, comps.eyev, comps.normalv,
                     is_shadowed(world, comps.over_point))
 end

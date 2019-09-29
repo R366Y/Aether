@@ -1,5 +1,7 @@
 module Planes
 
+export Plane
+
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, local_intersect,
                                  local_normal_at

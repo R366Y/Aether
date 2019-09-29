@@ -5,6 +5,7 @@ using Aether.HomogeneousCoordinates
 using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
+using Aether.Patterns
 using Aether.Planes
 using Aether.Spheres
 using Aether.WorldModule
@@ -13,7 +14,9 @@ import Aether.BaseGeometricType: set_transform
 
 function draw_world()
     the_floor = Plane()
+    the_floor.material.pattern = stripe_pattern(white, black)
     wall = Plane()
+    wall.material.pattern = stripe_pattern(white, black)
     set_transform(wall, translation(0., 0., 5.) * rotation_x(π/2))
 
     middle = default_sphere()

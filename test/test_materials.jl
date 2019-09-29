@@ -26,7 +26,8 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv, false)
+        result = lighting(m, default_sphere(), light, position, eyev,
+                          normalv, false)
         @test isapprox(result, ColorRGB(1.9, 1.9, 1.9), rtol = ϵ)
     end
 
@@ -36,7 +37,8 @@ using Test
         eyev = vector3D(0., √2 / 2, -√2 / 2)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv, false)
+        result = lighting(m, default_sphere(), light, position, eyev,
+                          normalv, false)
         @test isapprox(result, ColorRGB(1., 1., 1.), rtol = ϵ)
     end
 
@@ -46,7 +48,8 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv, false)
+        result = lighting(m, default_sphere(), light, position, eyev,
+                          normalv, false)
         @test isapprox(result, ColorRGB(0.7364, 0.7364, 0.7364), rtol = ϵ)
     end
 
@@ -56,7 +59,8 @@ using Test
         eyev = vector3D(0., -√2 / 2, -√2 / 2)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv, false)
+        result = lighting(m, default_sphere(), light, position, eyev,
+                          normalv, false)
         @test isapprox(result, ColorRGB(1.6364, 1.6364, 1.6364), rtol = ϵ)
     end
 
@@ -66,7 +70,8 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., 10.), ColorRGB(1., 1., 1.))
-        result = lighting(m, light, position, eyev, normalv, false)
+        result = lighting(m, default_sphere(), light, position, eyev,
+                          normalv, false)
         @test isapprox(result, ColorRGB(0.1, 0.1, 0.1), rtol = ϵ)
     end
 
@@ -77,11 +82,13 @@ using Test
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
         in_shadow = true
-        result = lighting(m, light, position, eyev, normalv, in_shadow)
+        result = lighting(m, default_sphere(), light,
+                 position, eyev, normalv, in_shadow)
         @test float_equal(result, ColorRGB(0.1, 0.1, 0.1))
     end
 
     @testset "Lighting with a pattern applied" begin
+        s = default_sphere()
         m = default_material()
         m.pattern = stripe_pattern(white, black)
         m.ambient = 1.
@@ -90,8 +97,8 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), white)
-        c1 = lighting(m, light, point3D(0.9, 0., 0.), eyev, normalv, false)
-        c2 = lighting(m, light, point3D(1.1, 0., 0.), eyev, normalv, false)
+        c1 = lighting(m, s, light, point3D(0.9, 0., 0.), eyev, normalv, false)
+        c2 = lighting(m, s, light, point3D(1.1, 0., 0.), eyev, normalv, false)
         @test float_equal(c1, white)
         @test float_equal(c2, black)
     end

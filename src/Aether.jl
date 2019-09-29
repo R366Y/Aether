@@ -15,14 +15,14 @@ end
 
 include("homogeneous_coordinates.jl")
 include("matrix_transformations.jl")
+include("rays.jl")
+include("base_geometric_type.jl")
 include("colors.jl")
-include("patterns.jl")
 include("canvas.jl")
 include("lights.jl")
+include("patterns.jl")
 include("materials.jl")
-include("rays.jl")
 
-include("base_geometric_type.jl")
 include("intersections.jl")
 include("computations.jl")
 

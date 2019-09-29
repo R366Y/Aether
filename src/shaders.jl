@@ -7,15 +7,17 @@ using Aether.Materials
 using Aether.Lights
 using Aether.HomogeneousCoordinates
 using Aether.Rays
-import Aether.Patterns: stripe_at
+import Aether.Patterns: pattern_at_shape
+import Aether.BaseGeometricType: GeometricObject
 
 using LinearAlgebra
 
-function lighting(material::Material, light::PointLight, point::Vec3D,
+function lighting(material::Material, object::GeometricObject ,
+                  light::PointLight, point::Vec3D,
                   eyev::Vec3D, normalv::Vec3D, in_shadow::Bool)
 color = material.color
 if material.pattern != nothing
-    color = stripe_at(material.pattern, point)
+    color = pattern_at_shape(material.pattern, object, point)
 end
 # combine the surface color with the light's color/intensity
 effective_color = color * light.intensity

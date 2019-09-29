@@ -24,7 +24,7 @@ function local_intersect(shape::T, ray::Ray) where T <:GeometricObject
 end
 
 function normal_at(shape::T, point::Vec3D) where T <:GeometricObject
-    local_point = inv(shape.transform) * point
+    local_point = shape.inverse * point
     local_normal = local_normal_at(shape, local_point)
     world_normal = transpose(shape.inverse) * local_normal
     world_normal.w = 0.

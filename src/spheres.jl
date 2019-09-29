@@ -37,7 +37,6 @@ function default_sphere()
 end
 
 function local_intersect(s::Sphere, r::Ray)
-    #r = transform(r, s.inverse)
     sphere_to_ray = r.origin - s.center
     a = dot(r.direction, r.direction)
     b = 2. * dot(r.direction, sphere_to_ray)
@@ -52,14 +51,6 @@ function local_intersect(s::Sphere, r::Ray)
     end
     return result
 end
-
-# function normal_at(sphere::Sphere, world_point::Vec3D)
-#     object_point = sphere.inverse * world_point
-#     object_normal = object_point - sphere.center
-#     world_normal = transpose(sphere.inverse) * object_normal
-#     world_normal.w = 0.
-#     return normalize(world_normal)
-# end
 
 function local_normal_at(sphere::Sphere, local_point::Vec3D)
     return local_point - sphere.center
