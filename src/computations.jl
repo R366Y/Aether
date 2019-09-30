@@ -2,10 +2,9 @@ module ComputationsModule
 
 export Computations, prepare_computations
 
-using Aether.HomogeneousCoordinates
-using Aether.Intersections
-using Aether.Rays
-using LinearAlgebra
+import Aether.HomogeneousCoordinates: dot, Vec3D
+import Aether.Intersections: Intersection
+import Aether.Rays: Ray, positionr, reflect
 
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, normal_at
@@ -18,6 +17,7 @@ mutable struct Computations{O<:GeometricObject}
     normalv::Vec3D{Float64}
     inside::Bool
     over_point::Vec3D{Float64}
+    reflectv::Vec3D{Float64}
 
     Computations() = new{GeometricObject}()
 end
@@ -39,6 +39,7 @@ function prepare_computations(intersection::Intersection, ray::Ray)
         comps.normalv = -comps.normalv
     end
     comps.over_point = comps.point + comps.normalv * ϵ
+    comps.reflectv = reflect(ray.direction, comps.normalv)
     return comps
 end
 

@@ -34,6 +34,7 @@ mutable struct Camera
     end
 end
 
+# TODO: add inverse property to Camera and save inv(transform)
 function ray_for_pixel(camera::Camera, px::Int64, py::Int64)
     # the offset from the edge of the canvas to the pixel's center
     xoffset = (px + 0.5) * camera.pixel_size

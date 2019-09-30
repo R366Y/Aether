@@ -2,6 +2,7 @@ using Test
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
+using Aether.Planes
 using Aether.Spheres
 using Aether.Rays
 
@@ -93,5 +94,13 @@ end
         @test comps.eyev == vector3D(0., 0., -1.)
         # normal is inverted becaus it is inside hit
         @test comps.normalv == vector3D(0., 0., -1.)
+    end
+
+    @testset "Precomputing the reflection vector" begin
+        shape = Plane()
+        r = Ray(point3D(0., 1., -1.), vector3D(0., -√2/2, √2/2))
+        i = Intersection(√2, shape)
+        comps = prepare_computations(i, r)
+        @test float_equal(comps.reflectv, vector3D(0., √2/2, √2/2)) 
     end
 end

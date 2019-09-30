@@ -1,7 +1,7 @@
 module  WorldModule
 
 export World, default_world, add_objects, intersect_world,
-       color_at, shade_hit, render, is_shadowed
+       color_at, shade_hit, render, is_shadowed, reflected_color
 
 using Aether.CameraModule
 using Aether.CanvasModule
@@ -76,19 +76,32 @@ function is_shadowed(world::World, point::Vec3D)
     return false
 end
 
-function shade_hit(world::World, comps::Computations)
-    return lighting(comps.object.material,comps.object, world.light,
-                    comps.over_point, comps.eyev, comps.normalv,
-                    is_shadowed(world, comps.over_point))
+function reflected_color(world::World, comps::Computations, remaining::Int64)
+    if comps.object.material.reflective == 0. || remaining <= 0
+        return black
+    end
+
+    reflect_ray = Ray(comps.over_point, comps.reflectv)
+    color = color_at(world, reflect_ray, remaining - 1)
+    return color * comps.object.material.reflective
 end
 
-function color_at(world::World, ray::Ray)
+function shade_hit(world::World, comps::Computations, remaining::Int64)
+    shadowed = is_shadowed(world, comps.over_point)
+    surface = lighting(comps.object.material,comps.object, world.light,
+                    comps.over_point, comps.eyev, comps.normalv,
+                    shadowed)
+    reflected = reflected_color(world, comps, remaining)
+    return surface + reflected
+end
+
+function color_at(world::World, ray::Ray, remaining::Int64)
     intersections = intersect_world(world, ray)
     i = hit(intersections)
     color = ColorRGB(0., 0., 0.)
     if i != nothing
         comps = prepare_computations(i, ray)
-        color = shade_hit(world, comps)
+        color = shade_hit(world, comps, remaining)
     end
     return color
 end
@@ -99,7 +112,7 @@ function render(camera::Camera, world::World)
     for y in 1:camera.vsize
         for x in 1:camera.hsize
             ray = ray_for_pixel(camera, x, y)
-            color = color_at(world, ray)
+            color = color_at(world, ray, 5)
             write_pixel!(image, x, y, color)
         end
     end
