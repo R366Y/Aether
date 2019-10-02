@@ -100,7 +100,7 @@ function color_at(world::World, ray::Ray, remaining::Int64)
     i = hit(intersections)
     color = ColorRGB(0., 0., 0.)
     if i != nothing
-        comps = prepare_computations(i, ray)
+        comps = prepare_computations(i, ray, intersections)
         color = shade_hit(world, comps, remaining)
     end
     return color

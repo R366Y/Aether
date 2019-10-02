@@ -107,4 +107,10 @@ using Test
         m = default_material()
         @test m.reflective == 0.
     end
+
+    @testset "Transparency and Refractive Index fro the default material" begin
+        m = default_material()
+        @test m.transparency == 0.
+        @test m.refractive_index == 1.0
+    end
 end

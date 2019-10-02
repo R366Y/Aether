@@ -17,12 +17,16 @@ mutable struct Computations{O<:GeometricObject}
     normalv::Vec3D{Float64}
     inside::Bool
     over_point::Vec3D{Float64}
+    under_point::Vec3D{Float64}
     reflectv::Vec3D{Float64}
+    n1::Float64
+    n2::Float64
 
     Computations() = new{GeometricObject}()
 end
 
-function prepare_computations(intersection::Intersection, ray::Ray)
+function prepare_computations(intersection::Intersection, ray::Ray,
+                              xs::Array{Intersection} = Intersection[])
     comps = Computations()
     comps.t = intersection.t
     comps.object = intersection.object
@@ -39,7 +43,35 @@ function prepare_computations(intersection::Intersection, ray::Ray)
         comps.normalv = -comps.normalv
     end
     comps.over_point = comps.point + comps.normalv * ϵ
+    comps.under_point = comps.point - comps.normalv * ϵ
     comps.reflectv = reflect(ray.direction, comps.normalv)
+
+    # compute n1 and n2 refractive_index where n1 is material being exited
+    # n2 the material being entered
+    containers = GeometricObject[]
+    for i in xs
+        if i == intersection
+            if length(containers) == 0
+                comps.n1 = 1.
+            else
+                comps.n1 = containers[end].material.refractive_index
+            end
+        end
+
+        if i.object in containers
+            filter!(x -> x!=i.object, containers)
+        else
+            push!(containers, i.object)
+        end
+
+        if i == intersection
+            if length(containers) == 0
+                comps.n2 = 1.
+            else
+                comps.n2 = containers[end].material.refractive_index
+            end
+        end
+    end
     return comps
 end
 

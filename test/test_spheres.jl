@@ -119,4 +119,11 @@ end
         n = normal_at(s, point3D(0., √2 / 2, -√2 / 2))
         @test float_equal(n, vector3D(0., 0.97014, -0.24254))
     end
+
+    @testset "A helper for producing a sphere with a glassy material" begin
+        s = glass_sphere()
+        @test s.transform == identity_matrix(Float64)
+        @test s.material.transparency == 1.
+        @test s.material.refractive_index == 1.5
+    end
 end

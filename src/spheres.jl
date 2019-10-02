@@ -1,19 +1,16 @@
 module Spheres
 
-export Sphere, default_sphere
+export Sphere, default_sphere, glass_sphere
 
-using Aether.HomogeneousCoordinates
-using Aether.Intersections
-using Aether.Materials
-using Aether.MatrixTransformations
-using Aether.Rays
-
-using LinearAlgebra
-using StaticArrays
+import Base: ==
 import Aether: float_equal, ϵ
 import Aether.BaseGeometricType: GeometricObject, set_transform,
                                  local_intersect, local_normal_at
-import Base: ==
+import Aether.HomogeneousCoordinates: Vec3D, point3D, dot
+import Aether.Intersections: Intersection
+import Aether.Materials: Material, default_material
+import Aether.MatrixTransformations: Matrix4x4, identity_matrix
+import Aether.Rays: Ray
 
 mutable struct Sphere <: GeometricObject
     center::Vec3D{Float64}
@@ -34,6 +31,13 @@ end
 
 function default_sphere()
     return Sphere(point3D(0., 0., 0.), 1.)
+end
+
+function glass_sphere()
+    s = default_sphere()
+    s.material.transparency = 1.
+    s.material.refractive_index = 1.5
+    return s
 end
 
 function local_intersect(s::Sphere, r::Ray)
