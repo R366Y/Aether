@@ -5,6 +5,7 @@ using Aether.HomogeneousCoordinates
 using Aether.Intersections
 using Aether.Lights
 using Aether.Planes
+using Aether.Patterns
 using Aether.Spheres
 using Aether.WorldModule
 using Aether.Rays
@@ -187,5 +188,76 @@ import Aether.BaseGeometricType: set_transform
         comps = prepare_computations(i, r)
         color = reflected_color(w, comps, 0)
         @test float_equal(color, black)
+    end
+
+    @testset "The refracted color with an opaque surface" begin
+        w = default_world()
+        shape = w.objects[1]
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+        xs = Intersection[Intersection(4., shape), Intersection(6., shape)]
+        comps = prepare_computations(xs[1], r, xs)
+        c = refracted_color(w, comps, 5)
+        @test c == black
+    end
+
+    @testset "The refracted color at the maximum recursive depth" begin
+        w = default_world()
+        shape = w.objects[1]
+        shape.material.transparency = 1.
+        shape.material.refractive_index = 1.5
+        r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+        xs = Intersection[Intersection(4., shape), Intersection(6., shape)]
+        comps = prepare_computations(xs[1], r, xs)
+        c = refracted_color(w, comps, 0)
+        @test c == black
+    end
+
+    @testset "The refracted color under total internal reflection" begin
+        w = default_world()
+        shape = w.objects[1]
+        shape.material.transparency = 1.
+        shape.material.refractive_index = 1.5
+        r = Ray(point3D(0., 0., √2/2), vector3D(0., 1., 0.))
+        xs = Intersection[Intersection(-√2/2, shape), Intersection(√2/2, shape)]
+        # we are inside the sphere, so we need to look at the second
+        # intersection xs[2]
+        comps = prepare_computations(xs[2], r, xs)
+        c = refracted_color(w, comps, 5)
+        @test c == black
+    end
+
+    @testset "The refracted color with a refracted ray" begin
+        w = default_world()
+        a = w.objects[1]
+        a.material.ambient = 1.
+        a.material.pattern = TestPattern()
+        b = w.objects[2]
+        b.material.transparency = 1.
+        b.material.refractive_index = 1.5
+        r = Ray(point3D(0., 0., 0.1), vector3D(0., 1., 0.))
+        xs = Intersection[Intersection(-0.9899, a), Intersection(-0.4899, b),
+                          Intersection(0.4899,b), Intersection(0.9899,a)]
+        comps = prepare_computations(xs[3], r, xs)
+        c = refracted_color(w, comps, 5)
+        @test float_equal(c, ColorRGB(0., 0.99887, 0.04721))
+    end
+
+    @testset "shade_hit() with a transparent material" begin
+        w = default_world()
+        floor = Plane()
+        set_transform(floor, translation(0., -1., 0.))
+        floor.material.transparency = 0.5
+        floor.material.refractive_index = 1.5
+        add_objects(w, floor)
+        ball = default_sphere()
+        ball.material.color = ColorRGB(1., 0., 0.)
+        ball.material.ambient = 0.5
+        set_transform(ball, translation(0., -3.5, -0.5))
+        add_objects(w, ball)
+        r = Ray(point3D(0., 0., -3.), vector3D(0., -√2/2, √2/2))
+        xs = Intersection[Intersection(√2, floor)]
+        comps = prepare_computations(xs[1], r, xs)
+        color = shade_hit(w, comps, 5)
+        @test float_equal(color, ColorRGB(0.93642, 0.68642, 0.68642))
     end
 end

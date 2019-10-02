@@ -1,7 +1,8 @@
 module  WorldModule
 
 export World, default_world, add_objects, intersect_world,
-       color_at, shade_hit, render, is_shadowed, reflected_color
+       color_at, shade_hit, render, is_shadowed, reflected_color,
+       refracted_color
 
 using Aether.CameraModule
 using Aether.CanvasModule
@@ -86,13 +87,42 @@ function reflected_color(world::World, comps::Computations, remaining::Int64)
     return color * comps.object.material.reflective
 end
 
+function refracted_color(world::World, comps::Computations, remaining::Int64)
+    if comps.object.material.transparency == 0. || remaining == 0
+        return black
+    end
+    # Find the ratio of the first index of the refraction to the second
+    # Inverted definition of the Snell's Law
+    n_ratio = comps.n1 / comps.n2
+    cos_i = dot(comps.eyev, comps.normalv)
+    # Find sin(θ)^2 via trigonometri identity
+    sin2_t = n_ratio^2 * (1- cos_i^2)
+    if sin2_t > 1.
+        return black
+    end
+
+    # Find cos(θt) via trigonometric identity
+    cos_t = √(1 - sin2_t)
+    # Compute the direction of the refracted ray
+    direction = comps.normalv * (n_ratio * cos_i - cos_t) - comps.eyev * n_ratio
+    # Create the refracted ray
+    refracted_ray = Ray(comps.under_point, direction)
+
+    # Find the color of the refracted ray, making sure to multiply
+    # by the transparency value to account for any opacity
+    color = color_at(world, refracted_ray, remaining - 1) *
+            comps.object.material.transparency
+    return color
+end
+
 function shade_hit(world::World, comps::Computations, remaining::Int64)
     shadowed = is_shadowed(world, comps.over_point)
     surface = lighting(comps.object.material,comps.object, world.light,
                     comps.over_point, comps.eyev, comps.normalv,
                     shadowed)
     reflected = reflected_color(world, comps, remaining)
-    return surface + reflected
+    refracted = refracted_color(world, comps, remaining)
+    return surface + reflected + refracted
 end
 
 function color_at(world::World, ray::Ray, remaining::Int64)
