@@ -26,7 +26,7 @@ function draw_world()
     set_transform(middle, translation(-0.5, 1., 0.5))
     middle.material = default_material()
     middle.material.color = ColorRGB(0.8, 0.1, 0.5)
-    middle.material.diffuse = 0.7
+    middle.material.diffuse = 0.2
     middle.material.specular = 0.3
     middle.material.reflective = 0.4
 
@@ -34,7 +34,7 @@ function draw_world()
     set_transform(right, translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5))
     right.material = default_material()
     right.material.color = ColorRGB(0.5, 1., 0.1)
-    right.material.diffuse = 0.7
+    right.material.diffuse = 0.2
     right.material.specular = 0.3
     right.material.reflective = 0.4
 
