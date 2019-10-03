@@ -71,7 +71,7 @@ end
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         shape = default_sphere()
         i = Intersection(4., shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r, Intersection[])
         @test comps.t == i.t
         @test comps.object == shape
         @test comps.point == point3D(0., 0., -1.)
@@ -83,7 +83,7 @@ end
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         shape = default_sphere()
         i = Intersection(4., shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         @test !comps.inside
     end
 
@@ -91,7 +91,7 @@ end
         r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
         shape = default_sphere()
         i = Intersection(1., shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         @test comps.inside
         @test comps.point == point3D(0., 0., 1.)
         @test comps.eyev == vector3D(0., 0., -1.)
@@ -103,7 +103,7 @@ end
         shape = Plane()
         r = Ray(point3D(0., 1., -1.), vector3D(0., -√2/2, √2/2))
         i = Intersection(√2, shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         @test float_equal(comps.reflectv, vector3D(0., √2/2, √2/2))
     end
 

@@ -45,7 +45,7 @@ import Aether.BaseGeometricType: set_transform
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         shape = w.objects[1]
         i = Intersection{Sphere}(4., shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
         @test isapprox(c, ColorRGB(0.38066, 0.47583, 0.2855), rtol=1.0e-4)
     end
@@ -56,7 +56,7 @@ import Aether.BaseGeometricType: set_transform
         r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
         shape = w.objects[2]
         i = Intersection{Sphere}(0.5, shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
         @test isapprox(c, ColorRGB(0.90498, 0.90498, 0.90498), rtol=ϵ)
     end
@@ -120,7 +120,7 @@ import Aether.BaseGeometricType: set_transform
         add_objects(w, s2)
         r = Ray(point3D(0., 0., 5.), vector3D(0., 0., 1.))
         i = Intersection(4., s2)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
         @test float_equal(c, ColorRGB(0.1, 0.1, 0.1))
     end
@@ -131,7 +131,7 @@ import Aether.BaseGeometricType: set_transform
         shape = w.objects[2]
         shape.material.ambient = 1.
         i = Intersection(1., shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         color = reflected_color(w, comps, 0)
         @test float_equal(color, black)
     end
@@ -144,7 +144,7 @@ import Aether.BaseGeometricType: set_transform
         add_objects(w, shape)
         r = Ray(point3D(0., 0., -3.), vector3D(0., -√2/2, √2/2))
         i = Intersection(√2, shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         color = reflected_color(w, comps, 1)
         @test float_equal(color, ColorRGB(0.19033, 0.23791, 0.14274))
     end
@@ -157,7 +157,7 @@ import Aether.BaseGeometricType: set_transform
         add_objects(w, shape)
         r = Ray(point3D(0., 0., -3.), vector3D(0., -√2/2, √2/2))
         i = Intersection(√2, shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         color = shade_hit(w, comps, 1)
         @test float_equal(color, ColorRGB(0.87675, 0.92434, 0.82917))
     end
@@ -185,7 +185,7 @@ import Aether.BaseGeometricType: set_transform
         add_objects(w, shape)
         r = Ray(point3D(0., 0., -3.), vector3D(0., -√2/2, √2/2))
         i = Intersection(√2, shape)
-        comps = prepare_computations(i, r)
+        comps = prepare_computations(i, r,  Intersection[])
         color = reflected_color(w, comps, 0)
         @test float_equal(color, black)
     end
@@ -259,5 +259,52 @@ import Aether.BaseGeometricType: set_transform
         comps = prepare_computations(xs[1], r, xs)
         color = shade_hit(w, comps, 5)
         @test float_equal(color, ColorRGB(0.93642, 0.68642, 0.68642))
+    end
+
+    @testset "The Schlick approximation under total internal reflection" begin
+        shape = glass_sphere()
+        r = Ray(point3D(0., 0., √2/2), vector3D(0., 1., 0.))
+        xs = Intersection[Intersection(-√2/2, shape), Intersection(√2/2, shape)]
+        comps = prepare_computations(xs[2], r, xs)
+        reflectance = schlick(comps)
+        @test reflectance == 1.
+    end
+
+    @testset "The Schlick approximation with a perpendicular viewing angle" begin
+        shape = glass_sphere()
+        r = Ray(point3D(0., 0., 0.), vector3D(0., 1., 0.))
+        xs = Intersection[Intersection(-1., shape), Intersection(1., shape)]
+        comps = prepare_computations(xs[2], r, xs)
+        reflectance = schlick(comps)
+        @test float_equal(reflectance, 0.04)
+    end
+
+    @testset "The Schlick approximation with small angle and n2 > n1" begin
+        shape = glass_sphere()
+        r = Ray(point3D(0., 0.99, -2.), vector3D(0., 0., 1.))
+        xs = Intersection[Intersection(1.8589, shape)]
+        comps = prepare_computations(xs[1], r, xs)
+        reflectance = schlick(comps)
+        @test float_equal(reflectance, 0.48873)
+    end
+
+    @testset "shade_hit() with a reflective, transparent material" begin
+        w = default_world()
+        r = Ray(point3D(0., 0., -3.), vector3D(0., -√2/2, √2/2))
+        floor = Plane()
+        set_transform(floor, translation(0., -1., 0.))
+        floor.material.reflective = 0.5
+        floor.material.transparency = 0.5
+        floor.material.refractive_index = 1.5
+        add_objects(w, floor)
+        ball = default_sphere()
+        ball.material.color = ColorRGB(1., 0., 0.)
+        ball.material.ambient = 0.5
+        set_transform(ball, translation(0., -3.5, -0.5))
+        add_objects(w, ball)
+        xs = Intersection[Intersection(√2, floor)]
+        comps = prepare_computations(xs[1], r, xs)
+        color = shade_hit(w, comps, 5)
+        @test float_equal(color, ColorRGB(0.93391, 0.69643, 0.69243))
     end
 end

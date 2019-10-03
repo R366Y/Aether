@@ -26,7 +26,7 @@ mutable struct Computations{O<:GeometricObject}
 end
 
 function prepare_computations(intersection::Intersection, ray::Ray,
-                              xs::Array{Intersection} = Intersection[])
+                              xs::Array{Intersection})
     comps = Computations()
     comps.t = intersection.t
     comps.object = intersection.object

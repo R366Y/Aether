@@ -2,7 +2,7 @@ module  WorldModule
 
 export World, default_world, add_objects, intersect_world,
        color_at, shade_hit, render, is_shadowed, reflected_color,
-       refracted_color
+       refracted_color, schlick
 
 using Aether.CameraModule
 using Aether.CanvasModule
@@ -46,6 +46,47 @@ end
 
 function add_objects(world::World, objs...)
     push!(world.objects, objs...)
+end
+
+function render(camera::Camera, world::World)
+    image = empty_canvas(camera.hsize, camera.vsize)
+
+    for y in 1:camera.vsize
+        for x in 1:camera.hsize
+            ray = ray_for_pixel(camera, x, y)
+            color = color_at(world, ray, 5)
+            write_pixel!(image, x, y, color)
+        end
+    end
+    return image
+end
+
+function color_at(world::World, ray::Ray, remaining::Int64)
+    intersections = intersect_world(world, ray)
+    i = hit(intersections)
+    color = ColorRGB(0., 0., 0.)
+    if i != nothing
+        comps = prepare_computations(i, ray, intersections)
+        color = shade_hit(world, comps, remaining)
+    end
+    return color
+end
+
+function shade_hit(world::World, comps::Computations, remaining::Int64)
+    shadowed = is_shadowed(world, comps.over_point)
+    surface = lighting(comps.object.material,comps.object, world.light,
+    comps.over_point, comps.eyev, comps.normalv,
+    shadowed)
+    reflected = reflected_color(world, comps, remaining)
+    refracted = refracted_color(world, comps, remaining)
+
+    material = comps.object.material
+    if material.reflective > 0. && material.transparency > 0.
+        reflectance = schlick(comps)
+        return surface + reflected * reflectance + refracted * (1 - reflectance)
+    end
+    
+    return surface + reflected + refracted
 end
 
 function intersect_world(world::World, ray::Ray)
@@ -115,37 +156,24 @@ function refracted_color(world::World, comps::Computations, remaining::Int64)
     return color
 end
 
-function shade_hit(world::World, comps::Computations, remaining::Int64)
-    shadowed = is_shadowed(world, comps.over_point)
-    surface = lighting(comps.object.material,comps.object, world.light,
-                    comps.over_point, comps.eyev, comps.normalv,
-                    shadowed)
-    reflected = reflected_color(world, comps, remaining)
-    refracted = refracted_color(world, comps, remaining)
-    return surface + reflected + refracted
-end
+function schlick(comps::Computations)
+# Approximation of Fresnel Effect
 
-function color_at(world::World, ray::Ray, remaining::Int64)
-    intersections = intersect_world(world, ray)
-    i = hit(intersections)
-    color = ColorRGB(0., 0., 0.)
-    if i != nothing
-        comps = prepare_computations(i, ray, intersections)
-        color = shade_hit(world, comps, remaining)
+cosv = dot(comps.eyev, comps.normalv)
+# total internal reflection can only occur if n1 > n2
+if comps.n1 > comps.n2
+    n = comps.n1 / comps.n2
+    sin2_t = n^2 * (1. - cosv^2)
+    if sin2_t > 1.
+        return 1.
     end
-    return color
+    # compute cosine of theta_t using trigonometric identity
+    cos_t = √(1. - sin2_t)
+    # when n1 > n2, use cos(theta_t) instead
+    cosv = cos_t
+end
+r0 = ((comps.n1 - comps.n2) / (comps.n1 + comps.n2))^2
+return r0 + (1. - r0) * (1 - cosv)^5
 end
 
-function render(camera::Camera, world::World)
-    image = empty_canvas(camera.hsize, camera.vsize)
-
-    for y in 1:camera.vsize
-        for x in 1:camera.hsize
-            ray = ray_for_pixel(camera, x, y)
-            color = color_at(world, ray, 5)
-            write_pixel!(image, x, y, color)
-        end
-    end
-    return image
-end
 end  # module WorldModule
