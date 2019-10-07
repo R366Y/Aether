@@ -1,10 +1,10 @@
 module HomogeneousCoordinates
 
-export point3D, vector3D, Vec3D
+export point3D, vector3D, Vec3D, float_equal
 
 using StaticArrays
 import LinearAlgebra: norm, normalize, dot, cross
-import Base: +, -, *, /,==, isapprox, eps
+import Base: +, -, *, /,==
 import Aether: float_equal
 
 mutable struct Vec3D{T<:AbstractFloat}
@@ -26,11 +26,14 @@ end
                                         v1.y + v2.y,
                                         v1.z + v2.z,
                                         v1.w + v2.w)
+
 @inline -(v1::Vec3D, v2::Vec3D) = Vec3D(v1.x - v2.x,
                                         v1.y - v2.y,
                                         v1.z - v2.z,
                                         v1.w - v2.w)
+
 @inline -(v::Vec3D) = Vec3D(-v.x, -v.y, -v.z, -v.w)
+
 @inline *(v::Vec3D, k::T) where {T <: AbstractFloat} = Vec3D(v.x * k,
                                                              v.y * k,
                                                              v.z * k,
@@ -43,6 +46,7 @@ end
     w = m[4,1] * v.x + m[4,2] * v.y + m[4,3] * v.z + m[4,4] * v.w
     return Vec3D(x, y, z, w)
 end
+
 @inline /(v::Vec3D, k::T) where {T <: AbstractFloat} = Vec3D(v.x / k,
                                                              v.y / k,
                                                              v.z / k,
@@ -52,30 +56,21 @@ end
                                    v1.y == v2.y &&
                                    v1.z == v2.z &&
                                    v1.w == v2.w
+
 @inline dot(v1::Vec3D, v2::Vec3D) = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+
 @inline norm(v::Vec3D) = √(v.x^2 + v.y^2 + v.z^2 + v.w^2)
+
 @inline function normalize(v::Vec3D)
     n = norm(v)
     return Vec3D(v.x / n, v.y / n, v.z / n, v.w / n)
 end
+
 @inline function cross(v1::Vec3D, v2::Vec3D)
     return vector3D(v1.y * v2.z - v1.z * v2.y,
                  v1.z * v2.x - v1.x * v2.z,
                  v1.x * v2.y - v1.y * v2.x)
 end
-@inline isapprox(v1::Vec3D, v2::Vec3D; rtol=√eps()) =
-                                            isapprox(v1.x, v2.x, rtol=rtol) &&
-                                            isapprox(v1.y, v2.y, rtol=rtol) &&
-                                            isapprox(v1.z, v2.z, rtol=rtol) &&
-                                            isapprox(v1.w, v2.w, rtol=rtol)
-@inline isapprox(m::Array{T,1},
-                 v::Vec3D{T};
-                 rtol=√eps()) where T <: AbstractFloat  =
-                                             isapprox(m[1], v.x, rtol=rtol) &&
-                                             isapprox(m[2], v.y, rtol=rtol) &&
-                                             isapprox(m[3], v.z, rtol=rtol) &&
-                                             isapprox(m[4], v.w, rtol=rtol)
-
 
 function point3D(x::T, y::T, z::T) where T <: AbstractFloat
     return Vec3D(x, y, z, one(eltype(T)))

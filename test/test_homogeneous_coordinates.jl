@@ -3,6 +3,7 @@ using StaticArrays
 using LinearAlgebra
 
 using Aether.HomogeneousCoordinates
+
 @testset "Homogeneous Coordinates" begin
     @testset "coordinates" begin
         @test point3D(4.0, -4.0, 3.0) == Vec3D(4.0, -4.0, 3.0, 1.0)
@@ -49,12 +50,12 @@ using Aether.HomogeneousCoordinates
         @test norm(v) == 1
 
         v = vector3D(Float64[1, 2, 3])
-        @test norm(v) ≈ √(14)
+        @test float_equal(norm(v), √(14))
     end
 
     @testset "normalization" begin
         v = vector3D(Float64[1, 2, 3])
-        @test normalize(v) ≈ vector3D(1 / √14, 2 / √14, 3 / √14)
+        @test float_equal(normalize(v), vector3D(1 / √14, 2 / √14, 3 / √14))
 
         v = vector3D(Float64[1, 2, 3])
         normalized = normalize(v)

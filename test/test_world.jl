@@ -47,7 +47,7 @@ import Aether.BaseGeometricType: set_transform
         i = Intersection{Sphere}(4., shape)
         comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
-        @test isapprox(c, ColorRGB(0.38066, 0.47583, 0.2855), rtol=1.0e-4)
+        @test float_equal(c, ColorRGB(0.38066, 0.47583, 0.2855))
     end
 
     @testset "Shading an intersection from the inside" begin
@@ -58,7 +58,7 @@ import Aether.BaseGeometricType: set_transform
         i = Intersection{Sphere}(0.5, shape)
         comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
-        @test isapprox(c, ColorRGB(0.90498, 0.90498, 0.90498), rtol=ϵ)
+        @test float_equal(c, ColorRGB(0.90498, 0.90498, 0.90498))
     end
 
     @testset "The color when a ray misses" begin
@@ -72,7 +72,7 @@ import Aether.BaseGeometricType: set_transform
         w = default_world()
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         c = color_at(w, r, 0)
-        @test isapprox(c,ColorRGB(0.38066, 0.47583, 0.2855), rtol=1.0e-4)
+        @test float_equal(c,ColorRGB(0.38066, 0.47583, 0.2855))
     end
 
     @testset "The color when a ray hits" begin
@@ -83,7 +83,7 @@ import Aether.BaseGeometricType: set_transform
         inner.material.ambient = 1.
         r = Ray(point3D(0., 0., 0.75), vector3D(0., 0., -1.))
         c = color_at(w, r, 0)
-        @test isapprox(c,inner.material.color, rtol=1.0e-4)
+        @test float_equal(c,inner.material.color)
     end
 
     @testset "No shadow when nothing is collinear with point and light" begin

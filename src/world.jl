@@ -85,7 +85,7 @@ function shade_hit(world::World, comps::Computations, remaining::Int64)
         reflectance = schlick(comps)
         return surface + reflected * reflectance + refracted * (1 - reflectance)
     end
-    
+
     return surface + reflected + refracted
 end
 
@@ -157,23 +157,23 @@ function refracted_color(world::World, comps::Computations, remaining::Int64)
 end
 
 function schlick(comps::Computations)
-# Approximation of Fresnel Effect
+    # Approximation of Fresnel Effect
 
-cosv = dot(comps.eyev, comps.normalv)
-# total internal reflection can only occur if n1 > n2
-if comps.n1 > comps.n2
-    n = comps.n1 / comps.n2
-    sin2_t = n^2 * (1. - cosv^2)
-    if sin2_t > 1.
-        return 1.
+    cosv = dot(comps.eyev, comps.normalv)
+    # total internal reflection can only occur if n1 > n2
+    if comps.n1 > comps.n2
+        n = comps.n1 / comps.n2
+        sin2_t = n^2 * (1. - cosv^2)
+        if sin2_t > 1.
+            return 1.
+        end
+        # compute cosine of theta_t using trigonometric identity
+        cos_t = √(1. - sin2_t)
+        # when n1 > n2, use cos(theta_t) instead
+        cosv = cos_t
     end
-    # compute cosine of theta_t using trigonometric identity
-    cos_t = √(1. - sin2_t)
-    # when n1 > n2, use cos(theta_t) instead
-    cosv = cos_t
-end
-r0 = ((comps.n1 - comps.n2) / (comps.n1 + comps.n2))^2
-return r0 + (1. - r0) * (1 - cosv)^5
+    r0 = ((comps.n1 - comps.n2) / (comps.n1 + comps.n2))^2
+    return r0 + (1. - r0) * (1 - cosv)^5
 end
 
 end  # module WorldModule

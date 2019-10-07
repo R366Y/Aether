@@ -28,14 +28,14 @@ end
    @testset "Multiplyng by a translation matrix" begin
       transform = translation(5.0, -3.0, 2.0)
       p = point3D(Float64[-3, 4, 5])
-      @test transform * p ≈ point3D(Float64[2, 1, 7])
+      @test float_equal(transform * p, point3D(Float64[2, 1, 7]))
    end
 
    @testset "Multiplyng by the inverse of a translation matrix" begin
       transform = translation(5.0, -3.0, 2.0)
       inverse = inv(transform)
       p = point3D(Float64[-3, 4, 5])
-      @test inverse * p ≈ point3D(Float64[-8, 7, 3])
+      @test float_equal(inverse * p, point3D(Float64[-8, 7, 3]))
    end
 end
 
@@ -43,20 +43,20 @@ end
    @testset "scaling matrix applied to a point" begin
       transform = scaling(2., 3., 4.)
       p = point3D(-4., 6., 8.)
-      @test transform * p ≈ point3D(-8., 18., 32.)
+      @test float_equal(transform * p, point3D(-8., 18., 32.))
    end
 
    @testset "Multiplyng by the inverse of a scaling matrix" begin
       transform = scaling(2., 3., 4.)
       v = vector3D(-4., 6., 8.)
       inverse = inv(transform)
-      @test inverse * v ≈ vector3D(-2., 2., 2.)
+      @test float_equal(inverse * v, vector3D(-2., 2., 2.))
    end
 
    @testset "reflection is scaling by a negative value" begin
       transform = scaling(-1., 1., 1.)
       p = point3D(2., 3., 4.)
-      @test transform * p ≈ point3D(-2., 3., 4.)
+      @test float_equal(transform * p, point3D(-2., 3., 4.))
    end
 end
 

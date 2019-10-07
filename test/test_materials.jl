@@ -28,7 +28,7 @@ using Test
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
                           normalv, false)
-        @test isapprox(result, ColorRGB(1.9, 1.9, 1.9), rtol = ϵ)
+        @test float_equal(result, ColorRGB(1.9, 1.9, 1.9))
     end
 
     @testset "Lighting with the eye between the light and the surface, eye offset 45°" begin
@@ -39,7 +39,7 @@ using Test
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
                           normalv, false)
-        @test isapprox(result, ColorRGB(1., 1., 1.), rtol = ϵ)
+        @test float_equal(result, ColorRGB(1., 1., 1.))
     end
 
     @testset "Lighting with the eye opposite the surface, light offset 45°" begin
@@ -50,7 +50,7 @@ using Test
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
                           normalv, false)
-        @test isapprox(result, ColorRGB(0.7364, 0.7364, 0.7364), rtol = ϵ)
+        @test float_equal(result, ColorRGB(0.7364, 0.7364, 0.7364))
     end
 
     @testset "Lighting with the eye in the path of the reflection vector" begin
@@ -61,7 +61,7 @@ using Test
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
                           normalv, false)
-        @test isapprox(result, ColorRGB(1.6364, 1.6364, 1.6364), rtol = ϵ)
+        @test float_equal(result, ColorRGB(1.6364, 1.6364, 1.6364))
     end
 
     @testset "Lighting with the light behind the surface" begin
@@ -72,7 +72,7 @@ using Test
         light = PointLight(point3D(0., 0., 10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
                           normalv, false)
-        @test isapprox(result, ColorRGB(0.1, 0.1, 0.1), rtol = ϵ)
+        @test float_equal(result, ColorRGB(0.1, 0.1, 0.1))
     end
 
     @testset "Lighting with the surface in shadow" begin

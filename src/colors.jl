@@ -1,7 +1,7 @@
 module ColorsModule
 
 using StaticArrays
-import Base: +, -, *, /, ==, isapprox
+import Base: +, -, *, /, ==
 import Aether: float_equal
 
 export ColorRGB, black, white
@@ -52,11 +52,6 @@ end
 @inline ==(c1::ColorRGB, c2::ColorRGB) = c1.r == c2.r &&
                                          c1.g == c2.g &&
                                          c1.b == c2.b
-
-@inline isapprox(c1::ColorRGB, c2::ColorRGB; rtol=√eps()) =
-                                    isapprox(c1.r, c2.r, rtol=rtol) &&
-                                    isapprox(c1.g, c2.g, rtol=rtol) &&
-                                    isapprox(c1.b, c2.b, rtol=rtol)
 
 function float_equal(c1::ColorRGB, c2::ColorRGB)
     return float_equal(c1.r, c2.r) &&
