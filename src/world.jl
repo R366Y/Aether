@@ -84,9 +84,9 @@ function shade_hit(world::World, comps::Computations, remaining::Int64)
     if material.reflective > 0. && material.transparency > 0.
         reflectance = schlick(comps)
         return surface + reflected * reflectance + refracted * (1 - reflectance)
+    else
+        return surface + reflected + refracted
     end
-
-    return surface + reflected + refracted
 end
 
 function intersect_world(world::World, ray::Ray)

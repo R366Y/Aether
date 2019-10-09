@@ -80,7 +80,7 @@ function draw_world()
     blue_glass_sphere.material.diffuse = 0.4
     blue_glass_sphere.material.specular = 0.9
     blue_glass_sphere.material.shininess = 300
-    #blue_glass_sphere.material.reflective = 0.9
+    blue_glass_sphere.material.reflective = 0.9
     blue_glass_sphere.material.transparency = 0.9
     blue_glass_sphere.material.refractive_index = 1.5
 
@@ -91,7 +91,7 @@ function draw_world()
     green_glass_sphere.material.diffuse = 0.4
     green_glass_sphere.material.specular = 0.9
     green_glass_sphere.material.shininess = 300
-    #green_glass_sphere.material.reflective = 0.9
+    green_glass_sphere.material.reflective = 0.9
     green_glass_sphere.material.transparency = 0.9
     green_glass_sphere.material.refractive_index = 1.5
 
