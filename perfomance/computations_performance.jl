@@ -11,6 +11,6 @@ r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
 shape = w.objects[1]
 i = Intersection(4., shape)
 
-@code_warntype prepare_computations(i, r, Intersection[])
 
 prepare_computations(i, r, Intersection[])
+@code_warntype prepare_computations(i, r, Intersection[])

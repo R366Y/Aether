@@ -44,7 +44,7 @@ import Aether.BaseGeometricType: set_transform
         w = default_world()
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         shape = w.objects[1]
-        i = Intersection{Sphere}(4., shape)
+        i = Intersection(4., shape)
         comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
         @test float_equal(c, ColorRGB(0.38066, 0.47583, 0.2855))
@@ -55,7 +55,7 @@ import Aether.BaseGeometricType: set_transform
         w.light = PointLight(point3D(0., 0.25, 0.), ColorRGB(1., 1., 1.))
         r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
         shape = w.objects[2]
-        i = Intersection{Sphere}(0.5, shape)
+        i = Intersection(0.5, shape)
         comps = prepare_computations(i, r,  Intersection[])
         c = shade_hit(w, comps, 0)
         @test float_equal(c, ColorRGB(0.90498, 0.90498, 0.90498))

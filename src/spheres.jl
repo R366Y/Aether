@@ -47,7 +47,7 @@ function local_intersect(s::Sphere, r::Ray)
     c = dot(sphere_to_ray, sphere_to_ray) - 1.
 
     discriminant = b^2 - 4. * a * c
-    result = Intersection{Sphere}[]
+    result = Intersection[]
     if discriminant >= 0.
         sqrt_disc = √(discriminant)
         den = (2. * a)
