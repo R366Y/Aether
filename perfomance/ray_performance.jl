@@ -10,4 +10,4 @@ r = Ray(point3D(0., 0., 0.), vector3D(1., 0., 0.))
 
 m = scaling(5., 0., 0.)
 
-@benchmark transform(r, m)
+@code_warntype transform(r, m)

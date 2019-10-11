@@ -12,10 +12,16 @@ end
 
 function hit(is::Array)
     result::Union{Intersection, Nothing} = nothing
-    t_values = [h for h in is if h.t>=0.]
-    if length(t_values) > 0
-        sort!(t_values, by = i->i.t)
-        result = t_values[1]
+    min = Inf
+    index = -1
+    for (idx,val) in enumerate(is)
+        if val.t >= 0. && val.t < min
+            min = val.t
+            index = idx
+        end
+    end
+    if min < Inf
+        result = is[index]
     end
     return result
 end

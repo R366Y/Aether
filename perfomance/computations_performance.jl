@@ -11,7 +11,4 @@ r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
 shape = w.objects[1]
 i = Intersection(4., shape)
 
-t = @benchmark prepare_computations(i, r)
-
-println(minimum(t))
-println(median(t))
+@code_warntype prepare_computations(i, r, Intersection[])
