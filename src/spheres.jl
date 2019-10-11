@@ -49,8 +49,10 @@ function local_intersect(s::Sphere, r::Ray)
     discriminant = b^2 - 4. * a * c
     result = Intersection{Sphere}[]
     if discriminant >= 0.
-        t1 = (-b - √(discriminant)) / (2. * a)
-        t2 = (-b + √(discriminant)) / (2. * a)
+        sqrt_disc = √(discriminant)
+        den = (2. * a)
+        t1 = (-b - sqrt_disc) / den
+        t2 = (-b + sqrt_disc) / den
         push!(result, Intersection(t1, s), Intersection(t2, s))
     end
     return result

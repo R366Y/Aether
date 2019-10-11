@@ -12,3 +12,5 @@ shape = w.objects[1]
 i = Intersection(4., shape)
 
 @code_warntype prepare_computations(i, r, Intersection[])
+
+prepare_computations(i, r, Intersection[])

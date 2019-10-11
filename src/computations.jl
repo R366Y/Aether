@@ -23,13 +23,15 @@ mutable struct Computations{O<:GeometricObject}
     n2::Float64
 
     Computations() = new{GeometricObject}()
+
+    function Computations(t::Float64, object::O) where O <: GeometricObject
+        new{O}(t, object)
+    end
 end
 
 function prepare_computations(intersection::Intersection, ray::Ray,
                               xs::Array{Intersection})
-    comps = Computations()
-    comps.t = intersection.t
-    comps.object = intersection.object
+    comps = Computations(intersection.t, intersection.object)
 
     # precompute some useful values
     comps.point = positionr(ray, comps.t)
