@@ -1,6 +1,6 @@
 using Test
 
-import Aether.BaseGeometricType: set_transform, normal_at
+import Aether.BaseGeometricType: set_transform, normal_at, r_intersect
 import Aether.HomogeneousCoordinates: point3D, vector3D, float_equal
 import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: identity_matrix, translation, scaling,

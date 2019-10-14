@@ -29,6 +29,7 @@ include("computations.jl")
 include("camera.jl")
 include("shaders.jl")
 
+include("cubes.jl")
 include("shapes.jl")
 include("planes.jl")
 include("spheres.jl")
