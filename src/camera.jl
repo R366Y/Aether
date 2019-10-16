@@ -1,6 +1,6 @@
 module CameraModule
 
-export Camera, ray_for_pixel
+export Camera, ray_for_pixel, camera_set_transform
 
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
@@ -13,7 +13,8 @@ mutable struct Camera
     hsize::Int64
     vsize::Int64
     field_of_view::Float64
-    transform::SMatrix{4,4,Float64}
+    transform::Matrix4x4
+    inverse::Matrix4x4
     half_width::Float64
     half_height::Float64
     pixel_size::Float64
@@ -30,11 +31,15 @@ mutable struct Camera
         end
         pixel_size = (half_width * 2) / hsize
         new(hsize, vsize, field_of_view, identity_matrix(Float64),
-            half_width, half_height, pixel_size)
+            identity_matrix(Float64), half_width, half_height, pixel_size)
     end
 end
 
-# TODO: add inverse property to Camera and save inv(transform)
+function camera_set_transform(camera::Camera, matrix::Matrix4x4)
+    camera.transform = matrix
+    camera.inverse = inv(matrix)
+end
+
 function ray_for_pixel(camera::Camera, px::Int64, py::Int64)
     # the offset from the edge of the canvas to the pixel's center
     xoffset = (px + 0.5) * camera.pixel_size
@@ -46,8 +51,8 @@ function ray_for_pixel(camera::Camera, px::Int64, py::Int64)
     # using the camera matrix, transform the canvas point and the origin,
     # and then compute the ray's direction vector.
     # (remember that the canvas is at z=-1)
-    pixel = inv(camera.transform) * point3D(world_x, world_y, -1.)
-    origin = inv(camera.transform) * point3D(0., 0., 0.)
+    pixel = camera.inverse * point3D(world_x, world_y, -1.)
+    origin = camera.inverse * point3D(0., 0., 0.)
     direction = normalize(pixel - origin)
     return Ray(origin, direction)
 end

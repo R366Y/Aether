@@ -46,10 +46,9 @@ function draw_world()
     world.light = PointLight(point3D(-10., 10., -10.) , ColorRGB(1., 1., 1.))
     add_objects(world,the_floor,wall, middle, right, left)
     camera = Camera(300, 150, π/3)
-    camera.transform = view_transform(point3D(0., 1.5, -5.),
+    camera_set_transform(camera, view_transform(point3D(0., 1.5, -5.),
                                       point3D(0., 1., 0.),
-                                      vector3D(0., 1., 0.))
-
+                                      vector3D(0., 1., 0.)))
     canvas = render(camera, world)
     return canvas
 end

@@ -55,9 +55,9 @@ function draw_world()
     add_objects(world, floor_sphere, left_wall,
                 right_wall, middle, right, left)
     camera = Camera(300, 150, π/3)
-    camera.transform = view_transform(point3D(0., 1.5, -5.),
-                                      point3D(0., 1., 0.),
-                                      vector3D(0., 1., 0.))
+    camera_set_transform(camera, view_transform(point3D(0., 1.5, -5.),
+                                                point3D(0., 1., 0.),
+                                                vector3D(0., 1., 0.)))
 
     canvas = render(camera, world)
     return canvas
