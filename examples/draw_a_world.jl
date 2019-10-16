@@ -65,4 +65,5 @@ end
 
 function show_scene()
     show_image(draw_world())
+    save_image(draw_world())
 end
