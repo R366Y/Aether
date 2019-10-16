@@ -17,6 +17,7 @@ using Aether.Shaders
 using Aether.Spheres
 
 using LinearAlgebra
+using ProgressMeter
 
 import Aether.BaseGeometricType: GeometricObject, r_intersect, set_transform
 
@@ -50,12 +51,13 @@ end
 
 function render(camera::Camera, world::World)
     image = empty_canvas(camera.hsize, camera.vsize)
-
+    p = Progress(camera.hsize * camera.vsize)
     for x in 1:camera.hsize
         for y in 1:camera.vsize
             ray = ray_for_pixel(camera, x, y)
             color = color_at(world, ray, 5)
             write_pixel!(image, x, y, color)
+            ProgressMeter.next!(p)
         end
     end
     return image
