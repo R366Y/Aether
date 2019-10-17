@@ -106,7 +106,7 @@ function draw_world()
     add_objects(world, checkered_floor, ceiling, west_wall, east_wall,
                 north_wall, south_wall, bb1, bb2, bb3, bb4, blue_glass_sphere,
                 green_glass_sphere, red_sphere)
-    camera = Camera(400, 200, 1.152)
+    camera = Camera(800, 400, 1.152)
     camera_set_transform(camera, view_transform(point3D(-2.6, 1.5, -3.9),
                                                 point3D(-0.6, 1., -0.8),
                                                 vector3D(0., 1., 0.)))

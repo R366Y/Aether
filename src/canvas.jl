@@ -43,8 +43,8 @@ end
 
 function _convertCanvasToRGB(canvas::Canvas)
     result = fill(RGB(0,0,0), canvas.height, canvas.width)
-    for c in 1:canvas.width, r in 1:canvas.height
-        result[r,c] = _colorRGBtoRGB(pixel_at(canvas, c, r))
+    for index in eachindex(canvas.__data)
+        result[index] = _colorRGBtoRGB(canvas.__data[index])
     end
     return result
 end
