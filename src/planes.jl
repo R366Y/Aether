@@ -1,7 +1,3 @@
-module Planes
-
-export Plane
-
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, local_intersect,
                                  local_normal_at
@@ -35,5 +31,3 @@ function local_intersect(plane::Plane, ray::Ray)
     push!(result, Intersection(t, plane))
     return result
 end
-
-end  # module Planes

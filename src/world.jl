@@ -14,7 +14,7 @@ using Aether.Lights
 using Aether.MatrixTransformations
 using Aether.Rays
 using Aether.Shaders
-using Aether.Spheres
+using Aether.Shapes
 
 using LinearAlgebra
 using ProgressMeter

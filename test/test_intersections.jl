@@ -3,8 +3,7 @@ using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
 using Aether.MatrixTransformations
-using Aether.Planes
-using Aether.Spheres
+using Aether.Shapes
 using Aether.Rays
 
 import Aether: ϵ

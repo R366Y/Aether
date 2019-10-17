@@ -4,7 +4,7 @@ using Aether.HomogeneousCoordinates
 using Aether.Intersections
 using Aether.MatrixTransformations
 using Aether.Rays
-using Aether.Spheres
+using Aether.Shapes
 
 using StaticArrays
 using LinearAlgebra

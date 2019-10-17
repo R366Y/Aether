@@ -1,7 +1,7 @@
 using Test
 
 import Aether.HomogeneousCoordinates: vector3D, point3D, float_equal
-import Aether.Planes: Plane, local_intersect, local_normal_at
+import Aether.Shapes: Plane, local_intersect, local_normal_at
 import Aether.Rays: Ray
 
 @testset "Plane" begin

@@ -4,9 +4,8 @@ using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
 using Aether.Lights
-using Aether.Planes
 using Aether.Patterns
-using Aether.Spheres
+using Aether.Shapes
 using Aether.WorldModule
 using Aether.Rays
 import Aether: ϵ

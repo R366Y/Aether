@@ -1,7 +1,3 @@
-module Cubes
-
-export Cube
-
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, local_intersect,
                                  local_normal_at
@@ -67,6 +63,4 @@ function local_normal_at(cube::Cube, point::Vec3D)
     end
 
     return vector3D(0., 0., point.z)
-end
-
 end

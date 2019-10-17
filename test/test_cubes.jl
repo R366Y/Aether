@@ -1,6 +1,6 @@
 using Test
 import Aether: float_equal
-import Aether.Cubes: Cube, local_intersect, local_normal_at
+import Aether.Shapes: Cube, local_intersect, local_normal_at
 using Aether.Rays
 using Aether.HomogeneousCoordinates
 

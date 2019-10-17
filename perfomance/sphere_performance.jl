@@ -1,6 +1,6 @@
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
-import Aether.Spheres: default_sphere, local_intersect
+import Aether.Shapes: default_sphere, local_intersect
 using Aether.Rays
 import Aether.BaseGeometricType: r_intersect
 

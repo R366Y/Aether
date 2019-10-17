@@ -1,14 +1,12 @@
 using Aether.CameraModule
 using Aether.CanvasModule
 using Aether.ColorsModule
-using Aether.Cubes
+using Aether.Shapes
 using Aether.HomogeneousCoordinates
 using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
-using Aether.Planes
-using Aether.Spheres
 using Aether.WorldModule
 
 import Aether.BaseGeometricType: set_transform

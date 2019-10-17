@@ -1,6 +1,6 @@
 module Shapes
 
-export GeometricObject, TestShape
+export Cube, Plane, Sphere, TestShape, default_sphere, glass_sphere
 
 import Aether.BaseGeometricType: GeometricObject, local_intersect
 import Aether.HomogeneousCoordinates: point3D, vector3D
@@ -25,5 +25,9 @@ function local_intersect(shape::TestShape, ray::Ray)
     shape.saved_ray = ray
     return Intersection[]
 end
+
+include("cubes.jl")
+include("planes.jl")
+include("spheres.jl")
 
 end  # module

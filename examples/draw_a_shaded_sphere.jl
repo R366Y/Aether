@@ -7,7 +7,7 @@ using Aether.Lights
 using Aether.Shaders
 using Aether.MatrixTransformations
 using Aether.Rays
-using Aether.Spheres
+using Aether.Shapes
 
 using StaticArrays
 using LinearAlgebra

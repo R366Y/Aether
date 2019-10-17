@@ -6,7 +6,7 @@ import Aether.MatrixTransformations: scaling, translation, identity_matrix
 import Aether.Patterns: StripePattern, TestPattern, stripe_pattern, pattern_at,
                         pattern_at_shape, set_pattern_transform,
                         GradientPattern, RingPattern, CheckerPattern
-import Aether.Spheres: default_sphere, set_transform
+import Aether.Shapes: default_sphere, set_transform
 
 @testset "Patterns" begin
     @testset "Creating a striped pattern" begin

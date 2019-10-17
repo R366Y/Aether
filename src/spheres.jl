@@ -1,7 +1,3 @@
-module Spheres
-
-export Sphere, default_sphere, glass_sphere
-
 import Base: ==
 import Aether: float_equal, ϵ
 import Aether.BaseGeometricType: GeometricObject, set_transform,
@@ -61,5 +57,3 @@ end
 function local_normal_at(sphere::Sphere, local_point::Vec3D)
     return local_point - sphere.center
 end
-
-end  # module Spheres

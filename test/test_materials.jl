@@ -4,7 +4,7 @@ using Aether.Lights
 using Aether.Materials
 using Aether.Patterns
 using Aether.Shaders
-using Aether.Spheres
+using Aether.Shapes
 
 import Aether: ϵ
 
