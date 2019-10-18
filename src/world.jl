@@ -2,7 +2,7 @@ module  WorldModule
 
 export World, default_world, add_objects, intersect_world,
        color_at, shade_hit, render, is_shadowed, reflected_color,
-       refracted_color, schlick
+       refracted_color, schlick, render_multithread
 
 using Aether.CameraModule
 using Aether.CanvasModule
@@ -16,6 +16,7 @@ using Aether.Rays
 using Aether.Shaders
 using Aether.Shapes
 
+using Base.Threads
 using LinearAlgebra
 using ProgressMeter
 
@@ -60,6 +61,64 @@ function render(camera::Camera, world::World)
             ProgressMeter.next!(p)
         end
     end
+    return image
+end
+
+function render_multithread(camera::Camera, world::World)
+    p = Progress(camera.hsize * camera.vsize)
+    update!(p,0)
+    jj = Threads.Atomic{Int}(0)
+    BLAS.set_num_threads(1)
+
+    len, rem = divrem(camera.hsize, nthreads())
+    image = empty_canvas(camera.hsize, camera.vsize)
+
+    #Split the matrix equally among the threads
+    num_threads = nthreads()
+    sub_images = []
+    for t in 1:num_threads
+        push!(sub_images,empty_canvas(len, camera.vsize))
+    end
+
+    # map every subimage to a given thread
+    @threads for t in 1:num_threads
+        sub_image = sub_images[t]
+        for x in (1:len) .+ (t-1)*len
+            for y in 1:camera.vsize
+                ray = ray_for_pixel(camera, x, y)
+                color = color_at(world, ray, 5)
+                write_pixel!(sub_image, (x - (t-1)*len), y, color)
+
+                Threads.atomic_add!(jj,1)
+                Threads.threadid() == 1 && update!(p, jj[])
+            end
+        end
+    end
+
+    if rem == 0
+        ProgressMeter.finish!(p)
+    end
+
+    # process the remaining data
+    remaining = camera.hsize-rem
+    remaining_subimage = empty_canvas(rem, camera.vsize)
+    for x in remaining+1:camera.hsize
+        for y in 1:camera.vsize
+            ray = ray_for_pixel(camera, x, y)
+            color = color_at(world, ray, 5)
+            write_pixel!(image, x - remaining, y, color)
+
+            Threads.atomic_add!(jj,1)
+            update!(p, jj[])
+        end
+    end
+
+    # reduce subimages to a single image
+    for t in 1:num_threads
+        image.__data[:, (1:len) .+ (t-1)*len] .= sub_images[t].__data
+    end
+    image.__data[:, remaining+1:camera.hsize] .= remaining_subimage.__data
+
     return image
 end
 
