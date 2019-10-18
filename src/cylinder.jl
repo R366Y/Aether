@@ -11,10 +11,13 @@ mutable struct Cylinder <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
+    minimum::Float64
+    maximum::Float64
+    closed::Bool
 
     function Cylinder()
         new(identity_matrix(Float64), identity_matrix(Float64),
-        default_material())
+        default_material(), -Inf, Inf, false)
     end
 end
 
@@ -23,23 +26,74 @@ function local_intersect(cylinder::Cylinder, ray::Ray)
 
     result = Intersection[]
     # ray is parallel to y axis
-    if abs(a) < ϵ
-        return result
+    if abs(a) >= ϵ
+        b = 2 * ray.origin.x * ray.direction.x +
+            2 * ray.origin.z * ray.direction.z
+        c = ray.origin.x^2 + ray.origin.z^2 - 1
+
+        disc = b^2 - 4*a*c
+        #ray does not intersect the cylinder
+        if disc < 0.
+            return result
+        end
+        sqrt_disc = √disc
+        den = 2*a
+        t0 = (-b - sqrt_disc)/den
+        t1 = (-b + sqrt_disc)/den
+
+        y0 = ray.origin.y + t0 * ray.direction.y
+        if cylinder.minimum < y0 && y0 < cylinder.maximum
+            push!(result, Intersection(t0, cylinder))
+        end
+
+        y1 = ray.origin.y + t1 * ray.direction.y
+        if cylinder.minimum < y1 && y1 < cylinder.maximum
+            push!(result, Intersection(t1, cylinder))
+        end
     end
 
-    b = 2 * ray.origin.x * ray.direction.x +
-        2 * ray.origin.z * ray.direction.z
-    c = ray.origin.x^2 + ray.origin.z^2 - 1
+    intersect_caps(cylinder, ray, result)
 
-    disc = b^2 - 4*a*c
-    #ray does not intersect the cylinder
-    if disc < 0.
-        return result
-    end
-    sqrt_disc = √disc
-    den = 2*a
-    t0 = (-b - sqrt_disc)/den
-    t1 = (-b + sqrt_disc)/den
-    push!(result, Intersection(t0, cylinder), Intersection(t1, cylinder))
     return result
+end
+
+function local_normal_at(cylinder::Cylinder, point::Vec3D)
+    # compute the normal vector on a cylinder's end cap
+    dist = point.x^2 + point.z^2
+    if dist < 1 && point.y >= cylinder.maximum - ϵ
+        return vector3D(0., 1., 0.)
+    elseif dist < 1 && point.y <= cylinder.minimum + ϵ
+        return vector3D(0., -1., 0.)
+    else
+        # normal vector on a cylinder
+        return vector3D(point.x, 0., point.z)
+    end
+end
+
+# checks to see if the intersection at `t` is within a radius
+# of 1 (the radius of your cylinders) from the y axis.
+function check_cap(ray::Ray, t::Float64)
+    x = ray.origin.x + t * ray.direction.x
+    z = ray.origin.z + t * ray.direction.z
+    return (x^2 + z^2) <= 1
+end
+
+function intersect_caps(cyl::Cylinder, ray::Ray, xs::Array)
+    # caps only matter if the cylinder is closed, and might possibly be
+    # intersected by the ray.
+    if !cyl.closed || abs(ray.direction.y) < ϵ
+        return
+    end
+    # check for an intersection with the lower end cap by intersecting
+    # the ray with the plane at y=cyl.minimum
+    t = (cyl.minimum - ray.origin.y) / ray.direction.y
+    if check_cap(ray, t)
+        push!(xs, Intersection(t, cyl))
+    end
+    # check for an intersection with the upper end cap by intersecting
+    # the ray with the plane at y=cyl.maximum
+    t = (cyl.maximum - ray.origin.y) / ray.direction.y
+    if check_cap(ray, t)
+        push!(xs, Intersection(t, cyl))
+    end
 end
