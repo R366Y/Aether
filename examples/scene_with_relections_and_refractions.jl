@@ -110,7 +110,7 @@ function draw_world()
                                                 point3D(-0.6, 1., -0.8),
                                                 vector3D(0., 1., 0.)))
 
-    canvas = render(camera, world)
+    canvas = render_multithread(camera, world)
     return canvas
 end
 
