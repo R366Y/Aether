@@ -115,5 +115,7 @@ function draw_world()
 end
 
 function show_scene()
-    show_image(draw_world())
+    canvas = draw_world()
+    show_image(canvas)
+    save_image(canvas, "renders/reflections_and_refractions.png")
 end
