@@ -65,15 +65,20 @@ function render(camera::Camera, world::World)
 end
 
 function render_multithread(camera::Camera, world::World)
+    # Initialize the progress bar
     p = Progress(camera.hsize * camera.vsize)
     update!(p,0)
     jj = Threads.Atomic{Int}(0)
+    # Setting the number of BLAS threads to 1 so they do not interfere
+    # with our threads
     BLAS.set_num_threads(1)
 
+    # divide the horizontal size of our image by the number of threads
+    # and save also the reminder
     len, rem = divrem(camera.hsize, nthreads())
     image = empty_canvas(camera.hsize, camera.vsize)
 
-    #Split the matrix equally among the threads
+    #Split the image equally among the threads
     num_threads = nthreads()
     sub_images = []
     for t in 1:num_threads
@@ -95,11 +100,8 @@ function render_multithread(camera::Camera, world::World)
         end
     end
 
-    if rem == 0
-        ProgressMeter.finish!(p)
-    end
-
-    # process the remaining data
+    # process the remaining data in case the image width is not an
+    # even number
     remaining = camera.hsize-rem
     remaining_subimage = empty_canvas(rem, camera.vsize)
     for x in remaining+1:camera.hsize
@@ -113,7 +115,10 @@ function render_multithread(camera::Camera, world::World)
         end
     end
 
-    # reduce subimages to a single image
+    ProgressMeter.finish!(p)
+    BLAS.set_num_threads(num_threads)
+
+    # recombine the subimages into a single image
     for t in 1:num_threads
         image.__data[:, (1:len) .+ (t-1)*len] .= sub_images[t].__data
     end
