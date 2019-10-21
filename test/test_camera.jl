@@ -48,7 +48,7 @@ import Aether: float_equal
         to = point3D(0., 0., 0.)
         up = vector3D(0., 1., 0.)
         camera_set_transform(c, view_transform(from, to, up))
-        image = render(c, w)
+        image = render(c, w, false)
         @test float_equal(pixel_at(image, 5, 5), ColorRGB(0.38066, 0.47583, 0.2855))
     end
 end

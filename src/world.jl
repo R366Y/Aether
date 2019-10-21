@@ -1,8 +1,17 @@
-module  WorldModule
+module WorldModule
 
-export World, default_world, add_objects, intersect_world,
-       color_at, shade_hit, render, is_shadowed, reflected_color,
-       refracted_color, schlick, render_multithread
+export World,
+       default_world,
+       add_objects,
+       intersect_world,
+       color_at,
+       shade_hit,
+       render,
+       is_shadowed,
+       reflected_color,
+       refracted_color,
+       schlick,
+       render_multithread
 
 using Aether.CameraModule
 using Aether.CanvasModule
@@ -23,7 +32,7 @@ using ProgressMeter
 import Aether.BaseGeometricType: GeometricObject, r_intersect, set_transform
 
 mutable struct World{T<:GeometricObject}
-    objects::Array{T}
+    objects::Array{T,1}
     light::PointLight
 
     function World()
@@ -32,9 +41,9 @@ mutable struct World{T<:GeometricObject}
 end
 
 function default_world()
-    light = PointLight(point3D(-10., 10., -10.), ColorRGB(1., 1., 1.))
+    light = PointLight(point3D(-10.0, 10.0, -10.0), ColorRGB(1.0, 1.0, 1.0))
     s1 = default_sphere()
-    s1.material.color = ColorRGB(0.8, 1., 0.6)
+    s1.material.color = ColorRGB(0.8, 1.0, 0.6)
     s1.material.diffuse = 0.7
     s1.material.specular = 0.2
 
@@ -50,15 +59,17 @@ function add_objects(world::World, objs...)
     push!(world.objects, objs...)
 end
 
-function render(camera::Camera, world::World)
+function render(camera::Camera, world::World, progress_meter = true)
     image = empty_canvas(camera.hsize, camera.vsize)
     p = Progress(camera.hsize * camera.vsize)
-    for x in 1:camera.hsize
-        for y in 1:camera.vsize
+    for x = 1:camera.hsize
+        for y = 1:camera.vsize
             ray = ray_for_pixel(camera, x, y)
             color = color_at(world, ray, 5)
             write_pixel!(image, x, y, color)
-            ProgressMeter.next!(p)
+            if progress_meter
+                ProgressMeter.next!(p)
+            end
         end
     end
     return image
@@ -67,7 +78,7 @@ end
 function render_multithread(camera::Camera, world::World)
     # Initialize the progress bar
     p = Progress(camera.hsize * camera.vsize)
-    update!(p,0)
+    update!(p, 0)
     jj = Threads.Atomic{Int}(0)
     # Setting the number of BLAS threads to 1 so they do not interfere
     # with our threads
@@ -81,20 +92,20 @@ function render_multithread(camera::Camera, world::World)
     #Split the image equally among the threads
     num_threads = nthreads()
     sub_images = []
-    for t in 1:num_threads
-        push!(sub_images,empty_canvas(len, camera.vsize))
+    for t = 1:num_threads
+        push!(sub_images, empty_canvas(len, camera.vsize))
     end
 
     # map every subimage to a given thread
-    @threads for t in 1:num_threads
+    @threads for t = 1:num_threads
         sub_image = sub_images[t]
-        for x in (1:len) .+ (t-1)*len
-            for y in 1:camera.vsize
+        for x in (1:len) .+ (t - 1) * len
+            for y = 1:camera.vsize
                 ray = ray_for_pixel(camera, x, y)
                 color = color_at(world, ray, 5)
-                write_pixel!(sub_image, (x - (t-1)*len), y, color)
+                write_pixel!(sub_image, (x - (t - 1) * len), y, color)
 
-                Threads.atomic_add!(jj,1)
+                Threads.atomic_add!(jj, 1)
                 Threads.threadid() == 1 && update!(p, jj[])
             end
         end
@@ -102,15 +113,15 @@ function render_multithread(camera::Camera, world::World)
 
     # process the remaining data in case the image width is not an
     # even number
-    remaining = camera.hsize-rem
+    remaining = camera.hsize - rem
     remaining_subimage = empty_canvas(rem, camera.vsize)
-    for x in remaining+1:camera.hsize
-        for y in 1:camera.vsize
+    for x = remaining+1:camera.hsize
+        for y = 1:camera.vsize
             ray = ray_for_pixel(camera, x, y)
             color = color_at(world, ray, 5)
             write_pixel!(image, x - remaining, y, color)
 
-            Threads.atomic_add!(jj,1)
+            Threads.atomic_add!(jj, 1)
             update!(p, jj[])
         end
     end
@@ -119,8 +130,8 @@ function render_multithread(camera::Camera, world::World)
     BLAS.set_num_threads(num_threads)
 
     # recombine the subimages into a single image
-    for t in 1:num_threads
-        image.__data[:, (1:len) .+ (t-1)*len] .= sub_images[t].__data
+    for t = 1:num_threads
+        image.__data[:, (1:len).+(t-1)*len] .= sub_images[t].__data
     end
     image.__data[:, remaining+1:camera.hsize] .= remaining_subimage.__data
 
@@ -140,14 +151,20 @@ end
 
 function shade_hit(world::World, comps::Computations, remaining::Int64)
     shadowed = is_shadowed(world, comps.over_point)
-    surface = lighting(comps.object.material,comps.object, world.light,
-    comps.over_point, comps.eyev, comps.normalv,
-    shadowed)
+    surface = lighting(
+        comps.object.material,
+        comps.object,
+        world.light,
+        comps.over_point,
+        comps.eyev,
+        comps.normalv,
+        shadowed,
+    )
     reflected = reflected_color(world, comps, remaining)
     refracted = refracted_color(world, comps, remaining)
 
     material = comps.object.material
-    if material.reflective > 0. && material.transparency > 0.
+    if material.reflective > 0.0 && material.transparency > 0.0
         reflectance = schlick(comps)
         return surface + reflected * reflectance + refracted * (1 - reflectance)
     else
@@ -164,7 +181,7 @@ function intersect_world(world::World, ray::Ray)
         end
     end
     if length(result) != 0
-        sort!(result, by = i->i.t)
+        sort!(result, by = i -> i.t)
     end
     return result
 end
@@ -185,7 +202,7 @@ function is_shadowed(world::World, point::Vec3D)
 end
 
 function reflected_color(world::World, comps::Computations, remaining::Int64)
-    if comps.object.material.reflective == 0. || remaining <= 0
+    if comps.object.material.reflective == 0.0 || remaining <= 0
         return black
     end
 
@@ -195,7 +212,7 @@ function reflected_color(world::World, comps::Computations, remaining::Int64)
 end
 
 function refracted_color(world::World, comps::Computations, remaining::Int64)
-    if comps.object.material.transparency == 0. || remaining == 0
+    if comps.object.material.transparency == 0.0 || remaining == 0
         return black
     end
     # Find the ratio of the first index of the refraction to the second
@@ -203,8 +220,8 @@ function refracted_color(world::World, comps::Computations, remaining::Int64)
     n_ratio = comps.n1 / comps.n2
     cos_i = dot(comps.eyev, comps.normalv)
     # Find sin(θ)^2 via trigonometri identity
-    sin2_t = n_ratio^2 * (1- cos_i^2)
-    if sin2_t > 1.
+    sin2_t = n_ratio^2 * (1 - cos_i^2)
+    if sin2_t > 1.0
         return black
     end
 
@@ -229,17 +246,17 @@ function schlick(comps::Computations)
     # total internal reflection can only occur if n1 > n2
     if comps.n1 > comps.n2
         n = comps.n1 / comps.n2
-        sin2_t = n^2 * (1. - cosv^2)
-        if sin2_t > 1.
-            return 1.
+        sin2_t = n^2 * (1.0 - cosv^2)
+        if sin2_t > 1.0
+            return 1.0
         end
         # compute cosine of theta_t using trigonometric identity
-        cos_t = √(1. - sin2_t)
+        cos_t = √(1.0 - sin2_t)
         # when n1 > n2, use cos(theta_t) instead
         cosv = cos_t
     end
     r0 = ((comps.n1 - comps.n2) / (comps.n1 + comps.n2))^2
-    return r0 + (1. - r0) * (1 - cosv)^5
+    return r0 + (1.0 - r0) * (1 - cosv)^5
 end
 
 end  # module WorldModule
