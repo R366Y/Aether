@@ -13,7 +13,7 @@ import Aether: ϵ
         s = default_sphere()
         i = Intersection(3.5, s)
         @test i.t == 3.5
-        @test i.object == s
+        @test i.gobject == s
     end
 
     @testset "Hit when all intersections have positive t" begin
@@ -72,7 +72,7 @@ end
         i = Intersection(4., shape)
         comps = prepare_computations(i, r, Intersection[])
         @test comps.t == i.t
-        @test comps.object == shape
+        @test comps.gobject == shape
         @test comps.point == point3D(0., 0., -1.)
         @test comps.eyev == vector3D(0., 0., -1.)
         @test comps.normalv == vector3D(0., 0., -1.)

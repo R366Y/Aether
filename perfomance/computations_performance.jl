@@ -27,3 +27,5 @@ xs = Intersection[Intersection(2., a), Intersection(2.75, b),
 
 comps = prepare_computations(xs[2], r, xs)
 @code_warntype compute_refractive_indices!(xs[2], xs, comps)
+
+@btime compute_refractive_indices!(xs[2], xs, comps)

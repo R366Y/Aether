@@ -12,7 +12,7 @@ import Aether.BaseGeometricType: GeometricObject, normal_at
 
 mutable struct Computations{O<:GeometricObject}
     t::Float64
-    object::O
+    gobject::O
     point::Vec3D{Float64}
     eyev::Vec3D{Float64}
     normalv::Vec3D{Float64}
@@ -25,8 +25,8 @@ mutable struct Computations{O<:GeometricObject}
 
     Computations() = new{GeometricObject}()
 
-    function Computations(t::Float64, object::O) where {O<:GeometricObject}
-        new{O}(t, object)
+    function Computations(t::Float64, gobject::O) where {O<:GeometricObject}
+        new{O}(t, gobject)
     end
 end
 
@@ -35,12 +35,12 @@ function prepare_computations(
     ray::Ray,
     xs::Array{Intersection},
 )
-    comps = Computations(intersection.t, intersection.object)
+    comps = Computations(intersection.t, intersection.gobject)
 
     # precompute some useful values
     comps.point = positionr(ray, comps.t)
     comps.eyev = -ray.direction
-    comps.normalv = normal_at(comps.object, comps.point)
+    comps.normalv = normal_at(comps.gobject, comps.point)
 
     comps.inside = false
     # compute if the intersection occurs on the inside
@@ -73,10 +73,10 @@ function compute_refractive_indices!(
             end
         end
 
-        if i.object in containers
-            filter!(x -> x != i.object, containers)
+        if i.gobject in containers
+            filter!(x -> x != i.gobject, containers)
         else
-            push!(containers, i.object)
+            push!(containers, i.gobject)
         end
 
         if i == intersection

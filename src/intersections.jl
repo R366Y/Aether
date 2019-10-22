@@ -7,10 +7,10 @@ import Aether.BaseGeometricType: GeometricObject
 
 struct Intersection{O<:GeometricObject}
     t::Float64
-    object::O
+    gobject::O
 
-    function Intersection(t::Float64, object::O) where O <: GeometricObject
-        new{O}(t, object)
+    function Intersection(t::Float64, gobject::O) where O <: GeometricObject
+        new{O}(t, gobject)
     end
 end
 

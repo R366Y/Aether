@@ -1,7 +1,14 @@
 module Patterns
 
-export Pattern, StripePattern, TestPattern, GradientPattern, RingPattern,
-       CheckerPattern, stripe_pattern, pattern_at, pattern_at_shape,
+export Pattern,
+       StripePattern,
+       TestPattern,
+       GradientPattern,
+       RingPattern,
+       CheckerPattern,
+       stripe_pattern,
+       pattern_at,
+       pattern_at_shape,
        set_pattern_transform
 
 import Aether.BaseGeometricType: GeometricObject
@@ -16,8 +23,11 @@ function set_pattern_transform(pattern::Pattern, matrix::Matrix4x4)
     pattern.inverse = inv(matrix)
 end
 
-function pattern_at_shape(pattern::Pattern, object::GeometricObject,
-    world_point::Vec3D )
+function pattern_at_shape(
+    pattern::Pattern,
+    object::GeometricObject,
+    world_point::Vec3D,
+)::ColorRGB
     object_point = object.inverse * world_point
     pattern_point = pattern.inverse * object_point
 
@@ -107,7 +117,12 @@ mutable struct TestPattern <: Pattern
     inverse::Matrix4x4
 
     function TestPattern()
-        new(nothing, nothing, identity_matrix(Float64), identity_matrix(Float64))
+        new(
+            nothing,
+            nothing,
+            identity_matrix(Float64),
+            identity_matrix(Float64),
+        )
     end
 end
 

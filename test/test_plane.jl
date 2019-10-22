@@ -35,7 +35,7 @@ import Aether.Rays: Ray
         xs = local_intersect(p, r)
         @test length(xs) == 1
         @test xs[1].t == 1.
-        @test xs[1].object === p
+        @test xs[1].gobject === p
     end
 
     @testset "A ray intersecting a plane from below" begin
@@ -44,6 +44,6 @@ import Aether.Rays: Ray
         xs = local_intersect(p, r)
         @test length(xs) == 1
         @test xs[1].t == 1.
-        @test xs[1].object === p
+        @test xs[1].gobject === p
     end
 end

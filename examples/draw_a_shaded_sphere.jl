@@ -43,9 +43,9 @@ function draw_sphere(matrix_transformation::SMatrix = identity_matrix(Float64))
             h = hit(xs)
             if h !== nothing
                 point = positionr(r, h.t)
-                normal = normal_at(h.object, point)
+                normal = normal_at(h.gobject, point)
                 eye = -r.direction
-                color = lighting(h.object.material,h.object, light, point, eye, normal, false)
+                color = lighting(h.gobject.material,h.gobject, light, point, eye, normal, false)
                 write_pixel!(canvas, x, y, color)
             end
         end

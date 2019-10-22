@@ -152,8 +152,8 @@ end
 function shade_hit(world::World, comps::Computations, remaining::Int64)
     shadowed = is_shadowed(world, comps.over_point)
     surface = lighting(
-        comps.object.material,
-        comps.object,
+        comps.gobject.material,
+        comps.gobject,
         world.light,
         comps.over_point,
         comps.eyev,
@@ -163,7 +163,7 @@ function shade_hit(world::World, comps::Computations, remaining::Int64)
     reflected = reflected_color(world, comps, remaining)
     refracted = refracted_color(world, comps, remaining)
 
-    material = comps.object.material
+    material = comps.gobject.material
     if material.reflective > 0.0 && material.transparency > 0.0
         reflectance = schlick(comps)
         return surface + reflected * reflectance + refracted * (1 - reflectance)
@@ -202,17 +202,17 @@ function is_shadowed(world::World, point::Vec3D)
 end
 
 function reflected_color(world::World, comps::Computations, remaining::Int64)
-    if comps.object.material.reflective == 0.0 || remaining <= 0
+    if comps.gobject.material.reflective == 0.0 || remaining <= 0
         return black
     end
 
     reflect_ray = Ray(comps.over_point, comps.reflectv)
     color = color_at(world, reflect_ray, remaining - 1)
-    return color * comps.object.material.reflective
+    return color * comps.gobject.material.reflective
 end
 
 function refracted_color(world::World, comps::Computations, remaining::Int64)
-    if comps.object.material.transparency == 0.0 || remaining == 0
+    if comps.gobject.material.transparency == 0.0 || remaining == 0
         return black
     end
     # Find the ratio of the first index of the refraction to the second
@@ -235,7 +235,7 @@ function refracted_color(world::World, comps::Computations, remaining::Int64)
     # Find the color of the refracted ray, making sure to multiply
     # by the transparency value to account for any opacity
     color = color_at(world, refracted_ray, remaining - 1) *
-            comps.object.material.transparency
+            comps.gobject.material.transparency
     return color
 end
 
