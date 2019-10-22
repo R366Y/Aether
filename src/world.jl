@@ -175,7 +175,7 @@ end
 function intersect_world(world::World, ray::Ray)
     result = Intersection[]
     for obj in world.objects
-        xs = r_intersect(obj, ray)
+        xs::Array{Intersection,1} = r_intersect(obj, ray)
         if length(xs) != 0
             push!(result, xs...)
         end
