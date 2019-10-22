@@ -4,6 +4,7 @@ export Computations, prepare_computations
 
 import Aether.HomogeneousCoordinates: dot, Vec3D
 import Aether.Intersections: Intersection
+import Aether.Materials: getObjectMaterial
 import Aether.Rays: Ray, positionr, reflect
 
 import Aether: ϵ
@@ -51,11 +52,11 @@ function prepare_computations(
     comps.under_point = comps.point - comps.normalv * ϵ
     comps.reflectv = reflect(ray.direction, comps.normalv)
 
-    compute_refractive_indices(intersection, xs, comps)
+    compute_refractive_indices!(intersection, xs, comps)
     return comps
 end
 
-function compute_refractive_indices(
+function compute_refractive_indices!(
     intersection::Intersection,
     xs::Array{Intersection},
     comps::Computations
@@ -68,7 +69,7 @@ function compute_refractive_indices(
             if length(containers) == 0
                 comps.n1 = 1.0
             else
-                comps.n1 = containers[end].material.refractive_index
+                comps.n1 = getObjectMaterial(containers[end]).refractive_index
             end
         end
 
@@ -82,10 +83,11 @@ function compute_refractive_indices(
             if length(containers) == 0
                 comps.n2 = 1.0
             else
-                comps.n2 = containers[end].material.refractive_index
+                comps.n2 = getObjectMaterial(containers[end]).refractive_index
             end
         end
     end
+    comps
 end
 
 end  # module ComputationsModule

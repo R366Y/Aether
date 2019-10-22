@@ -1,3 +1,4 @@
+using Aether.BaseGeometricType
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Intersections
@@ -6,7 +7,7 @@ using Aether.Rays
 using Aether.MatrixTransformations
 using Aether.Shapes
 
-import Aether.ComputationsModule: compute_refractive_indices
+import Aether.ComputationsModule: compute_refractive_indices!
 
 using BenchmarkTools
 
@@ -25,4 +26,4 @@ xs = Intersection[Intersection(2., a), Intersection(2.75, b),
                  Intersection(5.25, c), Intersection(6., a)]
 
 comps = prepare_computations(xs[2], r, xs)
-@code_warntype compute_refractive_indices(xs[2], xs, comps)
+@code_warntype compute_refractive_indices!(xs[2], xs, comps)

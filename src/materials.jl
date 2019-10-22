@@ -1,7 +1,8 @@
 module Materials
 
-export Material, default_material, compare_materials
+export Material, default_material, compare_materials, getObjectMaterial
 
+import Aether.BaseGeometricType: GeometricObject
 import Aether.ColorsModule: ColorRGB
 import Aether.Patterns: Pattern
 import Base: ==
@@ -29,6 +30,10 @@ end
 
 function default_material()
     return Material(ColorRGB(1., 1., 1.), 0.1, 0.9, 0.9, 200., 0., 0., 1.)
+end
+
+function getObjectMaterial(gobject::T)::Material where T <: GeometricObject
+    return gobject.material
 end
 
 function compare_materials(m1::Material, m2::Material)
