@@ -75,7 +75,7 @@ function render(camera::Camera, world::World, progress_meter = true)
     return image
 end
 
-function render_multithread(camera::Camera, world::World)
+function render_multithread(camera::Camera, world::World, progress_meter = true)
     # Initialize the progress bar
     p = Progress(camera.hsize * camera.vsize)
     update!(p, 0)
@@ -99,15 +99,18 @@ function render_multithread(camera::Camera, world::World)
     # map every subimage to a given thread
     @threads for t = 1:num_threads
         sub_image = sub_images[t]
-        for x in (1:len) .+ (t - 1) * len
+        n = 1
+        for x in t:num_threads:camera.hsize - rem
             for y = 1:camera.vsize
                 ray = ray_for_pixel(camera, x, y)
                 color = color_at(world, ray, 5)
-                write_pixel!(sub_image, (x - (t - 1) * len), y, color)
-
-                Threads.atomic_add!(jj, 1)
-                Threads.threadid() == 1 && update!(p, jj[])
+                write_pixel!(sub_image, n, y, color)
+                if progress_meter
+                    Threads.atomic_add!(jj, 1)
+                    Threads.threadid() == 1 && update!(p, jj[])
+                end
             end
+            n += 1
         end
     end
 
@@ -119,24 +122,33 @@ function render_multithread(camera::Camera, world::World)
         for y = 1:camera.vsize
             ray = ray_for_pixel(camera, x, y)
             color = color_at(world, ray, 5)
-            write_pixel!(image, x - remaining, y, color)
-
-            Threads.atomic_add!(jj, 1)
-            update!(p, jj[])
+            write_pixel!(remaining_subimage, x - remaining, y, color)
+            if progress_meter
+                Threads.atomic_add!(jj, 1)
+                update!(p, jj[])
+            end
         end
     end
 
-    ProgressMeter.finish!(p)
+    if progress_meter
+        ProgressMeter.finish!(p)
+    end
     BLAS.set_num_threads(num_threads)
 
     # recombine the subimages into a single image
-    for t = 1:num_threads
-        image.__data[:, (1:len).+(t-1)*len] .= sub_images[t].__data
+    for t in 1:num_threads
+        sub_image = sub_images[t]
+        n = 1
+        for x in t:num_threads:camera.hsize - rem
+            image.__data[:, x] .= sub_image.__data[:, n]
+            n+=1
+        end
     end
     image.__data[:, remaining+1:camera.hsize] .= remaining_subimage.__data
 
     return image
 end
+
 
 function color_at(world::World, ray::Ray, remaining::Int64)
     intersections = intersect_world(world, ray)
