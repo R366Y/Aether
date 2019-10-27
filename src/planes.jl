@@ -23,11 +23,11 @@ function local_normal_at(plane::Plane, point::Vec3D)
 end
 
 function local_intersect(plane::Plane, ray::Ray)
-    result = Intersection[]
+    result = ()
     if abs(ray.direction.y) < ϵ
         return result
     end
     t = -ray.origin.y / ray.direction.y
-    push!(result, Intersection(t, plane))
+    result = (Intersection(t, plane),)
     return result
 end

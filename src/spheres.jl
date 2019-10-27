@@ -43,13 +43,13 @@ function local_intersect(s::Sphere, r::Ray)
     c = dot(sphere_to_ray, sphere_to_ray) - 1.
 
     discriminant = b^2 - 4. * a * c
-    result = Intersection[]
+    result = ()
     if discriminant >= 0.
         sqrt_disc = √(discriminant)
         den = (2. * a)
         t1 = (-b - sqrt_disc) / den
         t2 = (-b + sqrt_disc) / den
-        push!(result, Intersection(t1, s), Intersection(t2, s))
+        result = (Intersection(t1, s), Intersection(t2, s))
     end
     return result
 end

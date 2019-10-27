@@ -23,7 +23,7 @@ end
 
 function local_intersect(shape::TestShape, ray::Ray)
     shape.saved_ray = ray
-    return Intersection[]
+    return ()
 end
 
 include("cubes.jl")

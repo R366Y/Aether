@@ -19,7 +19,7 @@ mutable struct Cube <: GeometricObject
 end
 
 function local_intersect(cube::Cube, ray::Ray)
-    result = Intersection[]
+    result = ()
     xtmin, xtmax = check_axis(ray.origin.x, ray.direction.x)
     ytmin, ytmax = check_axis(ray.origin.y, ray.direction.y)
     ztmin, ztmax = check_axis(ray.origin.z, ray.direction.z)
@@ -27,7 +27,7 @@ function local_intersect(cube::Cube, ray::Ray)
     tmin = max(xtmin, ytmin, ztmin)
     tmax = min(xtmax, ytmax, ztmax)
     if tmax >= tmin
-        push!(result, Intersection(tmin, cube), Intersection(tmax, cube))
+        result = (Intersection(tmin, cube), Intersection(tmax, cube))
     end
     return result
 end

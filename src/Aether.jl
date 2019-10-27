@@ -12,6 +12,7 @@ function float_equal(a::T, b::T) where T <: AbstractFloat
     end
 end
 
+include("utils.jl")
 
 include("homogeneous_coordinates.jl")
 include("matrix_transformations.jl")
