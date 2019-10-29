@@ -1,6 +1,6 @@
 module HomogeneousCoordinates
 
-export point3D, vector3D, Vec3D, float_equal
+export point3D, vector3D, Vec3D, float_equal, dot, norm, normalize, cross
 
 using StaticArrays
 import LinearAlgebra: norm, normalize, dot, cross
