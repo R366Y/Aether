@@ -74,9 +74,9 @@ end
 function local_normal_at(cone::Cone, point::Vec3D)
     # compute the normal vector on a cone's end cap
     dist = point.x^2 + point.z^2
-    if dist < 1 && point.y >= cone.maximum - ϵ
+    if dist < cone.maximum^2 && point.y >= cone.maximum - ϵ
         return vector3D(0., 1., 0.)
-    elseif dist < 1 && point.y <= cone.minimum + ϵ
+    elseif dist < cone.minimum^2 && point.y <= cone.minimum + ϵ
         return vector3D(0., -1., 0.)
     else
         # normal vector on a cone
@@ -117,5 +117,5 @@ end
 function check_cap(ray::Ray, t::Float64, radius::Float64)
     x = ray.origin.x + t * ray.direction.x
     z = ray.origin.z + t * ray.direction.z
-    return (x^2 + z^2) <= abs(radius)
+    return (x^2 + z^2) <= radius^2
 end

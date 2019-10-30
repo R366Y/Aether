@@ -64,6 +64,7 @@ function draw_world()
 end
 
 function show_scene()
-    show_image(draw_world())
-    save_image(draw_world())
+    canvas = draw_world()
+    show_image(canvas)
+    save_image(canvas)
 end
