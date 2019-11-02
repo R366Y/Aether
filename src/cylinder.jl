@@ -15,10 +15,11 @@ mutable struct Cylinder <: GeometricObject
     minimum::Float64
     maximum::Float64
     closed::Bool
+    parent::Union{Ptr{Group}, Nothing}
 
     function Cylinder()
         new(identity_matrix(Float64), identity_matrix(Float64),
-        default_material(), -Inf, Inf, false)
+        default_material(), -Inf, Inf, false, nothing)
     end
 end
 
@@ -26,7 +27,7 @@ function local_intersect(cylinder::Cylinder, ray::Ray)
     i0 = nothing
     i1 = nothing
     result = ()
-    
+
     a = ray.direction.x^2 + ray.direction.z^2
     # ray is parallel to y axis
     if abs(a) >= ϵ

@@ -16,6 +16,7 @@ mutable struct Cone <: GeometricObject
     minimum::Float64
     maximum::Float64
     closed::Bool
+    parent::Union{Ptr{Group}, Nothing}
 
     function Cone()
         new(
@@ -25,6 +26,7 @@ mutable struct Cone <: GeometricObject
             -Inf,
             Inf,
             false,
+            nothing
         )
     end
 end

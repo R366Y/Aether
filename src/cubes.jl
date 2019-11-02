@@ -11,10 +11,11 @@ mutable struct Cube <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
+    parent::Union{Ptr{Group}, Nothing}
 
     function Cube()
         new(identity_matrix(Float64), identity_matrix(Float64),
-        default_material())
+        default_material(), nothing)
     end
 end
 

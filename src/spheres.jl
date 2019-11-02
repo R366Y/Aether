@@ -14,9 +14,11 @@ mutable struct Sphere <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
+    parent::Union{Ptr{Group}, Nothing}
 
     function Sphere(center::Vec3D, radius::Float64)
-        new(center, radius, identity_matrix(Float64), identity_matrix(Float64), default_material())
+        new(center, radius, identity_matrix(Float64),
+            identity_matrix(Float64), default_material(), nothing)
     end
 end
 
