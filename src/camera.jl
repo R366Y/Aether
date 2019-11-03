@@ -2,6 +2,7 @@ module CameraModule
 
 export Camera, ray_for_pixel, camera_set_transform
 
+using Aether.BaseGeometricType
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
 using Aether.Rays

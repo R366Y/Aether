@@ -3,12 +3,11 @@ module ComputationsModule
 export Computations, prepare_computations
 
 import Aether.HomogeneousCoordinates: dot, Vec3D
-import Aether.Intersections: Intersection
 import Aether.Materials: getObjectMaterial
 import Aether.Rays: Ray, positionr, reflect
 
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject, normal_at
+import Aether.BaseGeometricType: GeometricObject,Intersection, normal_at
 
 mutable struct Computations{O<:GeometricObject}
     t::Float64

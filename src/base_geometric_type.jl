@@ -1,8 +1,8 @@
 module BaseGeometricType
 
-export GeometricObject, set_transform, r_intersect, local_intersect,
-       normal_at, local_normal_at, world_to_object, get_parent_group,
-       normal_to_world
+export GeometricObject, Group, Intersection, add_child, set_transform,
+       r_intersect, local_intersect, normal_at, local_normal_at,
+       world_to_object, get_parent_group, normal_to_world, hit
 
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D, normalize
 import Aether.MatrixTransformations: Matrix4x4
@@ -59,4 +59,6 @@ function normal_to_world(shape::T, normal::Vec3D) where T <: GeometricObject
     return normal
 end
 
+include("intersections.jl")
+include("groups.jl")
 end

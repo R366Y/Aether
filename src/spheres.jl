@@ -1,9 +1,9 @@
 import Base: ==
 import Aether: float_equal, ϵ
 import Aether.BaseGeometricType: GeometricObject, set_transform,
-                                 local_intersect, local_normal_at
+                                 local_intersect, local_normal_at,
+                                 Intersection
 import Aether.HomogeneousCoordinates: Vec3D, point3D, dot
-import Aether.Intersections: Intersection
 import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 import Aether.Rays: Ray

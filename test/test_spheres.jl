@@ -1,10 +1,12 @@
-using Aether.Intersections
 using Aether.HomogeneousCoordinates
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Shapes
 using Aether.Rays
-import Aether.BaseGeometricType: r_intersect, normal_at, set_transform
+import Aether.BaseGeometricType: r_intersect,
+                                 normal_at,
+                                 set_transform,
+                                 Intersection
 
 using Test
 

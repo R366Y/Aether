@@ -1,7 +1,7 @@
 using Aether.ColorsModule
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
+using Aether.BaseGeometricType
 using Aether.Lights
 using Aether.Patterns
 using Aether.Shapes

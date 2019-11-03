@@ -1,7 +1,7 @@
 using Aether.CanvasModule
 using Aether.ColorsModule
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
+using Aether.BaseGeometricType
 using Aether.MatrixTransformations
 using Aether.Rays
 using Aether.Shapes

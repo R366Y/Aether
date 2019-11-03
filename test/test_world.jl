@@ -2,14 +2,13 @@ using Test
 using Aether.ColorsModule
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
 using Aether.Lights
 using Aether.Patterns
 using Aether.Shapes
 using Aether.WorldModule
 using Aether.Rays
 import Aether: ϵ
-import Aether.BaseGeometricType: set_transform
+import Aether.BaseGeometricType: set_transform, Intersection
 
 @testset "World" begin
     @testset "The default world" begin
