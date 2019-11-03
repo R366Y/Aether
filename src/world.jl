@@ -18,7 +18,6 @@ using Aether.CanvasModule
 using Aether.ColorsModule
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
 using Aether.Lights
 using Aether.MatrixTransformations
 using Aether.Rays
@@ -29,7 +28,11 @@ using Base.Threads
 using LinearAlgebra
 using ProgressMeter
 
-import Aether.BaseGeometricType: GeometricObject, r_intersect, set_transform
+import Aether.BaseGeometricType: GeometricObject,
+                                 hit,
+                                 r_intersect,
+                                 set_transform,
+                                 Intersection
 
 mutable struct World{T<:GeometricObject}
     objects::Array{T,1}

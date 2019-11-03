@@ -1,7 +1,7 @@
 using Aether.BaseGeometricType
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
+using Aether.BaseGeometricType
 using Aether.WorldModule
 using Aether.Rays
 using Aether.MatrixTransformations

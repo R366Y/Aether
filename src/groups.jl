@@ -1,5 +1,7 @@
-import Aether.BaseGeometricType: GeometricObject, local_intersect, r_intersect
-import Aether.Intersections: Intersection
+import Aether.BaseGeometricType: GeometricObject,
+                                 local_intersect,
+                                 r_intersect,
+                                 Intersection
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 import Aether.Rays: Ray
 

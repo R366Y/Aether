@@ -1,7 +1,7 @@
 using Test
 using Aether
 using Aether.HomogeneousCoordinates
-using Aether.Intersections
+using Aether.BaseGeometricType
 using Aether.Shapes
 using Aether.Rays
 

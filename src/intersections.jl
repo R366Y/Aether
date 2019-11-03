@@ -1,8 +1,3 @@
-module Intersections
-
-export Intersection, hit
-
-using LinearAlgebra
 import Aether.BaseGeometricType: GeometricObject
 
 struct Intersection{O<:GeometricObject}
@@ -28,6 +23,4 @@ function hit(is::Array)
         result = is[index]
     end
     return result
-end
-
 end

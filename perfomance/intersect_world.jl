@@ -2,7 +2,7 @@ using Aether.WorldModule
 using Aether.Rays
 using Aether.HomogeneousCoordinates
 using Aether.Shapes
-using Aether.Intersections
+using Aether.BaseGeometricType
 
 using  Profile
 using BenchmarkTools

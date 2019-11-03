@@ -24,7 +24,6 @@ include("lights.jl")
 include("patterns.jl")
 include("materials.jl")
 
-include("intersections.jl")
 include("computations.jl")
 
 include("camera.jl")
