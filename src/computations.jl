@@ -7,7 +7,7 @@ import Aether.Materials: getObjectMaterial
 import Aether.Rays: Ray, positionr, reflect
 
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject,Intersection, normal_at
+import Aether.BaseGeometricType: GeometricObject, Intersection, normal_at
 
 mutable struct Computations{O<:GeometricObject}
     t::Float64
@@ -58,7 +58,7 @@ end
 function compute_refractive_indices!(
     intersection::Intersection,
     xs::Array{Intersection},
-    comps::Computations
+    comps::Computations,
 )
     # compute n1 and n2 refractive_index where n1 is material being exited
     # n2 the material being entered

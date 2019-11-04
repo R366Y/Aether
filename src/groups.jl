@@ -8,14 +8,16 @@ import Aether.Rays: Ray
 mutable struct Group <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
-    parent::Union{Ptr{Group}, Nothing}
-    shapes::Array{GeometricObject, 1}
+    parent::Union{Ptr{Group},Nothing}
+    shapes::Array{GeometricObject,1}
 
     function Group()
-        new(identity_matrix(Float64),
+        new(
+            identity_matrix(Float64),
             identity_matrix(Float64),
             nothing,
-            GeometricObject[])
+            GeometricObject[],
+        )
     end
 end
 

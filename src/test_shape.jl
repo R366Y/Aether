@@ -8,13 +8,17 @@ mutable struct TestShape <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    parent::Union{Ptr, Nothing}
+    parent::Union{Ptr,Nothing}
     saved_ray::Ray
 
     function TestShape()
-        new(identity_matrix(Float64), identity_matrix(Float64),
-            default_material(), nothing,
-            Ray(point3D(0.,0.,0.), vector3D(0., 1., 0.)))
+        new(
+            identity_matrix(Float64),
+            identity_matrix(Float64),
+            default_material(),
+            nothing,
+            Ray(point3D(0.0, 0.0, 0.0), vector3D(0.0, 1.0, 0.0)),
+        )
     end
 end
 

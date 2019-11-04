@@ -17,7 +17,7 @@ mutable struct Cone <: GeometricObject
     minimum::Float64
     maximum::Float64
     closed::Bool
-    parent::Union{Ptr{Group}, Nothing}
+    parent::Union{Ptr{Group},Nothing}
 
     function Cone()
         new(
@@ -27,7 +27,7 @@ mutable struct Cone <: GeometricObject
             -Inf,
             Inf,
             false,
-            nothing
+            nothing,
         )
     end
 end
@@ -78,13 +78,13 @@ function local_normal_at(cone::Cone, point::Vec3D)
     # compute the normal vector on a cone's end cap
     dist = point.x^2 + point.z^2
     if dist < cone.maximum^2 && point.y >= cone.maximum - ϵ
-        return vector3D(0., 1., 0.)
+        return vector3D(0.0, 1.0, 0.0)
     elseif dist < cone.minimum^2 && point.y <= cone.minimum + ϵ
-        return vector3D(0., -1., 0.)
+        return vector3D(0.0, -1.0, 0.0)
     else
         # normal vector on a cone
         y = √(point.x^2 + point.z^2)
-        if point.y > 0.
+        if point.y > 0.0
             y = -y
         end
         return vector3D(point.x, y, point.z)
@@ -104,7 +104,7 @@ function intersect_caps(cone::Cone, ray::Ray)
     # the ray with the plane at y=cone.minimum
     t = (cone.minimum - ray.origin.y) / ray.direction.y
     if check_cap(ray, t, cone.minimum)
-        ci0 =  Intersection(t, cone)
+        ci0 = Intersection(t, cone)
     end
     # check for an intersection with the upper end cap by intersecting
     # the ray with the plane at y=cone.maximum

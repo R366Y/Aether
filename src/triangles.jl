@@ -30,10 +30,10 @@ function local_intersect(triangle::Triangle, ray::Ray)
     if abs(det) < ϵ
         return ()
     end
-    f = 1. / det
+    f = 1.0 / det
     p1_to_origin = ray.origin - triangle.p1
     u = f * dot(p1_to_origin, dir_cross_e2)
-    if u < 0. || u > 1.
+    if u < 0.0 || u > 1.0
         return ()
     end
     origin_cross_e1 = cross(p1_to_origin, triangle.e1)

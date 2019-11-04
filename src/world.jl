@@ -103,7 +103,7 @@ function render_multithread(camera::Camera, world::World, progress_meter = true)
     @threads for t = 1:num_threads
         sub_image = sub_images[t]
         n = 1
-        for x in t:num_threads:camera.hsize - rem
+        for x = t:num_threads:camera.hsize-rem
             for y = 1:camera.vsize
                 ray = ray_for_pixel(camera, x, y)
                 color = color_at(world, ray, 5)
@@ -139,12 +139,12 @@ function render_multithread(camera::Camera, world::World, progress_meter = true)
     BLAS.set_num_threads(num_threads)
 
     # recombine the subimages into a single image
-    for t in 1:num_threads
+    for t = 1:num_threads
         sub_image = sub_images[t]
         n = 1
-        for x in t:num_threads:camera.hsize - rem
+        for x = t:num_threads:camera.hsize-rem
             image.__data[:, x] .= sub_image.__data[:, n]
-            n+=1
+            n += 1
         end
     end
     image.__data[:, remaining+1:camera.hsize] .= remaining_subimage.__data

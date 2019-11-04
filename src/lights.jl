@@ -12,12 +12,12 @@ struct PointLight
 end
 
 function default_point_light()
-    intensity = ColorRGB(1.,1.,1.)
-    position = point3D(0.,0.,0.)
+    intensity = ColorRGB(1.0, 1.0, 1.0)
+    position = point3D(0.0, 0.0, 0.0)
     return PointLight(position, intensity)
 end
 
-@inline ==(p1::PointLight, p2::PointLight) = p1.position == p2.position &&
-                                             p1.intensity == p2.intensity
+@inline ==(p1::PointLight, p2::PointLight) =
+    p1.position == p2.position && p1.intensity == p2.intensity
 
 end

@@ -1,6 +1,8 @@
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject, local_intersect,
-                                 local_normal_at, Intersection
+import Aether.BaseGeometricType: GeometricObject,
+                                 local_intersect,
+                                 local_normal_at,
+                                 Intersection
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D
 import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
@@ -10,11 +12,15 @@ mutable struct Cube <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    parent::Union{Ptr{Group}, Nothing}
+    parent::Union{Ptr{Group},Nothing}
 
     function Cube()
-        new(identity_matrix(Float64), identity_matrix(Float64),
-        default_material(), nothing)
+        new(
+            identity_matrix(Float64),
+            identity_matrix(Float64),
+            default_material(),
+            nothing,
+        )
     end
 end
 
@@ -57,10 +63,10 @@ function local_normal_at(cube::Cube, point::Vec3D)
 
     maxc = max(abs_x, abs_y, abs_z)
     if maxc == abs_x
-        return vector3D(point.x, 0., 0.)
+        return vector3D(point.x, 0.0, 0.0)
     elseif maxc == abs_y
-        return vector3D(0., point.y, 0.)
+        return vector3D(0.0, point.y, 0.0)
     end
 
-    return vector3D(0., 0., point.z)
+    return vector3D(0.0, 0.0, point.z)
 end

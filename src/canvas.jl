@@ -37,12 +37,12 @@ function show_image(canvas::Canvas)
     imshow(_convertCanvasToRGB(canvas))
 end
 
-function save_image(canvas::Canvas, filename="renders/render.png")
+function save_image(canvas::Canvas, filename = "renders/render.png")
     save(filename, _convertCanvasToRGB(canvas))
 end
 
 function _convertCanvasToRGB(canvas::Canvas)
-    result = fill(RGB(0,0,0), canvas.height, canvas.width)
+    result = fill(RGB(0, 0, 0), canvas.height, canvas.width)
     for index in eachindex(canvas.__data)
         result[index] = _colorRGBtoRGB(canvas.__data[index])
     end

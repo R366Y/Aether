@@ -4,7 +4,7 @@ export ϵ, float_equal
 
 const ϵ = 0.00001
 
-function float_equal(a::T, b::T) where T <: AbstractFloat
+function float_equal(a::T, b::T) where {T<:AbstractFloat}
     if abs(a - b) < ϵ
         return true
     else

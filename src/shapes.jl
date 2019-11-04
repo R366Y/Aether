@@ -1,7 +1,15 @@
 module Shapes
 
-export Cone, Cube, Cylinder, Plane, Sphere, TestShape,Triangle,
-       default_sphere, glass_sphere, add_child
+export Cone,
+       Cube,
+       Cylinder,
+       Plane,
+       Sphere,
+       TestShape,
+       Triangle,
+       default_sphere,
+       glass_sphere,
+       add_child
 
 include("cones.jl")
 include("cubes.jl")

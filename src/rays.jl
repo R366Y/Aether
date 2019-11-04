@@ -17,12 +17,12 @@ function positionr(ray::Ray, t::Float64)
 end
 
 function transform(ray::Ray, matrix::Matrix4x4)
-     origin = matrix * ray.origin
-     direction = matrix * ray.direction
-     return Ray(origin, direction)
+    origin = matrix * ray.origin
+    direction = matrix * ray.direction
+    return Ray(origin, direction)
 end
 
 function reflect(v::Vec3D, normal::Vec3D)
-    return v - normal * 2. * dot(v, normal)
+    return v - normal * 2.0 * dot(v, normal)
 end
 end  # module Rays
