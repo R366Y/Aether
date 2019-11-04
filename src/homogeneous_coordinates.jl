@@ -22,6 +22,8 @@ mutable struct Vec3D{T<:AbstractFloat}
     end
 end
 
+const Vecf64 = Vec3D{Float64}
+
 @inline +(v1::Vec3D, v2::Vec3D) = Vec3D(v1.x + v2.x,
                                         v1.y + v2.y,
                                         v1.z + v2.z,
