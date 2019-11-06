@@ -1,5 +1,5 @@
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject, Intersection
+import Aether.BaseGeometricType: GeometricObject, Group, Intersection
 import Aether.HomogeneousCoordinates: point3D,
                                       vector3D,
                                       Vecf64,
@@ -15,12 +15,13 @@ mutable struct Triangle <: GeometricObject
     e1::Vecf64
     e2::Vecf64
     normal::Vecf64
+    parent::Union{Ptr{Group},Nothing}
 
     function Triangle(p1::Vecf64, p2::Vecf64, p3::Vecf64)
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
-        new(p1, p2, p3, e1, e2, normal)
+        new(p1, p2, p3, e1, e2, normal, nothing)
     end
 end
 

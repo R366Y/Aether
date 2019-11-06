@@ -1,6 +1,6 @@
 module Aether
 
-export ϵ, float_equal
+export ϵ, float_equal, ObjFile, parse_obj_file
 
 const ϵ = 0.00001
 
@@ -23,13 +23,13 @@ include("canvas.jl")
 include("lights.jl")
 include("patterns.jl")
 include("materials.jl")
-
 include("computations.jl")
 
 include("camera.jl")
 include("shaders.jl")
 
 include("shapes.jl")
+include("wavefront_obj_reader.jl")
 
 include("world.jl")
 
