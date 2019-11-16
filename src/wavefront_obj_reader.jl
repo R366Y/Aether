@@ -5,14 +5,22 @@ import Aether.Shapes: Triangle
 mutable struct ObjFile
     vertices::Array{Vecf64,1}
     default_group::Group
+    named_groups::Dict
+    active_group::Group
 
     function ObjFile()
-        new(Vecf64[], Group())
+        g = Group()
+        new(Vecf64[], g, Dict(), g)
     end
 end
 
+function add_new_named_group(name, obj_file)
+    obj_file.active_group = Group()
+    obj_file.named_groups[name] = obj_file.active_group
+end
+
 function parse_obj_file(filepath::String)
-    line_delimiters = ("v", "f")
+    line_delimiters = ("v", "f", "g")
     obj_file = ObjFile()
     open(filepath) do file
         for line in eachline(file)
@@ -35,6 +43,9 @@ function parse_obj_file(filepath::String)
                     elseif length(numbers) > 3
                         fan_triangulation(obj_file, numbers)
                     end
+                elseif first_char == "g"
+                    # g parameter describes a named group
+                    add_new_named_group(String(join(numbers)), obj_file)
                 end
             end
         end
@@ -58,7 +69,7 @@ end
 function process_faces(obj_file, vertex_numbers)
     vertices = [obj_file.vertices[parse(Int, v)] for v in vertex_numbers]
     t = Triangle(vertices[1], vertices[2], vertices[3])
-    add_child(obj_file.default_group, t)
+    add_child(obj_file.active_group, t)
 end
 
 function fan_triangulation(obj_file, vertex_numbers)
@@ -67,6 +78,6 @@ function fan_triangulation(obj_file, vertex_numbers)
                        obj_file.vertices[parse(Int, vertex_numbers[index])],
                        obj_file.vertices[parse(Int, vertex_numbers[index + 1])]
                        )
-        add_child(obj_file.default_group, tri)
+        add_child(obj_file.active_group, tri)
     end
 end

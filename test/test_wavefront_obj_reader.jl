@@ -47,4 +47,18 @@ using Aether.HomogeneousCoordinates
         @test t3.p2 == parser.vertices[4]
         @test t3.p3 == parser.vertices[5]
     end
+
+    @testset "Triangles in groups" begin
+        parser = parse_obj_file("resources/triangles_named_groups.obj")
+        g1 = parser.named_groups["FirstGroup"]
+        g2 = parser.named_groups["SecondGroup"]
+        t1 = g1.shapes[1]
+        t2 = g2.shapes[1]
+        @test t1.p1 == parser.vertices[1]
+        @test t1.p2 == parser.vertices[2]
+        @test t1.p3 == parser.vertices[3]
+        @test t2.p1 == parser.vertices[1]
+        @test t2.p2 == parser.vertices[3]
+        @test t2.p3 == parser.vertices[4]
+    end
 end
