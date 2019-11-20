@@ -53,6 +53,14 @@ function parse_obj_file(filepath::String)
     return obj_file
 end
 
+function obj_to_group(obj_file)
+    g = deepcopy(obj_file.default_group)
+    for k in keys(obj_file.named_groups)
+        add_child(g, obj_file.named_groups[k])
+    end
+    return g
+end
+
 function check_if_all_numbers(string_array)
     for s in string_array
         if !all(c -> isdigit(c) || c in ('.', '-'), s)

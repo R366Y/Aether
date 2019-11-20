@@ -61,4 +61,13 @@ using Aether.HomogeneousCoordinates
         @test t2.p2 == parser.vertices[3]
         @test t2.p3 == parser.vertices[4]
     end
+
+    @testset "Converting an OBJ file to a group" begin
+        parser = parse_obj_file("resources/triangles_named_groups.obj")
+        g = obj_to_group(parser)
+        g1 = parser.named_groups["FirstGroup"]
+        g2 = parser.named_groups["SecondGroup"]
+        @test g1 in g.shapes
+        @test g2 in g.shapes
+    end
 end

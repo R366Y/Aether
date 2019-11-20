@@ -1,6 +1,6 @@
 module Aether
 
-export ϵ, float_equal, ObjFile, parse_obj_file
+export ϵ, float_equal, ObjFile, obj_to_group, parse_obj_file 
 
 const ϵ = 0.00001
 
