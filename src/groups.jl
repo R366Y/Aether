@@ -8,7 +8,7 @@ import Aether.Rays: Ray
 mutable struct Group <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
-    parent::Union{Ptr{Group},Nothing}
+    parent::Union{Ref{Group},Nothing}
     shapes::Array{GeometricObject,1}
 
     function Group()
@@ -22,7 +22,7 @@ mutable struct Group <: GeometricObject
 end
 
 function add_child(group::Group, shape::GeometricObject)
-    shape.parent = convert(Ptr{Group}, pointer_from_objref(group))
+    shape.parent = Ref(group)
     push!(group.shapes, shape)
 end
 

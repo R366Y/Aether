@@ -1,4 +1,5 @@
 using Aether
+using Aether.BaseGeometricType
 using Aether.CameraModule
 using Aether.CanvasModule
 using Aether.ColorsModule
@@ -13,12 +14,13 @@ using Aether.WorldModule
 function draw_world()
 	obj_file = parse_obj_file("examples/resources/teapot.obj")
 	teapot = obj_to_group(obj_file)
+    set_transform(teapot, scaling(0.25, 0.25, 0.25))
 
 	world = World()
     world.light = PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
     add_objects(world,teapot)
 
-    camera = Camera(800, 400, 0.314)
+    camera = Camera(400, 200, 0.314)
     camera_set_transform(
         camera,
         view_transform(
@@ -27,7 +29,7 @@ function draw_world()
             vector3D(0.0, 1.0, 0.0),
         ),
     )
-    canvas = render(camera, world)
+    canvas = render_multithread(camera, world)
 end
 
 function show_scene()

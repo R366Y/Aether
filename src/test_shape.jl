@@ -8,7 +8,7 @@ mutable struct TestShape <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    parent::Union{Ptr,Nothing}
+    parent::Union{Ref{Group},Nothing}
     saved_ray::Ray
 
     function TestShape()

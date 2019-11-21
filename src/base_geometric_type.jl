@@ -47,7 +47,7 @@ end
 function get_parent_group(shape::T) where {T<:GeometricObject}
     result = nothing
     if !isnothing(shape.parent)
-        result = unsafe_pointer_to_objref(shape.parent)
+        result = shape.parent[]
     end
     return result
 end
