@@ -6,9 +6,12 @@ import Aether.HomogeneousCoordinates: point3D,
                                       normalize,
                                       cross,
                                       dot
+import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 import Aether.Rays: Ray
 
 mutable struct Triangle <: GeometricObject
+    transform::Matrix4x4
+    inverse::Matrix4x4
     p1::Vecf64
     p2::Vecf64
     p3::Vecf64
@@ -21,7 +24,10 @@ mutable struct Triangle <: GeometricObject
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
-        new(p1, p2, p3, e1, e2, normal, nothing)
+        new(identity_matrix(Float64),
+            identity_matrix(Float64),
+            p1, p2, p3, e1, e2, 
+            normal, nothing)
     end
 end
 

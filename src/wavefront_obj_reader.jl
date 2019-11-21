@@ -25,6 +25,9 @@ function parse_obj_file(filepath::String)
     open(filepath) do file
         for line in eachline(file)
             line_elements = split(line)
+            if length(line_elements) == 0
+                continue
+            end
             first_char = line_elements[1]
 
             if first_char in line_delimiters
