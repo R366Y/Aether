@@ -27,11 +27,11 @@ function run_simulation()
     e = Environment(vector3D(0.0, -0.1, 0.0), vector3D(-0.01, 0.0, 0.0))
     number_of_ticks = 0
     position_array = Matrix{Float64}(undef,0,2)
-    while p.position[2] > 0
+    while p.position.y > 0
         p = tick(e, p)
-        println("x value $(p.position[1]) y value $(p.position[2])")
+        println("x value $(p.position.x) y value $(p.position.y)")
         number_of_ticks+=1
-        position_array = vcat([p.position[1], p.position[2]]' ,position_array)
+        position_array = vcat([p.position.x, p.position.y]' ,position_array)
     end
     print("Total ticks: $number_of_ticks")
     return position_array
