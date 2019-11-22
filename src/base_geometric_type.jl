@@ -18,32 +18,73 @@ import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D, normalize
 import Aether.MatrixTransformations: Matrix4x4
 import Aether.Rays: Ray, transform
 
+"""
+  GeometricObject
+
+Base type for all the shapes (box, plane, sphere, triangle etc.)
+"""
 abstract type GeometricObject end
 
+"""
+    set_transform(shape::GeometricObject, matrix::Matrix4x4)
+
+Set transform and inverse matrixes for a shape of type `GeometricObject`.
+The shape MUST have the two fields `transform` and `inverse`.
+"""
 function set_transform(shape::T, matrix::Matrix4x4) where {T<:GeometricObject}
     shape.transform = matrix
     shape.inverse = inv(matrix)
 end
 
+"""
+    r_intersect(shape::GeometricObject, ray::Ray)
+
+Calculate intersections between a ray and a shape.
+"""
 function r_intersect(shape::T, ray::Ray) where {T<:GeometricObject}
     local_ray = transform(ray, shape.inverse)
     return local_intersect(shape, local_ray)
 end
 
+"""
+    local_intersect(shape::GeometricObject, ray::Ray)
+
+Calculate the intersection bewteen a ray and a shape after the ray has been transformed
+to local coordinates. Standard implementation returns an empty `Array`.
+This function MUST be implemented for every shape.
+"""
 function local_intersect(shape::T, ray::Ray) where {T<:GeometricObject}
     return []
 end
 
+"""
+    normal_at(shape::GeometricObject, world_point::Vec3D)
+
+Calculate the normal in world coordinates at a point on the shape.
+"""
 function normal_at(shape::T, world_point::Vec3D) where {T<:GeometricObject}
     local_point = world_to_object(shape, world_point)
     local_normal = local_normal_at(shape, local_point)
     return normal_to_world(shape, local_normal)
 end
 
+"""
+    local_normal_at(shape::GeometricObject, point::Vec3D)
+
+Calculate the normal in local coordinates at a point on the shape.
+This function MUST be implemented for every shape.
+"""
 function local_normal_at(shape::T, point::Vec3D) where {T<:GeometricObject}
     return vector3D(point.x, point.y, point.z)
 end
 
+"""
+    get_parent_group(shape::GeometricObject)
+
+Return the parent `Group` for a shape if the shape is a part of a group.
+Otherwise returns `nothing`.
+Shape MUST have a field called 'parent' that can contain the reference to a 'Group' instance.
+"""
 function get_parent_group(shape::T) where {T<:GeometricObject}
     result = nothing
     if !isnothing(shape.parent)
@@ -52,6 +93,11 @@ function get_parent_group(shape::T) where {T<:GeometricObject}
     return result
 end
 
+"""
+    world_to_object(shape::GeometricObject, point::Vec3D)
+
+Transform a point from world coordinates to local coordinates relative to the given shape. 
+"""
 function world_to_object(shape::T, point::Vec3D) where {T<:GeometricObject}
     if !isnothing(get_parent_group(shape))
         point = world_to_object(get_parent_group(shape), point)
@@ -59,6 +105,11 @@ function world_to_object(shape::T, point::Vec3D) where {T<:GeometricObject}
     return shape.inverse * point
 end
 
+"""
+    normal_to_world(shape::GeometricObject, normal::Vec3D)
+
+Transform a normal from local coordinates to world coordinates. Normal is also normalized.
+"""
 function normal_to_world(shape::T, normal::Vec3D) where {T<:GeometricObject}
     normal = transpose(shape.inverse) * normal
     normal.w = 0.0

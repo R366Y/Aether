@@ -6,6 +6,14 @@ import Aether: float_equal
 
 export ColorRGB, black, white
 
+"""
+    struct ColorRGB
+
+Struct defining colors used by the raytracer. 
+'r','g','b' components are floats with range from 0.0 to 1.0.
+Allowed operations among colors are '+','-','*'.
+Allowed operations bewteen colors and floats are '+','-','*','/'.
+"""
 struct ColorRGB
     r::Float64
     g::Float64

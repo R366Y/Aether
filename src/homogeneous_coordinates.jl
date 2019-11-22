@@ -34,6 +34,7 @@ const Vecf64 = Vec3D{Float64}
 
 @inline *(v::Vec3D, k::T) where {T<:AbstractFloat} =
     Vec3D(v.x * k, v.y * k, v.z * k, v.w * k)
+
 @inline function Base.:*(
     m::SMatrix{4,4,T},
     v::Vec3D{T},
@@ -47,6 +48,7 @@ end
 
 @inline /(v::Vec3D, k::T) where {T<:AbstractFloat} =
     Vec3D(v.x / k, v.y / k, v.z / k, v.w / k)
+
 @inline ==(v1::Vec3D, v2::Vec3D) =
     v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w
 

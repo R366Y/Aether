@@ -7,36 +7,77 @@ using ImageView
 
 export Canvas, write_pixel!, pixel_at, show_image, empty_canvas, save_image
 
+"""
+    struct Canvas
+
+Canvas is the data structure where the computations of the raytracer is written i.e contains the final image.
+Fields `width` and `height` defines the width and height of the image.
+"""
 struct Canvas
     width::Int64
     height::Int64
     __data::Array{ColorRGB,2}
 
+    """
+        Canvas(width::Int64, height::Int64)
+
+    Create a canvas filled with black color.
+    """
     function Canvas(width::Int64, height::Int64)
         new(width, height, fill(black, (height, width)))
     end
 
+    """
+        Canvas(width::Int64, height::Int64, c::ColorRGB)
+
+    Create a canvas filled with color `c`.
+    """
     function Canvas(width::Int64, height::Int64, c::ColorRGB)
         new(width, height, fill(c, (height, width)))
     end
 end
 
+"""
+    empty_canvas(width::Int64, height::Int64)
+
+Create an empty canvas filled with black color. Same as `Canvas(width::Int64, height::Int64)`.
+"""
 function empty_canvas(width::Int64, height::Int64)
     return Canvas(width, height, black)
 end
 
+"""
+    write_pixel!(canvas::Canvas, x::Int64, y::Int64, color::ColorRGB)
+
+Write a pixel on a canvas to given coordinates `x` and `y` of color `color`.
+"""
 function write_pixel!(canvas::Canvas, x::Int64, y::Int64, color::ColorRGB)
     @inbounds canvas.__data[y, x] = color
 end
 
+"""
+    pixel_at(canvas::Canvas, x::Int64, y::Int64)
+
+Returns the color of a pixel at the given coordinates `x` and `y`. 
+"""
 function pixel_at(canvas::Canvas, x::Int64, y::Int64)
     return canvas.__data[y, x]
 end
 
+"""
+    show_image(canvas::Canvas)
+
+Creates a window and visualize the canvas.
+"""
 function show_image(canvas::Canvas)
     imshow(_convertCanvasToRGB(canvas))
 end
 
+"""
+    save_image(canvas::Canvas, filename = "renders/render.png")
+
+Saves an image to the hard drive. Optionally file name can be passed to `filename` field. 
+"""
 function save_image(canvas::Canvas, filename = "renders/render.png")
     save(filename, _convertCanvasToRGB(canvas))
 end
