@@ -17,6 +17,9 @@ mutable struct Triangle <: GeometricObject
     p1::Vecf64
     p2::Vecf64
     p3::Vecf64
+    n1::Union{Nothing, Vecf64}
+    n2::Union{Nothing, Vecf64}
+    n3::Union{Nothing, Vecf64}
     e1::Vecf64
     e2::Vecf64
     normal::Vecf64
@@ -29,9 +32,34 @@ mutable struct Triangle <: GeometricObject
         new(identity_matrix(Float64),
             identity_matrix(Float64),
             default_material(),
-            p1, p2, p3, e1, e2, 
+            p1, p2, p3, 
+            nothing, nothing, nothing,
+            e1, e2, 
             normal, nothing)
     end
+
+    function Triangle(p1::Vecf64, p2::Vecf64, p3::Vecf64,
+                      n1::Vecf64, n2::Vecf64, n3::Vecf64)
+        e1 = p2 - p1
+        e2 = p3 - p1
+        normal = normalize(cross(e2, e1))
+        new(identity_matrix(Float64),
+            identity_matrix(Float64),
+            default_material(),
+            p1, p2, p3, 
+            n1, n2, n3,
+            e1, e2, 
+            normal, nothing)
+    end
+end
+
+function smooth_triangle(p1::Vecf64, p2::Vecf64, p3::Vecf64,
+                         n1::Vecf64, n2::Vecf64, n3::Vecf64)
+    return Triangle(p1, p2, p3, n1, n2, n3)
+end
+
+function is_smooth_triangle(triangle::Triangle)
+    return !isnothing(triangle.n1) && !isnothing(triangle.n2) && !isnothing(triangle.n3)
 end
 
 function local_intersect(triangle::Triangle, ray::Ray)
@@ -53,6 +81,10 @@ function local_intersect(triangle::Triangle, ray::Ray)
     end
 
     t = f * dot(triangle.e2, origin_cross_e1)
+
+    if is_smooth_triangle(triangle)
+        return (Intersection(t, triangle, u, v),)
+    end
     return (Intersection(t, triangle),)
 
 end

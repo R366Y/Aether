@@ -142,9 +142,9 @@ version = "1.1.0"
 
 [[FileIO]]
 deps = ["Pkg"]
-git-tree-sha1 = "351f001a78aa1b7ad2696e386e110b5abd071c71"
+git-tree-sha1 = "6c976460b85527d22d979682222d36767d95e27f"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-version = "1.0.7"
+version = "1.1.0"
 
 [[FixedPointNumbers]]
 git-tree-sha1 = "d14a6fa5890ea3a7e5dcab6811114f132fec2b4b"

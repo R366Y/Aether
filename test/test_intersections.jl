@@ -48,6 +48,13 @@ import Aether: ϵ
         i = hit([i2,i1,i4,i3])
         @test i === i4
     end
+
+    @testset "And intersection can encapsulate 'u' and 'v'" begin
+        s = Triangle(point3D(0., 1., 0.), point3D(-1., 0., 0.), point3D(1., 0., 0.))
+        i = Intersection(3.5, s, 0.2, 0.4)
+        @test i.u == 0.2
+        @test i.v == 0.4
+    end
 end
 
 @testset "Reflecting vectors" begin
