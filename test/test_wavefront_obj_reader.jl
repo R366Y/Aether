@@ -70,4 +70,25 @@ using Aether.HomogeneousCoordinates
         @test g1 in g.shapes
         @test g2 in g.shapes
     end
+
+    @testset "Vertex normal records" begin
+        parser = parse_obj_file("resources/only_normals.obj")
+        @test parser.normals[1] == vector3D(0., 0., 1.)
+        @test parser.normals[2] == vector3D(0.707, 0., -0.707)
+        @test parser.normals[3] == vector3D(1., 2., 3.)
+    end
+
+    @testset "Faces with normals" begin
+        parser = parse_obj_file("resources/faces_with_normals.obj")
+        g = parser.default_group
+        t1 = g.shapes[1]
+        t2 = g.shapes[2]
+        @test t1.p1 == parser.vertices[1]
+        @test t1.p2 == parser.vertices[2]
+        @test t1.p3 == parser.vertices[3]
+        @test t1.n1 == parser.normals[3]
+        @test t1.n2 == parser.normals[1]
+        @test t1.n3 == parser.normals[2]
+        @test t2 == t1
+    end
 end

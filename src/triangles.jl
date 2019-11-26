@@ -1,3 +1,5 @@
+import Base: ==
+
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, Group, Intersection
 import Aether.HomogeneousCoordinates: point3D,
@@ -67,6 +69,13 @@ mutable struct SmoothTriangle <: TriangleObject
     end
 end
 
+@inline ==(t1::Triangle, t2::Triangle) = 
+    t1.p1 == t2.p1 && t1.p2 == t2.p2 && t1.p3 == t2.p3
+
+@inline ==(t1::SmoothTriangle, t2::SmoothTriangle) =
+    t1.p1 == t2.p1 && t1.p2 == t2.p2 && t1.p3 == t2.p3 &&
+    t1.n1 == t2.n1 && t1.n2 == t2.n2 && t1.n3 == t2.n3
+
 function local_intersect(triangle::Triangle, ray::Ray)
     res = triangle_intersect(triangle, ray) 
     if !isempty(res)
@@ -112,5 +121,5 @@ function local_normal_at(triangle::Triangle, point::Vec3D)
 end
 
 function local_normal_at(triangle::SmoothTriangle, point::Vec3D, u::Float64, v::Float64)
-    return triangle.n2 * u + triangle.n3 * v + triangle.n1 * (1 - u - v)
+    return normalize(triangle.n2 * u + triangle.n3 * v + triangle.n1 * (1 - u - v))
 end

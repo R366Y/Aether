@@ -1,16 +1,17 @@
 import Aether.BaseGeometricType: Group, add_child
-import Aether.HomogeneousCoordinates: Vecf64, point3D
-import Aether.Shapes: Triangle
+import Aether.HomogeneousCoordinates: Vecf64, point3D, vector3D
+import Aether.Shapes: Triangle, SmoothTriangle
 
 mutable struct ObjFile
     vertices::Array{Vecf64,1}
+    normals::Array{Vecf64,1}
     default_group::Group
     named_groups::Dict
     active_group::Group
 
     function ObjFile()
         g = Group()
-        new(Vecf64[], g, Dict(), g)
+        new(Vecf64[], Vecf64[], g, Dict(), g)
     end
 end
 
@@ -20,7 +21,7 @@ function add_new_named_group(name, obj_file)
 end
 
 function parse_obj_file(filepath::String)
-    line_delimiters = ("v", "f", "g")
+    line_delimiters = ("v", "vn", "f", "g")
     obj_file = ObjFile()
     open(filepath) do file
         for line in eachline(file)
@@ -31,25 +32,8 @@ function parse_obj_file(filepath::String)
             first_char = line_elements[1]
 
             if first_char in line_delimiters
-                numbers = line_elements[2:end]
-
-                if first_char == "v"
-                    if !check_if_all_numbers(numbers)
-                        continue
-                    end
-                    process_vertices(obj_file, numbers)
-                elseif first_char == "f"
-                    # f parameter describes a triangle
-                    if length(numbers) == 3
-                        process_faces(obj_file, numbers)
-                    # f parameter describes a polygon
-                    elseif length(numbers) > 3
-                        fan_triangulation(obj_file, numbers)
-                    end
-                elseif first_char == "g"
-                    # g parameter describes a named group
-                    add_new_named_group(String(join(numbers)), obj_file)
-                end
+                tokens = line_elements[2:end]
+                parse_tokens(obj_file, first_char, tokens)
             end
         end
     end
@@ -64,6 +48,35 @@ function obj_to_group(obj_file)
     return g
 end
 
+function parse_tokens(obj_file, first_char, tokens)
+    if first_char == "v"
+        if !check_if_all_numbers(tokens)
+            return
+        end
+        parse_vertices(obj_file, tokens)
+    elseif first_char == "vn"
+        if !check_if_all_numbers(tokens)
+            return
+        end
+        parse_normals(obj_file, tokens)
+    elseif first_char == "f"
+        vertices, tex, normals = parse_faces(tokens)
+        if !check_if_all_numbers(vertices)
+            return
+        end
+        # f parameter describes a triangle
+        if length(vertices) == 3
+            parse_faces_vertices(obj_file, vertices, normals)
+        # f parameter describes a polygon
+        elseif length(vertices) > 3
+            fan_triangulation(obj_file, vertices, normals)
+        end
+    elseif first_char == "g"
+        # g parameter describes a named group
+        add_new_named_group(String(join(tokens)), obj_file)
+    end
+end
+
 function check_if_all_numbers(string_array)
     for s in string_array
         if !all(c -> isdigit(c) || c in ('.', '-'), s)
@@ -73,22 +86,60 @@ function check_if_all_numbers(string_array)
     return true
 end
 
-function process_vertices(obj_file, coordinates)
+function parse_vertices(obj_file, coordinates)
     push!(obj_file.vertices, point3D([parse(Float64, n) for n in coordinates]))
 end
 
-function process_faces(obj_file, vertex_numbers)
+function parse_normals(obj_file, coordinates)
+    push!(obj_file.normals, vector3D([parse(Float64, n) for n in coordinates]))
+end
+
+function parse_faces(tokens)
+    vertices = []
+    tex = []
+    normals = []
+    for token in tokens
+        face_attributes = [c for c in split(token, "/") if !isempty(c)]
+        la = length(face_attributes)
+        push!(vertices, face_attributes[1])
+        if la == 2
+            push!(normals, face_attributes[2])
+        elseif la > 2
+            push!(tex, face_attributes[2])
+            push!(normals, face_attributes[3])
+        end
+    end
+    return vertices, tex, normals
+end
+
+function parse_faces_vertices(obj_file, vertex_numbers, normals)
     vertices = [obj_file.vertices[parse(Int, v)] for v in vertex_numbers]
-    t = Triangle(vertices[1], vertices[2], vertices[3])
+    if isempty(normals)
+        t = Triangle(vertices[1], vertices[2], vertices[3])
+    else 
+        normals = [obj_file.normals[parse(Int, n)] for n in normals]
+        t = SmoothTriangle(vertices[1], vertices[2], vertices[3],
+                           normals[1], normals[2], normals[3])
+    end
     add_child(obj_file.active_group, t)
 end
 
-function fan_triangulation(obj_file, vertex_numbers)
+function fan_triangulation(obj_file, vertex_numbers, normals)
     for index in 2:length(vertex_numbers) - 1
-        tri = Triangle(obj_file.vertices[1],
-                       obj_file.vertices[parse(Int, vertex_numbers[index])],
-                       obj_file.vertices[parse(Int, vertex_numbers[index + 1])]
-                       )
+        if isempty(normals)
+            tri = Triangle(obj_file.vertices[1],
+                           obj_file.vertices[parse(Int, vertex_numbers[index])],
+                           obj_file.vertices[parse(Int, vertex_numbers[index + 1])]
+                           )
+        else 
+            tri = SmoothTriangle(obj_file.vertices[1],
+                                 obj_file.vertices[parse(Int, vertex_numbers[index])],
+                                 obj_file.vertices[parse(Int, vertex_numbers[index + 1])],
+                                 obj_file.normals[1],
+                                 obj_file.normals[parse(Int, normals[index])],
+                                 obj_file.normals[parse(Int, normals[index + 1])]
+                                 )
+        end
         add_child(obj_file.active_group, tri)
     end
 end
