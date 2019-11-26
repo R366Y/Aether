@@ -53,7 +53,7 @@ mutable struct SmoothTriangle <: TriangleObject
     parent::Union{Ref{Group},Nothing}
 
     function SmoothTriangle(p1::Vecf64, p2::Vecf64, p3::Vecf64,
-                      n1::Vecf64, n2::Vecf64, n3::Vecf64)
+                            n1::Vecf64, n2::Vecf64, n3::Vecf64)
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
@@ -109,4 +109,8 @@ end
 
 function local_normal_at(triangle::Triangle, point::Vec3D)
     return triangle.normal
+end
+
+function local_normal_at(triangle::SmoothTriangle, point::Vec3D, u::Float64, v::Float64)
+    return triangle.n2 * u + triangle.n3 * v + triangle.n1 * (1 - u - v)
 end

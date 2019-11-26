@@ -3,11 +3,11 @@ import Aether.BaseGeometricType: GeometricObject
 struct Intersection{O<:GeometricObject}
     t::Float64
     gobject::O
-    u::Float64
-    v::Float64
+    u::Union{Float64, Nothing}
+    v::Union{Float64, Nothing}
 
     function Intersection(t::Float64, gobject::O) where {O<:GeometricObject}
-        new{O}(t, gobject)
+        new{O}(t, gobject, nothing, nothing)
     end
 
     function Intersection(t::Float64, gobject::O, u::Float64, v::Float64) where {O<:GeometricObject}

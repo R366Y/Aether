@@ -58,13 +58,19 @@ function local_intersect(shape::T, ray::Ray) where {T<:GeometricObject}
 end
 
 """
-    normal_at(shape::GeometricObject, world_point::Vec3D)
+    normal_at(shape::GeometricObject, world_point::Vec3D, u::Union{Float64, Nothing} = nothing, v::Union{Float64, Nothing} = nothing)
 
 Calculate the normal in world coordinates at a point on the shape.
 """
-function normal_at(shape::T, world_point::Vec3D) where {T<:GeometricObject}
+function normal_at(shape::T, world_point::Vec3D, 
+                   u::Union{Float64, Nothing} = nothing, 
+                   v::Union{Float64, Nothing} = nothing) where {T<:GeometricObject}
     local_point = world_to_object(shape, world_point)
-    local_normal = local_normal_at(shape, local_point)
+    if !isnothing(u) && !isnothing(v)
+        local_normal = local_normal_at(shape, local_point, u, v)
+    else
+        local_normal = local_normal_at(shape, local_point)
+    end
     return normal_to_world(shape, local_normal)
 end
 
@@ -75,6 +81,16 @@ Calculate the normal in local coordinates at a point on the shape.
 This function MUST be implemented for every shape.
 """
 function local_normal_at(shape::T, point::Vec3D) where {T<:GeometricObject}
+    return vector3D(point.x, point.y, point.z)
+end
+
+"""
+    local_normal_at(shape::GeometricObject, point::Vec3D, u::Float64, v::Float64)
+
+Calculate the normal in local coordinates at a point on the shape.
+This function is only meant to be used by smooth triangles, u/v are used for normal interpolation.
+"""
+function local_normal_at(shape::T, point::Vec3D, u::Float64, v::Float64) where {T<:GeometricObject}
     return vector3D(point.x, point.y, point.z)
 end
 

@@ -39,7 +39,7 @@ function prepare_computations(
     # precompute some useful values
     comps.point = positionr(ray, comps.t)
     comps.eyev = -ray.direction
-    comps.normalv = normal_at(comps.gobject, comps.point)
+    comps.normalv = normal_at(comps.gobject, comps.point, intersection.u, intersection.v)
 
     comps.inside = false
     # compute if the intersection occurs on the inside

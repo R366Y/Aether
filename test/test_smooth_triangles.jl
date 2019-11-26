@@ -1,5 +1,7 @@
 using Test
 using Aether
+using Aether.BaseGeometricType
+using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Rays
 using Aether.Shapes
@@ -32,4 +34,20 @@ end
 		@test float_equal(xs[1].u, 0.45)
 		@test float_equal(xs[1].v, 0.25)
 	end 
+
+	@testset "A smooth triangle uses u/v to interpolate the normal" begin
+		tri = test_triangle()
+		i = Intersection(1., tri, 0.45, 0.25)
+		n = normal_at(tri, point3D(0., 0., 0.), i.u, i.v)
+		@test float_equal(n, vector3D(-0.5547, 0.83205, 0.))
+	end
+
+	@testset "Preparing the normal on a smooth triangle" begin
+		tri = test_triangle()
+		i = Intersection(1., tri, 0.45, 0.25)
+		r = Ray(point3D(-0.2, 0.3, -2.), vector3D(0., 0., 1.))
+		xs = Intersection[i]
+		comps = prepare_computations(i, r, xs)
+		@test float_equal(comps.normalv, vector3D(-0.5547, 0.83205, 0.))
+	end
 end
