@@ -7,10 +7,10 @@ export Cone,
        Sphere,
        TestShape,
        Triangle,
+       SmoothTriangle,
        default_sphere,
        glass_sphere,
-       add_child,
-       smooth_triangle
+       add_child
 
 include("cones.jl")
 include("cubes.jl")

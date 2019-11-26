@@ -11,7 +11,7 @@ function test_triangle()
  	n1 = vector3D(0., 1., 0.)
  	n2 = vector3D(-1., 0., 0.)
  	n3 = vector3D(1., 0., 0.)
-	return smooth_triangle(p1, p2, p3, n1, n2, n3)
+	return SmoothTriangle(p1, p2, p3, n1, n2, n3)
 end
 
 @testset "Smooth triangles" begin 
