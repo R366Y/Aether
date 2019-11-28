@@ -1,3 +1,4 @@
+include("test_bounding_box.jl")
 include("test_canvas.jl")
 include("test_homogeneous_coordinates.jl")
 include("test_matrices.jl")

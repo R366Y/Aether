@@ -29,6 +29,7 @@ include("camera.jl")
 include("shaders.jl")
 
 include("shapes.jl")
+include("bounding_box.jl")
 include("wavefront_obj_reader.jl")
 
 include("world.jl")
