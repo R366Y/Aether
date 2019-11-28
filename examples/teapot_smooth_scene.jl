@@ -12,7 +12,7 @@ using Aether.Shapes
 using Aether.WorldModule
 
 function draw_world()
-	obj_file = parse_obj_file("examples/resources/teapot-low.obj")
+	obj_file = parse_obj_file("examples/resources/teapot_smooth.obj")
 	teapot = obj_to_group(obj_file)
     set_transform(teapot, scaling(0.15, 0.15, 0.15) * rotation_x(-π/2))
 
@@ -29,7 +29,7 @@ function draw_world()
             vector3D(0.0, 1.0, 0.0),
         ),
     )
-    canvas = render(camera, world)
+    canvas = render_multithread(camera, world)
 end
 
 function show_scene()

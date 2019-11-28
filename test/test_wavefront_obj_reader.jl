@@ -83,12 +83,25 @@ using Aether.HomogeneousCoordinates
         g = parser.default_group
         t1 = g.shapes[1]
         t2 = g.shapes[2]
+        t3 = g.shapes[3]
+        t4 = g.shapes[4]
         @test t1.p1 == parser.vertices[1]
         @test t1.p2 == parser.vertices[2]
         @test t1.p3 == parser.vertices[3]
-        @test t1.n1 == parser.normals[3]
+
+        @test t2.p1 == parser.vertices[1]
+        @test t2.p2 == parser.vertices[3]
+        @test t2.p3 == parser.vertices[4]
+
+        @test t1.n1 == parser.normals[4]
         @test t1.n2 == parser.normals[1]
-        @test t1.n3 == parser.normals[2]
-        @test t2 == t1
+        @test t1.n3 == parser.normals[2]        
+
+        @test t2.n1 == parser.normals[4]
+        @test t2.n2 == parser.normals[2]
+        @test t2.n3 == parser.normals[3]
+
+        @test t3 == t1
+        @test t4 == t2
     end
 end

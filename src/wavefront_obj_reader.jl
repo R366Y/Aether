@@ -127,15 +127,15 @@ end
 function fan_triangulation(obj_file, vertex_numbers, normals)
     for index in 2:length(vertex_numbers) - 1
         if isempty(normals)
-            tri = Triangle(obj_file.vertices[1],
+            tri = Triangle(obj_file.vertices[parse(Int, vertex_numbers[1])],
                            obj_file.vertices[parse(Int, vertex_numbers[index])],
                            obj_file.vertices[parse(Int, vertex_numbers[index + 1])]
                            )
         else 
-            tri = SmoothTriangle(obj_file.vertices[1],
+            tri = SmoothTriangle(obj_file.vertices[parse(Int, vertex_numbers[1])],
                                  obj_file.vertices[parse(Int, vertex_numbers[index])],
                                  obj_file.vertices[parse(Int, vertex_numbers[index + 1])],
-                                 obj_file.normals[1],
+                                 obj_file.normals[parse(Int, normals[1])],
                                  obj_file.normals[parse(Int, normals[index])],
                                  obj_file.normals[parse(Int, normals[index + 1])]
                                  )
