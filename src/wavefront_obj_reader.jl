@@ -113,32 +113,26 @@ function parse_faces(tokens)
 end
 
 function parse_faces_vertices(obj_file, vertex_numbers, normals)
-    vertices = [obj_file.vertices[parse(Int, v)] for v in vertex_numbers]
+    face_vertices = [obj_file.vertices[parse(Int, v)] for v in vertex_numbers]
     if isempty(normals)
-        t = Triangle(vertices[1], vertices[2], vertices[3])
+        t = Triangle(face_vertices[1], face_vertices[2], face_vertices[3])
     else 
-        normals = [obj_file.normals[parse(Int, n)] for n in normals]
-        t = SmoothTriangle(vertices[1], vertices[2], vertices[3],
-                           normals[1], normals[2], normals[3])
+        face_normals = [obj_file.normals[parse(Int, n)] for n in normals]
+        t = SmoothTriangle(face_vertices[1], face_vertices[2], face_vertices[3],
+                           face_normals[1], face_normals[2], face_normals[3])
     end
     add_child(obj_file.active_group, t)
 end
 
 function fan_triangulation(obj_file, vertex_numbers, normals)
+    face_vertices = [obj_file.vertices[parse(Int, v)] for v in vertex_numbers]
     for index in 2:length(vertex_numbers) - 1
         if isempty(normals)
-            tri = Triangle(obj_file.vertices[parse(Int, vertex_numbers[1])],
-                           obj_file.vertices[parse(Int, vertex_numbers[index])],
-                           obj_file.vertices[parse(Int, vertex_numbers[index + 1])]
-                           )
+            tri = Triangle(face_vertices[1], face_vertices[index], face_vertices[index + 1])
         else 
-            tri = SmoothTriangle(obj_file.vertices[parse(Int, vertex_numbers[1])],
-                                 obj_file.vertices[parse(Int, vertex_numbers[index])],
-                                 obj_file.vertices[parse(Int, vertex_numbers[index + 1])],
-                                 obj_file.normals[parse(Int, normals[1])],
-                                 obj_file.normals[parse(Int, normals[index])],
-                                 obj_file.normals[parse(Int, normals[index + 1])]
-                                 )
+            face_normals = [obj_file.normals[parse(Int, n)] for n in normals]
+            tri = SmoothTriangle(face_vertices[1], face_vertices[index], face_vertices[index + 1],
+                                 face_normals[1], face_normals[index], face_normals[index + 1])
         end
         add_child(obj_file.active_group, tri)
     end
