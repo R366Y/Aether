@@ -1,6 +1,6 @@
 module AccelerationStructures
 
-export BoundingBox, bound_of, resize_bb!
+export BoundingBox, bounds_of, resize_bb!
 
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vecf64
 import Aether.Shapes: Cone,
@@ -8,6 +8,7 @@ import Aether.Shapes: Cone,
 				      Cylinder,
 				      Plane,
 				      Sphere,
+				      TriangleType,
 				      TestShape
 
 mutable struct BoundingBox 
@@ -28,23 +29,39 @@ function resize_bb!(box::BoundingBox, point::Vecf64)
 	point.z > box.max.z ? box.max.z = point.z : nothing
 end
 
-function bound_of(sphere::Sphere)
+function bounds_of(sphere::Sphere)
 	box = BoundingBox(point3D(-1., -1., -1.), point3D(1., 1., 1.))
 	return box
 end
 
-function bound_of(plane::Plane)
+function bounds_of(plane::Plane)
 	box = BoundingBox(point3D(-Inf, 0., -Inf), point3D(Inf, 0., Inf))
 	return box
 end
 
-function bound_of(cube::Cube)
+function bounds_of(cube::Cube)
 	box = BoundingBox(point3D(-1., -1., -1.), point3D(1., 1., 1.))
 	return box
 end
 
-function bound_of(cylinder::Cylinder)
+function bounds_of(cylinder::Cylinder)
 	box = BoundingBox(point3D(-1., cylinder.minimum, -1.), point3D(1., cylinder.maximum, 1.))
+	return box
+end
+
+function bounds_of(cone::Cone)
+	a = abs(cone.minimum)
+	b = abs(cone.maximum)
+	limit = max(a, b)
+
+	return BoundingBox(point3D(-limit, cone.minimum, -limit), point3D(limit, cone.maximum, limit))
+end
+
+function bounds_of(triangle::TriangleType)
+	box = BoundingBox()
+	resize_bb!(box, triangle.p1)
+	resize_bb!(box, triangle.p2)
+	resize_bb!(box, triangle.p3)
 	return box
 end
 

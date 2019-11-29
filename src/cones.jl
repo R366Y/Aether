@@ -46,7 +46,7 @@ function local_intersect(cone::Cone, ray::Ray)
 
     if abs(a) > ϵ
         disc = b^2 - 4 * a * c
-            #ray does not intersect the cylinder
+        #ray does not intersect the cylinder
         if disc < 0.0
             return result
         end

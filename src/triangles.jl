@@ -12,9 +12,9 @@ import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 import Aether.Rays: Ray
 
-abstract type TriangleObject <: GeometricObject end
+abstract type TriangleType <: GeometricObject end
 
-mutable struct Triangle <: TriangleObject
+mutable struct Triangle <: TriangleType
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
@@ -39,7 +39,7 @@ mutable struct Triangle <: TriangleObject
     end
 end
 
-mutable struct SmoothTriangle <: TriangleObject
+mutable struct SmoothTriangle <: TriangleType
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
@@ -94,7 +94,7 @@ function local_intersect(triangle::SmoothTriangle, ray::Ray)
     return res
 end
 
-function triangle_intersect(triangle::TriangleObject, ray::Ray)
+function triangle_intersect(triangle::TriangleType, ray::Ray)
     dir_cross_e2 = cross(ray.direction, triangle.e2)
     det = dot(triangle.e1, dir_cross_e2)
     if abs(det) < ϵ
