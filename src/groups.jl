@@ -5,7 +5,9 @@ import Aether.BaseGeometricType: GeometricObject,
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 import Aether.Rays: Ray
 
-mutable struct Group <: GeometricObject
+abstract type GroupType <: GeometricObject end
+
+mutable struct Group <: GroupType
     transform::Matrix4x4
     inverse::Matrix4x4
     parent::Union{Ref{Group},Nothing}

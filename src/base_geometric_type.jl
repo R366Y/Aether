@@ -1,6 +1,7 @@
 module BaseGeometricType
 
 export GeometricObject,
+       GroupType,
        Group,
        Intersection,
        add_child,
