@@ -239,4 +239,40 @@ using Aether.Shapes
 		xs = r_intersect(shape, r)
 		@test !isnothing(child.saved_ray)
 	end
+
+	@testset "Splitting a perfect cube" begin
+		box = BoundingBox(point3D(-1., -4., -5.), point3D(9., 6., 5.))
+		left, right = split_bounds(box)
+		@test left.min == point3D(-1., -4., -5.)
+		@test left.max == point3D(4., 6., 5.)
+		@test right.min == point3D(4., -4., -5.)
+		@test right.max == point3D(9., 6., 5.)
+	end
+
+	@testset "Splitting an x-wide box" begin
+		box = BoundingBox(point3D(-1., -2., -3.), point3D(9., 5.5, 3.))
+		left, right = split_bounds(box)
+		@test left.min == point3D(-1., -2., -3.)
+		@test left.max == point3D(4., 5.5, 3.)
+		@test right.min == point3D(4., -2., -3.)
+		@test right.max == point3D(9., 5.5, 3.)
+	end
+
+	@testset "Splitting an y-wide box" begin
+		box = BoundingBox(point3D(-1., -2., -3.), point3D(5., 8., 3.))
+		left, right = split_bounds(box)
+		@test left.min == point3D(-1., -2., -3.)
+		@test left.max == point3D(5., 3., 3.)
+		@test right.min == point3D(-1., 3., -3.)
+		@test right.max == point3D(5., 8., 3.)
+	end
+
+	@testset "Splitting an z-wide box" begin
+		box = BoundingBox(point3D(-1., -2., -3.), point3D(5., 3., 7.))
+		left, right = split_bounds(box)
+		@test left.min == point3D(-1., -2., -3.)
+		@test left.max == point3D(5., 3., 2.)
+		@test right.min == point3D(-1., -2., 2.)
+		@test right.max == point3D(5., 3., 7.)
+	end
 end

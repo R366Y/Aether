@@ -7,7 +7,8 @@ export BoundingBox,
 	   parent_space_bounds_of,
 	   resize_bb!,
 	   transform_bb,
-	   aabb_intersect
+	   aabb_intersect,
+	   split_bounds
 
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, GroupType
@@ -164,6 +165,35 @@ function aabb_check_axis(origin::Float64, direction::Float64,
         tmin, tmax = tmax, tmin
     end
     return tmin, tmax
+end
+
+function split_bounds(box::BoundingBox)
+	# find out the box's largest dimension
+	dx = box.max.x - box.min.x
+	dy = box.max.y - box.min.y
+	dz = box.max.z - box.min.z
+
+	greatest = max(dx, dy, dz)
+
+	# variables to help construct the points on the dividing plane
+	x0, y0, z0 = box.min.x, box.min.y, box.min.z
+	x1, y1, z1 = box.max.x, box.max.y, box.max.z
+
+	# adjust the point so that they lie on the dividing plane
+	if greatest == dx
+		x0 = x1 = x0 + dx / 2.
+	elseif greatest == dy
+		y0 = y1 = y0 + dy / 2.
+	else
+		z0 = z1 = z0 + dz / 2.
+	end
+
+	mid_min = point3D(x0, y0, z0)
+	mid_max = point3D(x1, y1, z1)
+	# construct and return the two halves of the bounding box
+	left = BoundingBox(box.min, mid_max)
+	right = BoundingBox(mid_min, box.max)
+	return left, right
 end
 
 end
