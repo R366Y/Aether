@@ -221,4 +221,22 @@ using Aether.Shapes
 			@test aabb_intersect(box, r) == i.result
 		end
 	end
+
+	@testset "Intersecting ray+group doesn't test children if box is missed" begin
+		child = TestShape()
+		shape = Group()
+		add_child(shape, child)
+		r = Ray(point3D(0., 0., -5.), vector3D(0., 1., 0.))
+		xs = r_intersect(shape, r)
+		@test isnothing(child.saved_ray)
+	end
+
+	@testset "Intersect ray+group tests children if box is hit" begin
+		child = TestShape()
+		shape = Group()
+		add_child(shape, child)
+		r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+		xs = r_intersect(shape, r)
+		@test !isnothing(child.saved_ray)
+	end
 end

@@ -1,3 +1,4 @@
+using Aether
 import Aether.BaseGeometricType: GeometricObject,
                                  local_intersect,
                                  r_intersect,
@@ -30,16 +31,18 @@ end
 
 function local_intersect(group::Group, ray::Ray)
     result = ()
-    intersections = Intersection[]
-    for s in group.shapes
-        xs = r_intersect(s, ray)
-        if length(xs) != 0
-            push!(intersections, xs...)
+    if aabb_intersect(bounds_of(group), ray)
+        intersections = Intersection[]
+        for s in group.shapes
+            xs = r_intersect(s, ray)
+            if length(xs) != 0
+                push!(intersections, xs...)
+            end
         end
+        if length(intersections) != 0
+            sort!(intersections, by = i -> i.t)
+        end
+        result = (intersections...,)
     end
-    if length(intersections) != 0
-        sort!(intersections, by = i -> i.t)
-    end
-    result = (intersections...,)
     return result
 end
