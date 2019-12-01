@@ -1,16 +1,19 @@
 module AccelerationStructures
 
-export BoundingBox, 
-	   box_contains_point, 
-	   box_contains_box, 
-	   bounds_of, 
-	   parent_space_bounds_of, 
-	   resize_bb!, 
-	   transform_bb 
+export BoundingBox,
+	   box_contains_point,
+	   box_contains_box,
+	   bounds_of,
+	   parent_space_bounds_of,
+	   resize_bb!,
+	   transform_bb,
+	   aabb_intersect
 
+import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, GroupType
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vecf64
 import Aether.MatrixTransformations: Matrix4x4
+import Aether.Rays: Ray
 import Aether.Shapes: Cone,
 				      Cube,
 				      Cylinder,
@@ -19,7 +22,7 @@ import Aether.Shapes: Cone,
 				      TriangleType,
 				      TestShape
 
-mutable struct BoundingBox 
+mutable struct BoundingBox
 	min::Vecf64
 	max::Vecf64
 
@@ -58,7 +61,8 @@ function bounds_of(cube::Cube)
 end
 
 function bounds_of(cylinder::Cylinder)
-	box = BoundingBox(point3D(-1., cylinder.minimum, -1.), point3D(1., cylinder.maximum, 1.))
+	box = BoundingBox(point3D(-1., cylinder.minimum, -1.),
+					  point3D(1., cylinder.maximum, 1.))
 	return box
 end
 
@@ -67,7 +71,8 @@ function bounds_of(cone::Cone)
 	b = abs(cone.maximum)
 	limit = max(a, b)
 
-	return BoundingBox(point3D(-limit, cone.minimum, -limit), point3D(limit, cone.maximum, limit))
+	return BoundingBox(point3D(-limit, cone.minimum, -limit),
+					   point3D(limit, cone.maximum, limit))
 end
 
 function bounds_of(triangle::TriangleType)
@@ -104,7 +109,7 @@ function box_contains_box(box1::BoundingBox, box2::BoundingBox)
 end
 
 function transform_bb(box::BoundingBox, matrix::Matrix4x4)
-	p1 = box.min 
+	p1 = box.min
 	p2 = point3D(box.min.x, box.min.y, box.max.z)
 	p3 = point3D(box.min.x, box.max.y, box.min.z)
 	p4 = point3D(box.min.x, box.max.y, box.max.z)
@@ -115,7 +120,7 @@ function transform_bb(box::BoundingBox, matrix::Matrix4x4)
 
 	new_box = BoundingBox()
 	for p in (p1, p2, p3, p4, p5, p6, p7, p8)
-		t_p = matrix * p 
+		t_p = matrix * p
 		resize_bb!(new_box, t_p)
 	end
 	return new_box
@@ -123,6 +128,42 @@ end
 
 function parent_space_bounds_of(shape::GeometricObject)
 	return transform_bb(bounds_of(shape), shape.transform)
+end
+
+function aabb_intersect(box::BoundingBox, ray::Ray)
+    result = false
+    xtmin, xtmax = aabb_check_axis(ray.origin.x, ray.direction.x,
+								   box.min.x, box.max.x)
+    ytmin, ytmax = aabb_check_axis(ray.origin.y, ray.direction.y,
+								   box.min.y, box.max.y)
+    ztmin, ztmax = aabb_check_axis(ray.origin.z, ray.direction.z,
+								   box.min.z, box.max.z)
+
+    tmin = max(xtmin, ytmin, ztmin)
+    tmax = min(xtmax, ytmax, ztmax)
+    if tmax >= tmin
+        result = true
+    end
+    return result
+end
+
+function aabb_check_axis(origin::Float64, direction::Float64,
+						 bb_min::Float64, bb_max::Float64)
+    tmin_numerator = (bb_min - origin)
+    tmax_numerator = (bb_max - origin)
+
+    if abs(direction) >= ϵ
+        tmin = tmin_numerator / direction
+        tmax = tmax_numerator / direction
+    else
+        tmin = tmin_numerator * Inf
+        tmax = tmax_numerator * Inf
+    end
+
+    if tmin > tmax
+        tmin, tmax = tmax, tmin
+    end
+    return tmin, tmax
 end
 
 end

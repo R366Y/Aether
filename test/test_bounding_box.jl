@@ -3,9 +3,10 @@ using Aether.AccelerationStructures
 using Aether.BaseGeometricType
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
+using Aether.Rays
 using Aether.Shapes
 
-@testset "Bounding box" begin 
+@testset "Bounding box" begin
 
 	@testset "Creating an empty bounding box" begin
 		box = BoundingBox()
@@ -35,7 +36,7 @@ using Aether.Shapes
 		box = bounds_of(shape)
 		@test box.min == point3D(-Inf, 0., -Inf)
 		@test box.max == point3D(Inf, 0., Inf)
-	end	
+	end
 
 	@testset "A cube has a bounding box" begin
 		shape = Cube()
@@ -49,7 +50,7 @@ using Aether.Shapes
 		box = bounds_of(shape)
 		@test box.min == point3D(-1., -Inf, -1.)
 		@test box.max == point3D(1., Inf, 1.)
-	end	
+	end
 
 	@testset "A bounded cylinder has a bounding box" begin
 		shape = Cylinder()
@@ -106,7 +107,7 @@ using Aether.Shapes
 
 		input = NamedTuple[]
         ks = (:point, :result)
-        push!(input, NamedTuple{ks}((point3D(5., -2., 0.), true)) )            
+        push!(input, NamedTuple{ks}((point3D(5., -2., 0.), true)) )
         push!(input, NamedTuple{ks}((point3D(11., 4., 7.), true)) )
         push!(input, NamedTuple{ks}((point3D(8., 1., 3.), true)) )
         push!(input, NamedTuple{ks}((point3D(3., 0., 3.), false)) )
@@ -116,7 +117,7 @@ using Aether.Shapes
         push!(input, NamedTuple{ks}((point3D(8., 5., 3.), false)) )
         push!(input, NamedTuple{ks}((point3D(8., 1., 8.), false)) )
 
-        for i in input 
+        for i in input
         	p = i.point
         	@test box_contains_point(box, p) == i.result
         end
@@ -127,12 +128,12 @@ using Aether.Shapes
 
 		input = NamedTuple[]
         ks = (:min, :max, :result)
-        push!(input, NamedTuple{ks}((point3D(5., -2., 0.), point3D(11., 4., 7.), true)) )            
+        push!(input, NamedTuple{ks}((point3D(5., -2., 0.), point3D(11., 4., 7.), true)) )
         push!(input, NamedTuple{ks}((point3D(6., -1., 1.), point3D(10., 3., 6.), true)) )
         push!(input, NamedTuple{ks}((point3D(4., -3., -1.),point3D(10., 3., 6.), false)) )
         push!(input, NamedTuple{ks}((point3D(6., -1., 1.),point3D(12., 5., 8.), false)) )
 
-        for i in input 
+        for i in input
         	box2 = BoundingBox(i.min, i.max)
         	@test box_contains_box(box1, box2) == i.result
         end
@@ -143,7 +144,7 @@ using Aether.Shapes
 		matrix = rotation_x(π/4) * rotation_y(π/4)
 		box2 = transform_bb(box, matrix)
 		@test float_equal(box2.min, point3D(-1.41421, -1.70710, -1.70710))
-		@test float_equal(box2.max, point3D(1.41421, 1.70710, 1.70710))		
+		@test float_equal(box2.max, point3D(1.41421, 1.70710, 1.70710))
 	end
 
 	@testset "Querying a shape's bounding box in its parent's space" begin
@@ -152,7 +153,7 @@ using Aether.Shapes
 		box = parent_space_bounds_of(shape)
 		@test box.min == point3D(0.5, -5., 1.)
 		@test box.max == point3D(1.5, -1., 9.)
-	end 
+	end
 
 	@testset "A group has a bounding box that contains its children" begin
 		s = default_sphere()
@@ -167,5 +168,57 @@ using Aether.Shapes
 		box = bounds_of(shape)
 		@test box.min == point3D(-4.5, -3., -5.)
 		@test box.max == point3D(4., 7., 4.5)
+	end
+
+	@testset "Intersecting a ray with a bounding box at the origin" begin
+		box = BoundingBox(point3D(-1., -1., -1.), point3D(1., 1., 1.))
+
+		input = NamedTuple[]
+        ks = (:origin, :direction, :result)
+        push!(input, NamedTuple{ks}((point3D(5., 0.5, 0.), vector3D(-1., 0., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(-5., 0.5, 0.), vector3D(1., 0., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(0.5, 5., 0.), vector3D(0., -1., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(0.5, -5., 0.), vector3D(0., 1., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(0.5, 0., 5.), vector3D(0., 0., -1.), true)) )
+        push!(input, NamedTuple{ks}((point3D(0.5, 0., -5.), vector3D(0., 0., 1.), true)) )
+        push!(input, NamedTuple{ks}((point3D(0., 0.5, 0.), vector3D(0., 0., 1.), true)) )
+        push!(input, NamedTuple{ks}((point3D(-2., 0., 0.), vector3D(2., 4., 6.), false)) )
+        push!(input, NamedTuple{ks}((point3D(0., -2., 0.), vector3D(6., 2., 4.), false)) )
+        push!(input, NamedTuple{ks}((point3D(0., 0., -2.), vector3D(4., 6., 2.), false)) )
+        push!(input, NamedTuple{ks}((point3D(2., 0., 2.), vector3D(0., 0., -1.), false)) )
+        push!(input, NamedTuple{ks}((point3D(0., 2., 2.), vector3D(0., -1., 0.), false)) )
+        push!(input, NamedTuple{ks}((point3D(2., 2., 0.), vector3D(-1., 0., 0.), false)) )
+
+		for i in input
+			direction = normalize(i.direction)
+			r = Ray(i.origin, direction)
+			@test aabb_intersect(box, r) == i.result
+		end
+	end
+
+	@testset "Intersecting a ray with a non-cubic bounding box" begin
+		box = BoundingBox(point3D(5., -2., 0.), point3D(11., 4., 7.))
+
+		input = NamedTuple[]
+        ks = (:origin, :direction, :result)
+        push!(input, NamedTuple{ks}((point3D(15., 1., 2.), vector3D(-1., 0., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(-5., -1., 4.), vector3D(1., 0., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(7., 6., 5.), vector3D(0., -1., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(9., -5., 6.), vector3D(0., 1., 0.), true)) )
+        push!(input, NamedTuple{ks}((point3D(8., 2., 12.), vector3D(0., 0., -1.), true)) )
+        push!(input, NamedTuple{ks}((point3D(6., 0., -5.), vector3D(0., 0., 1.), true)) )
+        push!(input, NamedTuple{ks}((point3D(8., 1., 3.5), vector3D(0., 0., 1.), true)) )
+        push!(input, NamedTuple{ks}((point3D(9., -1., -8.), vector3D(2., 4., 6.), false)) )
+        push!(input, NamedTuple{ks}((point3D(8., 3., -4.), vector3D(6., 2., 4.), false)) )
+        push!(input, NamedTuple{ks}((point3D(9., -1., -2.), vector3D(4., 6., 2.), false)) )
+        push!(input, NamedTuple{ks}((point3D(4., 0., 9.), vector3D(0., 0., -1.), false)) )
+        push!(input, NamedTuple{ks}((point3D(8., 6., -1.), vector3D(0., -1., 0.), false)) )
+        push!(input, NamedTuple{ks}((point3D(12., 5., 4.), vector3D(-1., 0., 0.), false)) )
+
+		for i in input
+			direction = normalize(i.direction)
+			r = Ray(i.origin, direction)
+			@test aabb_intersect(box, r) == i.result
+		end
 	end
 end
