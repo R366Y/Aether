@@ -13,6 +13,10 @@ mutable struct Group <: GroupType
     inverse::Matrix4x4
     parent::Union{Ref{Group},Nothing}
     shapes::Array{GeometricObject,1}
+    # this field contains bounding box for the group but it cannot be declared 
+    # as BoundingBox because that is defined after groups, cannot have cyclic module 
+    # dependencies in Julia :( 
+    aabb
 
     function Group()
         new(
@@ -20,6 +24,7 @@ mutable struct Group <: GroupType
             identity_matrix(Float64),
             nothing,
             GeometricObject[],
+            nothing
         )
     end
 end
@@ -30,8 +35,11 @@ function add_child(group::Group, shape::GeometricObject)
 end
 
 function local_intersect(group::Group, ray::Ray)
+    if isnothing(group.aabb)
+        group.aabb = bounds_of(group)
+    end
     result = ()
-    if aabb_intersect(bounds_of(group), ray)
+    if aabb_intersect(group.aabb, ray)
         intersections = Intersection[]
         for s in group.shapes
             xs = r_intersect(s, ray)
