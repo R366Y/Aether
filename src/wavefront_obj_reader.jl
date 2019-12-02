@@ -1,4 +1,4 @@
-import Aether.BaseGeometricType: Group, add_child
+import Aether.BaseGeometricType: Group, add_child!
 import Aether.HomogeneousCoordinates: Vecf64, point3D, vector3D
 import Aether.Shapes: Triangle, SmoothTriangle
 
@@ -43,7 +43,7 @@ end
 function obj_to_group(obj_file)
     g = deepcopy(obj_file.default_group)
     for k in keys(obj_file.named_groups)
-        add_child(g, obj_file.named_groups[k])
+        add_child!(g, obj_file.named_groups[k])
     end
     return g
 end
@@ -121,7 +121,7 @@ function parse_faces_vertices(obj_file, vertex_numbers, normals)
         t = SmoothTriangle(face_vertices[1], face_vertices[2], face_vertices[3],
                            face_normals[1], face_normals[2], face_normals[3])
     end
-    add_child(obj_file.active_group, t)
+    add_child!(obj_file.active_group, t)
 end
 
 function fan_triangulation(obj_file, vertex_numbers, normals)
@@ -134,6 +134,6 @@ function fan_triangulation(obj_file, vertex_numbers, normals)
             tri = SmoothTriangle(face_vertices[1], face_vertices[index], face_vertices[index + 1],
                                  face_normals[1], face_normals[index], face_normals[index + 1])
         end
-        add_child(obj_file.active_group, tri)
+        add_child!(obj_file.active_group, tri)
     end
 end

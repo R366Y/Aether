@@ -11,7 +11,7 @@ export Cone,
        SmoothTriangle,
        default_sphere,
        glass_sphere,
-       add_child
+       add_child!
 
 include("cones.jl")
 include("cubes.jl")
@@ -21,4 +21,4 @@ include("spheres.jl")
 include("test_shape.jl")
 include("triangles.jl")
 
-end  # module
+end

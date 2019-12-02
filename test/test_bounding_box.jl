@@ -163,8 +163,8 @@ using Aether.Shapes
 		c.maximum = 2
 		set_transform(c, translation(-4.,-1., 4.) * scaling(0.5, 1., 0.5))
 		shape = Group()
-		add_child(shape, s)
-		add_child(shape, c)
+		add_child!(shape, s)
+		add_child!(shape, c)
 		box = bounds_of(shape)
 		@test box.min == point3D(-4.5, -3., -5.)
 		@test box.max == point3D(4., 7., 4.5)
@@ -225,7 +225,7 @@ using Aether.Shapes
 	@testset "Intersecting ray+group doesn't test children if box is missed" begin
 		child = TestShape()
 		shape = Group()
-		add_child(shape, child)
+		add_child!(shape, child)
 		r = Ray(point3D(0., 0., -5.), vector3D(0., 1., 0.))
 		xs = r_intersect(shape, r)
 		@test isnothing(child.saved_ray)
@@ -234,7 +234,7 @@ using Aether.Shapes
 	@testset "Intersect ray+group tests children if box is hit" begin
 		child = TestShape()
 		shape = Group()
-		add_child(shape, child)
+		add_child!(shape, child)
 		r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
 		xs = r_intersect(shape, r)
 		@test !isnothing(child.saved_ray)
@@ -274,5 +274,48 @@ using Aether.Shapes
 		@test left.max == point3D(5., 3., 2.)
 		@test right.min == point3D(-1., -2., 2.)
 		@test right.max == point3D(5., 3., 7.)
+	end
+
+	@testset "Partitioning a group's children" begin
+		s1 = default_sphere()
+		set_transform(s1, translation(-2., 0., 0.))
+		s2 = default_sphere()
+		set_transform(s2, translation(2., 0., 0.))
+		s3 = default_sphere()
+		g = Group()
+		add_child!(g, s1)
+		add_child!(g, s2)
+		add_child!(g, s3)
+		left, right = partition_children!(g)
+		@test length(g.shapes) == 1
+		@test s3 in g.shapes
+		@test left == [s1]
+		@test right == [s2]
+	end
+
+	@testset "Subdividing a primitive does nothing" begin
+		shape = default_sphere()
+		divide!(shape, 1)
+		@test typeof(shape) == Sphere
+	end
+
+	@testset "Subdividing a group partitions its children" begin
+		s1 = default_sphere()
+		set_transform(s1, translation(-2., -2., 0.))
+		s2 = default_sphere()
+		set_transform(s2, translation(-2., 2., 0.))
+		s3 = default_sphere()
+		set_transform(s3, scaling(4., 4., 4.))
+		g = Group()
+		for child in [s1, s2, s3]
+			add_child!(g, child)
+		end
+		divide!(g, 1)
+		@test g.shapes[1] == s3
+		subgroup = g.shapes[2]
+		@test typeof(subgroup) <: GroupType
+		@test length(subgroup.shapes) == 2
+		@test subgroup.shapes[1].shapes == [s1]
+		@test subgroup.shapes[2].shapes == [s2]
 	end
 end

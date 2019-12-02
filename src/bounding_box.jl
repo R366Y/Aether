@@ -4,14 +4,16 @@ export BoundingBox,
 	   box_contains_point,
 	   box_contains_box,
 	   bounds_of,
+	   divide!,
 	   parent_space_bounds_of,
 	   resize_bb!,
 	   transform_bb,
 	   aabb_intersect,
-	   split_bounds
+	   split_bounds,
+	   partition_children!
 
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject, GroupType
+import Aether.BaseGeometricType: GeometricObject, GroupType, make_subgroup!
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vecf64
 import Aether.MatrixTransformations: Matrix4x4
 import Aether.Rays: Ray
@@ -194,6 +196,48 @@ function split_bounds(box::BoundingBox)
 	left = BoundingBox(box.min, mid_max)
 	right = BoundingBox(mid_min, box.max)
 	return left, right
+end
+
+function partition_children!(group::GroupType)
+	left_bucket = GeometricObject[]
+	right_bucket = GeometricObject[]
+
+	group_aabb = bounds_of(group)
+	left_aabb, right_aabb = split_bounds(group_aabb)
+	children_to_remove = GeometricObject[]
+	for child in group.shapes
+		cbox = parent_space_bounds_of(child)
+		if box_contains_box(left_aabb, cbox)
+			push!(left_bucket, child)
+			push!(children_to_remove, child)
+		elseif box_contains_box(right_aabb, cbox)
+			push!(right_bucket, child)
+			push!(children_to_remove, child)
+		end
+	end
+	filter!(x->!(x in children_to_remove), group.shapes)
+	return left_bucket, right_bucket
+end
+
+function divide!(shape::GeometricObject, threshold::Int)
+	# necessary when we divide a group and reach a shape
+	# that cannot be divided, that's a shape
+	if !(typeof(shape) <: GroupType)
+		return
+	end
+	if threshold <= length(shape.shapes)
+		left, right = partition_children!(shape)
+		if !isempty(left)
+			make_subgroup!(shape, left)
+		end
+		if !isempty(right)
+			make_subgroup!(shape, right)
+		end
+	end
+
+	for child in shape.shapes
+		divide!(child, threshold)
+	end
 end
 
 end

@@ -20,7 +20,7 @@ using Aether.Shapes
     @testset "Adding a child to a group" begin
         g = Group()
         s = TestShape()
-        add_child(g, s)
+        add_child!(g, s)
         @test length(g.shapes) > 0
         @test s ∈ g.shapes
         @test get_parent_group(s) === g
@@ -40,9 +40,9 @@ using Aether.Shapes
         set_transform(s2, translation(0., 0., -3.))
         s3 = default_sphere()
         set_transform(s3, translation(5., 0., 0.))
-        add_child(g, s1)
-        add_child(g, s2)
-        add_child(g, s3)
+        add_child!(g, s1)
+        add_child!(g, s2)
+        add_child!(g, s3)
         r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
         xs = local_intersect(g, r)
         @test length(xs) == 4
@@ -57,7 +57,7 @@ using Aether.Shapes
         set_transform(g, scaling(2., 2., 2.))
         s = default_sphere()
         set_transform(s, translation(5., 0., 0.))
-        add_child(g, s)
+        add_child!(g, s)
         r = Ray(point3D(10., 0., -10.), vector3D(0., 0., 1.))
         xs = r_intersect(g, r)
         @test length(xs) == 2
@@ -68,10 +68,10 @@ using Aether.Shapes
         set_transform(g1, rotation_y(π/2))
         g2 = Group()
         set_transform(g2, scaling(2., 2., 2.))
-        add_child(g1, g2)
+        add_child!(g1, g2)
         s = default_sphere()
         set_transform(s, translation(5., 0., 0.))
-        add_child(g2, s)
+        add_child!(g2, s)
         p = world_to_object(s, point3D(-2., 0., -10.))
         @test float_equal(p, point3D(0., 0., -1.))
     end
@@ -81,10 +81,10 @@ using Aether.Shapes
         set_transform(g1, rotation_y(π/2))
         g2 = Group()
         set_transform(g2, scaling(1., 2., 3.))
-        add_child(g1, g2)
+        add_child!(g1, g2)
         s = default_sphere()
         set_transform(s, translation(5., 0., 0.))
-        add_child(g2, s)
+        add_child!(g2, s)
         n = normal_to_world(s, vector3D(√3/3, √3/3, √3/3))
         @test float_equal(n, vector3D(0.28571, 0.42857, -0.85714))
     end
@@ -94,11 +94,21 @@ using Aether.Shapes
         set_transform(g1, rotation_y(π/2))
         g2 = Group()
         set_transform(g2, scaling(1., 2., 3.))
-        add_child(g1, g2)
+        add_child!(g1, g2)
         s = default_sphere()
         set_transform(s, translation(5., 0., 0.))
-        add_child(g2, s)
+        add_child!(g2, s)
         n = normal_at(s, point3D(1.7321, 1.1547, -5.5774))
         @test float_equal(n, vector3D(0.28570, 0.42854, -0.85716))
+    end
+
+    @testset "Creating a sub-group from a list of children" begin
+        s1 = default_sphere()
+        s2 = default_sphere()
+        g = Group()
+        make_subgroup!(g, GeometricObject[s1, s2])
+        @test length(g.shapes) == 1
+        @test s1 in g.shapes[1].shapes
+        @test s2 in g.shapes[1].shapes
     end
 end

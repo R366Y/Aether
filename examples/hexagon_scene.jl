@@ -9,7 +9,7 @@ using Aether.Patterns
 using Aether.Shapes
 using Aether.WorldModule
 
-import Aether.BaseGeometricType: Group, add_child, set_transform
+import Aether.BaseGeometricType: Group, add_child!, set_transform
 
 function draw_world()
 	hex = hexagon()
@@ -56,8 +56,8 @@ end
 
 function hexagon_side()
 	side = Group()
-	add_child(side, hexagon_corner())
-	add_child(side, hexagon_edge())
+	add_child!(side, hexagon_corner())
+	add_child!(side, hexagon_edge())
 	return side
 end
 
@@ -66,7 +66,7 @@ function hexagon()
 	for n in 0:5
 		side = hexagon_side()
 		set_transform(side, rotation_y(n * π/3))
-		add_child(hex, side)
+		add_child!(hex, side)
 	end
 	return hex
 end

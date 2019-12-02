@@ -1,4 +1,5 @@
 using Aether
+using Aether.AccelerationStructures
 using Aether.BaseGeometricType
 using Aether.CameraModule
 using Aether.CanvasModule
@@ -14,6 +15,7 @@ using Aether.WorldModule
 function draw_world()
 	obj_file = parse_obj_file("examples/resources/teapot_smooth.obj")
 	teapot = obj_to_group(obj_file)
+	divide!(teapot, 50)
     set_transform(teapot, scaling(0.15, 0.15, 0.15) * rotation_x(-π/2))
 
 	world = World()
