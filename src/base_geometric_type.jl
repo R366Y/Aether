@@ -1,9 +1,11 @@
 module BaseGeometricType
 
 export GeometricObject,
+       GroupType,
        Group,
        Intersection,
-       add_child,
+       add_child!,
+       make_subgroup!,
        set_transform,
        r_intersect,
        local_intersect,
@@ -62,8 +64,8 @@ end
 
 Calculate the normal in world coordinates at a point on the shape.
 """
-function normal_at(shape::T, world_point::Vec3D, 
-                   u::Union{Float64, Nothing} = nothing, 
+function normal_at(shape::T, world_point::Vec3D,
+                   u::Union{Float64, Nothing} = nothing,
                    v::Union{Float64, Nothing} = nothing) where {T<:GeometricObject}
     local_point = world_to_object(shape, world_point)
     if !isnothing(u) && !isnothing(v)
@@ -112,7 +114,7 @@ end
 """
     world_to_object(shape::GeometricObject, point::Vec3D)
 
-Transform a point from world coordinates to local coordinates relative to the given shape. 
+Transform a point from world coordinates to local coordinates relative to the given shape.
 """
 function world_to_object(shape::T, point::Vec3D) where {T<:GeometricObject}
     if !isnothing(get_parent_group(shape))

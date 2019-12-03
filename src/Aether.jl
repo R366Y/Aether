@@ -1,6 +1,8 @@
 module Aether
 
-export ϵ, float_equal, ObjFile, obj_to_group, parse_obj_file 
+export ϵ, float_equal, ObjFile, obj_to_group, parse_obj_file
+
+using Reexport
 
 const ϵ = 0.00001
 
@@ -29,8 +31,13 @@ include("camera.jl")
 include("shaders.jl")
 
 include("shapes.jl")
+include("bounding_box.jl")
 include("wavefront_obj_reader.jl")
 
 include("world.jl")
 
+# Horrible way to simulate cyclical module dependencies that are not
+# supported in Julia. I need to use bounding box inside groups.jl but
+# but bounding box to work needs both groups and shapes. 
+@reexport using Aether.AccelerationStructures
 end # module
