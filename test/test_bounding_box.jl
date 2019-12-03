@@ -318,4 +318,29 @@ using Aether.Shapes
 		@test subgroup.shapes[1].shapes == [s1]
 		@test subgroup.shapes[2].shapes == [s2]
 	end
+
+	@testset "Subdividing a group with too few children" begin
+		s1 = default_sphere()
+		set_transform(s1, translation(-2., 0., 0.))
+		s2 = default_sphere()
+		set_transform(s2, translation(2., 1., 0.))
+		s3 = default_sphere()
+		set_transform(s3, translation(2., -1., 0.))
+		subgroup = Group()
+		for child in [s1, s2, s3]
+			add_child!(subgroup, child)
+		end
+		s4 = default_sphere()
+		g = Group()
+		for child in [subgroup, s4]
+			add_child!(g, child)
+		end
+		divide!(g,3)
+		@test g.shapes[1] == subgroup
+		@test g.shapes[2] == s4
+		@test length(subgroup.shapes) == 2
+		@test s1 in subgroup.shapes[1].shapes 
+		@test s2 in subgroup.shapes[2].shapes
+		@test s3 in subgroup.shapes[2].shapes
+	end
 end
