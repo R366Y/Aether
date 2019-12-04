@@ -1,4 +1,4 @@
-import Aether.BaseGeometricType: GeometricObject, local_intersect
+import Aether.BaseGeometricType: GeometricObject, local_intersect, GroupType
 import Aether.HomogeneousCoordinates: point3D, vector3D
 import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
@@ -8,7 +8,7 @@ mutable struct TestShape <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    parent::Union{Ref{Group},Nothing}
+    parent::Union{GroupType,Nothing}
     saved_ray::Union{Ray, Nothing}
 
     function TestShape()

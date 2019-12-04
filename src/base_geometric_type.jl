@@ -106,7 +106,7 @@ Shape MUST have a field called 'parent' that can contain the reference to a 'Gro
 function get_parent_group(shape::T) where {T<:GeometricObject}
     result = nothing
     if !isnothing(shape.parent)
-        result = shape.parent[]
+        result = shape.parent
     end
     return result
 end

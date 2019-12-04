@@ -2,7 +2,8 @@ import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject,
                                  local_intersect,
                                  local_normal_at,
-                                 Intersection
+                                 Intersection,
+                                 GroupType
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D
 import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
@@ -16,7 +17,7 @@ mutable struct Cylinder <: GeometricObject
     minimum::Float64
     maximum::Float64
     closed::Bool
-    parent::Union{Ref{Group},Nothing}
+    parent::Union{GroupType,Nothing}
 
     function Cylinder()
         new(

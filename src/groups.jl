@@ -8,18 +8,18 @@ import Aether.Rays: Ray
 
 abstract type GroupType <: GeometricObject end
 
-mutable struct Group <: GroupType
+mutable struct Group{G,O} <: GroupType where {G<:GroupType, O<:GeometricObject}
     transform::Matrix4x4
     inverse::Matrix4x4
-    parent::Union{Ref{Group},Nothing}
-    shapes::Array{GeometricObject,1}
+    parent::Union{G,Nothing}
+    shapes::Array{O,1}
     # this field contains bounding box for the group but it cannot be declared
     # as BoundingBox because that is defined after groups, cannot have cyclic module
     # dependencies in Julia :(
     aabb
 
     function Group()
-        new(
+        new{GroupType, GeometricObject}(
             identity_matrix(Float64),
             identity_matrix(Float64),
             nothing,
@@ -30,7 +30,7 @@ mutable struct Group <: GroupType
 end
 
 function add_child!(group::Group, shape::GeometricObject)
-    shape.parent = Ref(group)
+    shape.parent = group
     push!(group.shapes, shape)
 end
 
