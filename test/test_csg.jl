@@ -6,9 +6,9 @@ using Aether.Shapes
 @testset "CSG" begin
     @testset "CSG is created with an operation and two shapes" begin
         s1 = default_sphere()
-        s2 = default_sphere()
-        c = CSG("union", s1, s2)
-        @test c.operation == "union"
+        s2 = Cube()
+        c = CSG(csg_union_op, s1, s2)
+        @test c.operation == csg_union_op
         @test c.left == s1
         @test c.right == s2
         @test s1.parent == c

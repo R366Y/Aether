@@ -15,7 +15,7 @@ mutable struct Vec3D{T<:AbstractFloat}
 
     function Vec3D(x::T, y::T, z::T, w::T) where {T<:AbstractFloat}
         new{T}(x, y, z, w)
-    end # function
+    end
 
     function Vec3D(v::Array{T,1}) where {T<:AbstractFloat}
         new{T}(v)
