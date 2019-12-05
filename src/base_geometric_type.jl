@@ -1,20 +1,9 @@
 module BaseGeometricType
 
-export GeometricObject,
-       GroupType,
-       Group,
-       Intersection,
-       add_child!,
-       make_subgroup!,
-       set_transform,
-       r_intersect,
-       local_intersect,
-       normal_at,
-       local_normal_at,
-       world_to_object,
-       get_parent_group,
-       normal_to_world,
-       hit
+export GeometricObject, GroupType, Group, Intersection
+export add_child!, make_subgroup!
+export set_transform, r_intersect, local_intersect, normal_at, local_normal_at
+export world_to_object, get_parent_group, normal_to_world, hit
 
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D, normalize
 import Aether.MatrixTransformations: Matrix4x4
@@ -52,11 +41,11 @@ end
     local_intersect(shape::GeometricObject, ray::Ray)
 
 Calculate the intersection bewteen a ray and a shape after the ray has been transformed
-to local coordinates. Standard implementation returns an empty `Array`.
+to local coordinates. Standard implementation returns an empty `Tuple`.
 This function MUST be implemented for every shape.
 """
 function local_intersect(shape::T, ray::Ray) where {T<:GeometricObject}
-    return []
+    return ()
 end
 
 """

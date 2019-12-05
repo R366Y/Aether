@@ -3,8 +3,9 @@ module CSolidGeometry
 export CSG, csg_union_op, csg_intersect_op, csg_difference_op
 export intersection_allowed, filter_intersections
 
-import Aether.BaseGeometricType: GeometricObject, GroupType, Group, Intersection
+import Aether.BaseGeometricType: GeometricObject, GroupType, Group, Intersection, r_intersect, local_intersect
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
+import Aether.Rays: Ray
 
 const csg_union_op = "union"
 const csg_intersect_op = "intersect"
@@ -43,7 +44,7 @@ function intersection_allowed(operation::String, lhit::Bool, inl::Bool, inr::Boo
     return false
 end
 
-function filter_intersections(csg::CSG, xs::Array{Intersection,1})
+function filter_intersections(csg::CSG, xs::Array)
     # begin outside of both children
     inl = false
     inr = false
@@ -81,6 +82,18 @@ function csg_includes_gobject(csg_object::GeometricObject, gobject::GeometricObj
         return gobject == csg_object
     end
     return false
+end
+
+function local_intersect(csg::CSG, ray::Ray)
+    leftxs = r_intersect(csg.left, ray)
+    rightxs = r_intersect(csg.right, ray)
+    xs = vcat(leftxs..., rightxs...)
+    if !isempty(xs)
+        sort!(xs, by = i -> i.t)
+        filtered_intersections = filter_intersections(csg, xs)
+        return (filtered_intersections...,)
+    end
+    return ()
 end
 
 end
