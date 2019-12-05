@@ -1,8 +1,9 @@
 module CSolidGeometry
 
 export CSG, csg_union_op, csg_intersect_op, csg_difference_op
+export intersection_allowed, filter_intersections
 
-import Aether.BaseGeometricType: GeometricObject, GroupType
+import Aether.BaseGeometricType: GeometricObject, GroupType, Group, Intersection
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 
 const csg_union_op = "union"
@@ -33,8 +34,52 @@ end
 function intersection_allowed(operation::String, lhit::Bool, inl::Bool, inr::Bool)
     if operation == csg_union_op
         return (lhit && !inr) || (!lhit && !inl)
+    elseif operation == csg_intersect_op
+        return (lhit && inr) || (!lhit && inl)
+    elseif operation == csg_difference_op
+        return (lhit && !inr) || (!lhit && inl)
     end
 
+    return false
+end
+
+function filter_intersections(csg::CSG, xs::Array{Intersection,1})
+    # begin outside of both children
+    inl = false
+    inr = false
+
+    # prepare a list to receive the filtered intersections
+    result = Intersection[]
+
+    for i in xs
+        # if i.gobject is part of the "left" child, then lhit is true
+        lhit = csg_includes_gobject(csg.left, i.gobject)
+        if intersection_allowed(csg.operation, lhit, inl, inr)
+            push!(result, i)
+        end
+        # depending on which object was hit, toggle either inl or inr
+        if lhit
+            inl = !inl
+        else
+            inr = !inr
+        end
+    end
+    return result
+end
+
+function csg_includes_gobject(csg_object::GeometricObject, gobject::GeometricObject)
+    csg_object_type = typeof(csg_object)
+    if csg_object_type == Group
+        for o in csg_object.shapes
+            if csg_includes_gobject(o, gobject)
+                return true
+            end
+        end
+    elseif csg_object_type == CSG
+        return gobject == csg_object.right || gobject == csg_object.left
+    else
+        return gobject == csg_object
+    end
     return false
 end
 
