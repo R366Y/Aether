@@ -1,6 +1,7 @@
 using Test
 using Aether.AccelerationStructures
 using Aether.BaseGeometricType
+using Aether.CSolidGeometry
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
 using Aether.Rays
@@ -170,6 +171,16 @@ using Aether.Shapes
 		@test box.max == point3D(4., 7., 4.5)
 	end
 
+	@testset "A CSG shape has a bounding box that contains its children" begin
+		left = default_sphere()
+		right = default_sphere()
+		set_transform(right, translation(2., 3., 4.))
+		shape = CSG(csg_difference_op, left, right)
+		box = bounds_of(shape)
+		@test box.min == point3D(-1., -1., -1.)
+		@test box.max == point3D(3., 4., 5.)
+	end
+
 	@testset "Intersecting a ray with a bounding box at the origin" begin
 		box = BoundingBox(point3D(-1., -1., -1.), point3D(1., 1., 1.))
 
@@ -238,6 +249,26 @@ using Aether.Shapes
 		r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
 		xs = r_intersect(shape, r)
 		@test !isnothing(child.saved_ray)
+	end
+
+	@testset "Intersect ray+csg doesn't test children if box is missed" begin
+		left = TestShape()
+		right = TestShape()
+		shape = CSG(csg_difference_op, left, right)
+		r = Ray(point3D(0., 0., -5.), vector3D(0., 1., 0.))
+		xs = r_intersect(shape, r)
+		@test isnothing(left.saved_ray)
+		@test isnothing(right.saved_ray)
+	end
+
+	@testset "Intersecting ray+csg tests children if box is hit" begin
+		left = TestShape()
+		right = TestShape()
+		shape = CSG(csg_difference_op, left, right)
+		r = Ray(point3D(0., 0., -5.), vector3D(0., 0., 1.))
+		xs = r_intersect(shape, r)
+		@test !isnothing(left.saved_ray)
+		@test !isnothing(right.saved_ray)
 	end
 
 	@testset "Splitting a perfect cube" begin
@@ -339,8 +370,27 @@ using Aether.Shapes
 		@test g.shapes[1] == subgroup
 		@test g.shapes[2] == s4
 		@test length(subgroup.shapes) == 2
-		@test s1 in subgroup.shapes[1].shapes 
+		@test s1 in subgroup.shapes[1].shapes
 		@test s2 in subgroup.shapes[2].shapes
 		@test s3 in subgroup.shapes[2].shapes
+	end
+
+	@testset "Subdividing a CSG shape subdivides its children" begin
+		s1 = default_sphere()
+		set_transform(s1, translation(-1.5, 0., 0.))
+		s2 = default_sphere()
+		set_transform(s2, translation(1.5, 0., 0.))
+		left = group_of(GeometricObject[s1, s2])
+		s3 = default_sphere()
+		set_transform(s3, translation(0., 0., -1.5))
+		s4 = default_sphere()
+		set_transform(s4, translation(0., 0., 1.5))
+		right = group_of(GeometricObject[s3, s4])
+		shape = CSG(csg_difference_op, left, right)
+		divide!(shape, 1)
+		@test s1 in left.shapes[1].shapes
+		@test s2 in left.shapes[2].shapes
+		@test s3 in right.shapes[1].shapes
+		@test s4 in right.shapes[2].shapes
 	end
 end

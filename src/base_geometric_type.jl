@@ -1,7 +1,7 @@
 module BaseGeometricType
 
 export GeometricObject, GroupType, Group, Intersection
-export add_child!, make_subgroup!
+export add_child!, group_of, make_subgroup!
 export set_transform, r_intersect, local_intersect, normal_at, local_normal_at
 export world_to_object, get_parent_group, normal_to_world, hit
 

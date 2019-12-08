@@ -34,11 +34,14 @@ function add_child!(group::Group, shape::GeometricObject)
     push!(group.shapes, shape)
 end
 
-function make_subgroup!(group::Group, shape_array::Array{GeometricObject,1})
+function group_of(shapes::Array{GeometricObject,1})
     g = Group()
-    for shape in shape_array
-        add_child!(g, shape)
-    end
+    g.shapes = vcat(g.shapes, shapes)
+    return g
+end
+
+function make_subgroup!(group::Group, shapes::Array{GeometricObject,1})
+    g = group_of(shapes)
     add_child!(group, g)
 end
 
