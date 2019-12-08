@@ -4,7 +4,8 @@ import Aether.BaseGeometricType: GeometricObject,
                                  set_transform,
                                  local_intersect,
                                  local_normal_at,
-                                 Intersection
+                                 Intersection,
+                                 GroupType
 import Aether.HomogeneousCoordinates: Vec3D, point3D, dot
 import Aether.Materials: Material, default_material
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
@@ -16,7 +17,7 @@ mutable struct Sphere <: GeometricObject
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    parent::Union{Ref{Group},Nothing}
+    parent::Union{GroupType,Nothing}
 
     function Sphere(center::Vec3D, radius::Float64)
         new(

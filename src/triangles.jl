@@ -1,7 +1,7 @@
 import Base: ==
 
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject, Group, Intersection
+import Aether.BaseGeometricType: GeometricObject, GroupType, Intersection
 import Aether.HomogeneousCoordinates: point3D,
                                       vector3D,
                                       Vecf64,
@@ -24,7 +24,7 @@ mutable struct Triangle <: TriangleType
     e1::Vecf64
     e2::Vecf64
     normal::Vecf64
-    parent::Union{Ref{Group},Nothing}
+    parent::Union{GroupType,Nothing}
 
     function Triangle(p1::Vecf64, p2::Vecf64, p3::Vecf64)
         e1 = p2 - p1
@@ -52,7 +52,7 @@ mutable struct SmoothTriangle <: TriangleType
     e1::Vecf64
     e2::Vecf64
     normal::Vecf64
-    parent::Union{Ref{Group},Nothing}
+    parent::Union{GroupType,Nothing}
 
     function SmoothTriangle(p1::Vecf64, p2::Vecf64, p3::Vecf64,
                             n1::Vecf64, n2::Vecf64, n3::Vecf64)

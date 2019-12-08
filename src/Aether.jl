@@ -31,13 +31,15 @@ include("camera.jl")
 include("shaders.jl")
 
 include("shapes.jl")
-include("bounding_box.jl")
+include("csg.jl")
 include("wavefront_obj_reader.jl")
 
 include("world.jl")
 
+include("bounding_box.jl")
+
 # Horrible way to simulate cyclical module dependencies that are not
 # supported in Julia. I need to use bounding box inside groups.jl but
-# but bounding box to work needs both groups and shapes. 
+# but bounding box to work needs both groups and shapes.
 @reexport using Aether.AccelerationStructures
 end # module

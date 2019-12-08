@@ -13,7 +13,10 @@ export BoundingBox,
 	   partition_children!
 
 import Aether: ϵ
-import Aether.BaseGeometricType: GeometricObject, GroupType, make_subgroup!
+import Aether.BaseGeometricType: GeometricObject,
+								 GroupType, Group,
+								 make_subgroup!
+import Aether.CSolidGeometry: CSG
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vecf64
 import Aether.MatrixTransformations: Matrix4x4
 import Aether.Rays: Ray
@@ -90,13 +93,23 @@ function bounds_of(test_shape::TestShape)
 	return BoundingBox(point3D(-1., -1., -1.), point3D(1., 1., 1.))
 end
 
-function bounds_of(group::GroupType)
+function bounds_of(group::Group)
 	box = BoundingBox()
 
 	for child in group.shapes
 		cbox = parent_space_bounds_of(child)
 		resize_bb!(box, cbox)
 	end
+	return box
+end
+
+function bounds_of(csg::CSG)
+	box = BoundingBox()
+
+	cbox = parent_space_bounds_of(csg.left)
+	resize_bb!(box, cbox)
+	cbox = parent_space_bounds_of(csg.right)
+	resize_bb!(box, cbox)
 	return box
 end
 
@@ -238,6 +251,11 @@ function divide!(shape::GeometricObject, threshold::Int)
 	for child in shape.shapes
 		divide!(child, threshold)
 	end
+end
+
+function divide!(shape::CSG, threshold::Int)
+	divide!(shape.left, threshold)
+	divide!(shape.right, threshold)
 end
 
 end

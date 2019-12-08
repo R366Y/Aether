@@ -11,7 +11,7 @@ abstract type GroupType <: GeometricObject end
 mutable struct Group <: GroupType
     transform::Matrix4x4
     inverse::Matrix4x4
-    parent::Union{Ref{Group},Nothing}
+    parent::Union{GroupType,Nothing}
     shapes::Array{GeometricObject,1}
     # this field contains bounding box for the group but it cannot be declared
     # as BoundingBox because that is defined after groups, cannot have cyclic module
@@ -30,15 +30,18 @@ mutable struct Group <: GroupType
 end
 
 function add_child!(group::Group, shape::GeometricObject)
-    shape.parent = Ref(group)
+    shape.parent = group
     push!(group.shapes, shape)
 end
 
-function make_subgroup!(group::GroupType, shape_array::Array{GeometricObject,1})
+function group_of(shapes::Array{GeometricObject,1})
     g = Group()
-    for shape in shape_array
-        add_child!(g, shape)
-    end
+    g.shapes = vcat(g.shapes, shapes)
+    return g
+end
+
+function make_subgroup!(group::Group, shapes::Array{GeometricObject,1})
+    g = group_of(shapes)
     add_child!(group, g)
 end
 
