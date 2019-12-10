@@ -16,7 +16,7 @@ function draw_world()
 	hex = hexagon()
 
 	world = World()
-    world.light = PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
+    add_lights!(world, PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0)))
     add_objects(world,hex)
 
     camera = Camera(800, 400, 0.314)

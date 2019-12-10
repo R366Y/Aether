@@ -102,7 +102,7 @@ function draw_world()
     red_sphere.material.shininess = 5.
 
     world = World()
-    world.light = PointLight(point3D(-4.9, 4.9, -1.) , ColorRGB(1., 1., 1.))
+    add_lights!(world, PointLight(point3D(-4.9, 4.9, -1.) , ColorRGB(1., 1., 1.)))
     add_objects(world, checkered_floor, ceiling, west_wall, east_wall,
                 north_wall, south_wall, bb1, bb2, bb3, bb4, blue_glass_sphere,
                 green_glass_sphere, red_sphere)

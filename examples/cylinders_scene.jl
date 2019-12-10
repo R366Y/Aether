@@ -177,7 +177,7 @@ function draw_world()
     glass_cyl.material.refractive_index = 1.5
 
     world = World()
-    world.light = PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
+    add_lights!(world, PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0)))
     add_objects(
         world,
         floor_plane,

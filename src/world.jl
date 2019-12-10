@@ -3,6 +3,7 @@ module WorldModule
 export World,
        default_world,
        add_objects,
+       add_lights!,
        intersect_world,
        color_at,
        shade_hit,
@@ -28,11 +29,20 @@ import Aether.BaseGeometricType: GeometricObject,
 
 mutable struct World{T<:GeometricObject}
     objects::Array{T,1}
-    light::PointLight
+    lights::Array{LightType,1}
 
     function World()
-        new{GeometricObject}(GeometricObject[], default_point_light())
+        new{GeometricObject}(GeometricObject[], LightType[default_point_light()])
     end
+end
+
+function add_objects(world::World, objs...)
+    push!(world.objects, objs...)
+end
+
+function add_lights!(world::World, lights...)
+    empty!(world.lights)
+    push!(world.lights, lights...)
 end
 
 function default_world()
@@ -45,13 +55,9 @@ function default_world()
     s2 = default_sphere()
     set_transform(s2, scaling(0.5, 0.5, 0.5))
     w = World()
-    w.light = light
-    push!(w.objects, s1, s2)
+    add_lights!(w, light)
+    add_objects(w, s1, s2)
     return w
-end
-
-function add_objects(world::World, objs...)
-    push!(world.objects, objs...)
 end
 
 function color_at(world::World, ray::Ray, remaining::Int64)
@@ -66,16 +72,19 @@ function color_at(world::World, ray::Ray, remaining::Int64)
 end
 
 function shade_hit(world::World, comps::Computations, remaining::Int64)
-    shadowed = is_shadowed(world, comps.over_point)
-    surface = lighting(
-        comps.gobject.material,
-        comps.gobject,
-        world.light,
-        comps.over_point,
-        comps.eyev,
-        comps.normalv,
-        shadowed,
-    )
+    surface = black
+    for light in world.lights
+        shadowed = is_shadowed(world, comps.over_point, light)
+        surface += lighting(
+            comps.gobject.material,
+            comps.gobject,
+            light,
+            comps.over_point,
+            comps.eyev,
+            comps.normalv,
+            shadowed,
+        )
+    end
     reflected = reflected_color(world, comps, remaining)
     refracted = refracted_color(world, comps, remaining)
 
@@ -102,8 +111,8 @@ function intersect_world(world::World, ray::Ray)
     return result
 end
 
-function is_shadowed(world::World, point::Vec3D)
-    v = world.light.position - point
+function is_shadowed(world::World, point::Vec3D, light::LightType)
+    v = light.position - point
     distance = norm(v)
     direction = normalize(v)
 

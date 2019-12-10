@@ -18,7 +18,7 @@ function draw_world()
     set_transform(teddy,rotation_y(float(π)) * scaling(0.15, 0.15, 0.15))
 
 	world = World()
-    world.light = PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
+    add_lights!(world, PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0)))
     add_objects(world,teddy)
 
     camera = Camera(400, 200, 0.314)

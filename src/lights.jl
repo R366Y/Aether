@@ -1,12 +1,14 @@
 module Lights
 
-export PointLight, default_point_light
+export LightType, PointLight, default_point_light
 
 import Base: ==
 using Aether.HomogeneousCoordinates
 using Aether.ColorsModule
 
-struct PointLight
+abstract type LightType end
+
+struct PointLight <: LightType
     position::Vec3D{Float64}
     intensity::ColorRGB
 end
