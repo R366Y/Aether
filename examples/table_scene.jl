@@ -7,6 +7,7 @@ using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
+using Aether.Renders
 using Aether.WorldModule
 
 import Aether.BaseGeometricType: set_transform
@@ -144,7 +145,7 @@ function draw_world()
     mirror.material.reflective = 1.
 
     world = World()
-    world.light = PointLight(point3D(0., 6.9, -5.) , ColorRGB(1., 1., 0.9))
+    add_lights!(world, PointLight(point3D(0., 6.9, -5.) , ColorRGB(1., 1., 0.9)))
     add_objects(world, ceiling, walls, table_top, leg1, leg2, leg3, leg4,
                 glass_cube, little_cube1, little_cube2, little_cube3,
                 little_cube4, little_cube5, frame1, frame2, frame3, mirror_frame,

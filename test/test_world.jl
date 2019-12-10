@@ -14,7 +14,7 @@ import Aether.BaseGeometricType: set_transform, Intersection
     @testset "The default world" begin
         w = default_world()
         light = PointLight(point3D(-10., 10., -10.), ColorRGB(1., 1., 1.))
-        @test w.light == light
+        @test w.lights[1] == light
 
         s1 = default_sphere()
         s1.material.color = ColorRGB(0.8, 1., 0.6)
@@ -50,7 +50,7 @@ import Aether.BaseGeometricType: set_transform, Intersection
 
     @testset "Shading an intersection from the inside" begin
         w = default_world()
-        w.light = PointLight(point3D(0., 0.25, 0.), ColorRGB(1., 1., 1.))
+        add_lights!(w, PointLight(point3D(0., 0.25, 0.), ColorRGB(1., 1., 1.)))
         r = Ray(point3D(0., 0., 0.), vector3D(0., 0., 1.))
         shape = w.objects[2]
         i = Intersection(0.5, shape)
@@ -87,30 +87,30 @@ import Aether.BaseGeometricType: set_transform, Intersection
     @testset "No shadow when nothing is collinear with point and light" begin
         w = default_world()
         p = point3D(0., 10., 0.)
-        @test !is_shadowed(w, p)
+        @test !is_shadowed(w, p, w.lights[1])
     end
 
     @testset "The shadow when an object is between with point and light" begin
         w = default_world()
         p = point3D(10., -10., 10.)
-        @test is_shadowed(w, p)
+        @test is_shadowed(w, p, w.lights[1])
     end
 
     @testset "No shadow when an object is behind the light" begin
         w = default_world()
         p = point3D(-20., 20., -20.)
-        @test !is_shadowed(w, p)
+        @test !is_shadowed(w, p, w.lights[1])
     end
 
     @testset "No shadow when an object is behind the point" begin
         w = default_world()
         p = point3D(-2., 2., -2.)
-        @test !is_shadowed(w, p)
+        @test !is_shadowed(w, p, w.lights[1])
     end
 
     @testset "shade_hit is given an intersection in shadow" begin
         w = default_world()
-        w.light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
+        add_lights!(w, PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.)))
         s1 = default_sphere()
         add_objects(w, s1)
         s2 = default_sphere()
@@ -162,7 +162,7 @@ import Aether.BaseGeometricType: set_transform, Intersection
 
     @testset "color_at() with mutually reflective surfaces" begin
         w = default_world()
-        w.light = PointLight(point3D(0., 0., 0.), white)
+        add_lights!(w, PointLight(point3D(0., 0., 0.), white))
         lower = Plane()
         lower.material.reflective = 1.
         set_transform(lower, translation(0., -1., 0.))

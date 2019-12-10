@@ -5,6 +5,7 @@ using Aether.CanvasModule
 using Aether.ColorsModule
 using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
+using Aether.Renders
 using Aether.WorldModule
 import Aether: float_equal
 

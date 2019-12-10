@@ -9,18 +9,35 @@ using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
+using Aether.Renders
 using Aether.Shapes
 using Aether.WorldModule
 
 function draw_world()
+    # floor
+    floor_plane = Plane()
+    floor_plane.material.pattern = CheckerPattern(
+        ColorRGB(0.5, 0.5, 0.5),
+        ColorRGB(0.75, 0.75, 0.75),
+    )
+    set_pattern_transform(
+        floor_plane.material.pattern,
+        rotation_y(0.3) * scaling(0.25, 0.25, 0.25),
+    )
+    floor_plane.material.ambient = 0.2
+    floor_plane.material.diffuse = 0.9
+    floor_plane.material.specular = 0.0
+
 	obj_file = parse_obj_file("examples/resources/teapot_smooth.obj")
 	teapot = obj_to_group(obj_file)
 	divide!(teapot, 15)
-    set_transform(teapot, scaling(0.15, 0.15, 0.15) * rotation_x(-π/2))
+    set_transform(teapot, scaling(0.145, 0.145, 0.145) * rotation_y(3/4 * pi) * rotation_x(-π/2) )
 
-	world = World()
-    world.light = PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
-    add_objects(world,teapot)
+    world = World()
+    l1 = PointLight(point3D(-2.0, 6.9, -4.9), ColorRGB(0.2, 0.2, 0.2))
+    l2 = PointLight(point3D(2.0, 6.9, -4.9), ColorRGB(0.7, 0.7, 0.7))
+    add_lights!(world, l1, l2)
+    add_objects(world,teapot, floor_plane)
 
     camera = Camera(640, 480, 0.314)
     camera_set_transform(

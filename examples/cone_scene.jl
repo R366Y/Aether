@@ -6,6 +6,7 @@ using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
+using Aether.Renders
 using Aether.Shapes
 using Aether.WorldModule
 
@@ -56,7 +57,9 @@ function draw_world()
     glass_cone.material.reflective = 0.9
 
     world = World()
-    world.light = PointLight(point3D(10.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
+    l1 = PointLight(point3D(10.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
+    l2 = PointLight(point3D(10.0, 3.9, 1.0), ColorRGB(1.0, 1.0, 1.0))
+    add_lights!(world,l2, l1)
     add_objects(
         world,
         floor_plane,

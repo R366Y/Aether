@@ -8,6 +8,7 @@ using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
+using Aether.Renders
 using Aether.Shapes
 using Aether.WorldModule
 
@@ -17,7 +18,7 @@ function draw_world()
     set_transform(teapot, scaling(0.25, 0.25, 0.25))
 
 	world = World()
-    world.light = PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0))
+    add_lights!(world, PointLight(point3D(1.0, 6.9, -4.9), ColorRGB(1.0, 1.0, 1.0)))
     add_objects(world,teapot)
 
     camera = Camera(400, 200, 0.314)

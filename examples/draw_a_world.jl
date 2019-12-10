@@ -5,6 +5,7 @@ using Aether.HomogeneousCoordinates
 using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
+using Aether.Renders
 using Aether.Shapes
 using Aether.WorldModule
 
@@ -51,7 +52,7 @@ function draw_world()
     left.material.specular = 0.3
 
     world = World()
-    world.light = PointLight(point3D(-10., 10., -10.) , ColorRGB(1., 1., 1.))
+    add_lights!(world, PointLight(point3D(-10., 10., -10.) , ColorRGB(1., 1., 1.)))
     add_objects(world, floor_sphere, left_wall,
                 right_wall, middle, right, left)
     camera = Camera(300, 150, π/3)
