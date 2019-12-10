@@ -7,6 +7,7 @@ using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
+using Aether.Renders
 using Aether.WorldModule
 
 import Aether.BaseGeometricType: set_transform

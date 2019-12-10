@@ -7,6 +7,7 @@ using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Patterns
 using Aether.Shapes
+using Aether.Renders
 using Aether.WorldModule
 
 import Aether.BaseGeometricType: Group, add_child!, set_transform
