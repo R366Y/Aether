@@ -1,3 +1,4 @@
+include("test_yaml.jl")
 include("test_csg.jl")
 include("test_bounding_box.jl")
 include("test_canvas.jl")
