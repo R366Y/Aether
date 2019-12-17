@@ -4,6 +4,7 @@ export World,
        default_world,
        add_objects,
        add_lights!,
+       append_light!,
        intersect_world,
        color_at,
        shade_hit,
@@ -43,6 +44,10 @@ end
 function add_lights!(world::World, lights...)
     empty!(world.lights)
     push!(world.lights, lights...)
+end
+
+function append_light!(world::World, light::LightType)
+    push!(world.lights, light)
 end
 
 function default_world()
