@@ -6,6 +6,9 @@ using Aether.MatrixTransformations
 using Aether.SceneImporters
 using Aether.WorldModule
 
+import YAML
+import Aether.SceneImporters: parse_materials_data
+
 @testset "Yaml file importer" begin
     @testset "Importer returns an instance of Camera" begin 
         camera, world = import_yaml_scene_file("resources/scene.yml")
@@ -25,5 +28,18 @@ using Aether.WorldModule
         @test l1.intensity == ColorRGB(1., 1., 1.)
         @test l2.position == point3D(Float64.([ -400, 50, -10 ]))
         @test l2.intensity == ColorRGB(0.2, 0.2, 0.2)
+    end
+
+    @testset "Test predefined materials if present" begin
+        data = YAML.load(open("resources/scene.yml"))
+        materials = parse_materials_data(data)
+        white_mat = materials["white-material"]
+        blue_mat = materials["blue-material"]
+        @test white_mat.color == ColorRGB(1., 1., 1.)
+        @test white_mat.diffuse == 0.7
+        @test white_mat.ambient == 0.1
+        @test white_mat.specular == 0.0
+        @test white_mat.reflective == 0.1
+        @test blue_mat.color == ColorRGB(0.537, 0.831, 0.914)
     end
 end
