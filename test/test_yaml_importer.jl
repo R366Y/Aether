@@ -2,8 +2,10 @@ using Test
 using Aether.CameraModule
 using Aether.ColorsModule
 using Aether.HomogeneousCoordinates
+using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.SceneImporters
+using Aether.Shapes
 using Aether.WorldModule
 
 import YAML
@@ -54,5 +56,18 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         @test standard_t[4][2] == scaling(0.5, 0.5, 0.5)
         @test standard_t[5][2] == translation(1., 1., 2.)
         @test large_obj_t[1][2] == rotation_z(0.8)
+    end
+
+    @testset "Importer returns an instance of World with objects" begin
+        camera, world = import_yaml_scene_file("resources/scene.yml")
+        plane = world.objects[1]
+        material = default_material()
+        material.color = ColorRGB(1., 1., 1.)
+        material.ambient = 1.
+        material.diffuse = 0.
+        material.specular = 0.
+        @test typeof(plane) == Plane 
+        @test plane.material == material
+        @test plane.transform == translation(0., 0., 500.) * rotation_x(1.5707963267948966) 
     end
 end

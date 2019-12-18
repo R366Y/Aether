@@ -3,12 +3,14 @@ module SceneImporters
 export import_yaml_scene_file
 
 import YAML
+using Aether.BaseGeometricType
 using Aether.CameraModule
 using Aether.ColorsModule
 using Aether.HomogeneousCoordinates
 using Aether.Lights
 using Aether.Materials
 using Aether.MatrixTransformations
+using Aether.Shapes
 using Aether.WorldModule
 
 function import_yaml_scene_file(filename::String)
@@ -18,6 +20,8 @@ function import_yaml_scene_file(filename::String)
     parse_lights_data(data, world)
     materials = parse_materials_data(data)
     transforms = parse_transforms_data(data)
+    # TODO: check if materials and transforms are empty
+    parse_objects_data(data, materials, transforms, world)
     return camera, world
 end
 
@@ -64,14 +68,8 @@ function parse_materials_data(yaml_data::Dict)
         # fill materials fields
         for mat_prop in collect(keys(material_yaml))
             (mat_prop == "extend" || mat_prop == "define") && continue
-            prop = Symbol(mat_prop)
             value = material_yaml[mat_prop]
-            if mat_prop == "color"
-                value = __array_to_ColorRGB(value)
-            else
-                value = Float64(value)
-            end
-            setfield!(material, prop, value)
+            __set_material_property(material, mat_prop, value)
         end
         push!(materials, material_name=>material)
     end
@@ -96,37 +94,99 @@ function parse_transforms_data(yaml_data::Dict)
         for matr_trans in transform_yaml["value"]
             matr_op = matr_trans[1]
             value = matr_trans[2:end]
-            if matr_op == "translate"
-                value = Float64.(value)
-                # remove entry if already exists in case 
-                # the transformation extends an existing one
-                filter!(x-> x[1] != "translate", matrices)
-                pushfirst!(matrices, ["translate", translation(value[1], value[2], value[3])])
-            elseif matr_op == "scale"
-                value = Float64.(value)
-                filter!(x-> x[1] != "scale", matrices)
-                pushfirst!(matrices, ["scale", scaling(value[1], value[2], value[3])])
-            elseif matr_op == "rotate-x"
-                value = Float64(value[1])
-                filter!(x-> x[1] != "rotate-x", matrices)
-                pushfirst!(matrices, ["rotate-x", rotation_x(value)])
-            elseif matr_op == "rotate-y"
-                value = Float64(value[1])
-                filter!(x-> x[1] != "rotate-y", matrices)
-                pushfirst!(matrices, ["rotate-y", rotation_y(value)])
-            elseif matr_op == "rotate-z"
-                value = Float64(value[1])
-                filter!(x-> x[1] != "rotate-z", matrices)
-                pushfirst!(matrices, ["rotate-z", rotation_z(value)])
-            end
+            __add_transform(matr_op, value, matrices)
         end
         push!(transforms, transform_name=>matrices)
     end
     return transforms
 end
 
-function parse_objects_data(yaml_data::Dict)
+function parse_objects_data(yaml_data::Dict, materials, transforms, world)
+    gobjects_data = yaml_data["gobjects"]
 
+    for gobject_yaml in gobjects_data
+        gobject_type = gobject_yaml["add"]
+        gobject = TestShape()
+        if gobject_type == "cone"
+            gobject = Cone()
+        elseif gobject_type == "cube"
+            gobject = Cube()
+        elseif gobject_type == "cylinder"
+            gobject = Cylinder()
+        elseif gobject_type == "plane"
+            gobject = Plane()
+        elseif gobject_type == "sphere"
+            gobject = default_sphere()
+        end
+
+        if haskey(gobject_yaml, "material")
+            # TODO: check if extend is in materials
+            material_yaml = gobject_yaml["material"]
+            material = default_material()
+            for mat_prop in collect(keys(material_yaml))
+                value = material_yaml[mat_prop]
+                __set_material_property(material, mat_prop, value)
+            end
+            gobject.material = material
+        end
+
+        if haskey(gobject_yaml, "transform")
+            # TODO: check if extend is in transforms
+            transformation_yaml = gobject_yaml["transform"]
+            matrices = []
+            for matr_trans in transformation_yaml
+                matr_op = matr_trans[1]
+                matr_op == "extend" && continue
+                value = matr_trans[2:end]
+                __add_transform(matr_op, value, matrices)
+            end
+            matrices = [m[2] for m in matrices]
+            if !isempty(matrices)
+                transform = identity_matrix(Float64)
+                for matrix in matrices
+                    transform = transform * matrix
+                end
+                set_transform(gobject, transform)
+            end
+        end
+
+        add_objects(world, gobject)
+    end
+end
+
+function __set_material_property(material, material_property, value)
+    if material_property == "refractive-index"
+        material_property = "refractive_index"
+    end
+    if material_property == "color"
+        value = __array_to_ColorRGB(value)
+    else
+        value = Float64(value)
+    end
+    property = Symbol(material_property)
+    setfield!(material, property, value)
+end
+
+function __add_transform(matrix_operation, value, matrices)
+    # remove entry if already exists in case 
+    # the transformation extends an existing one
+    filter!(x-> x[1] != matrix_operation, matrices)
+    if matrix_operation == "translate"
+        value = Float64.(value)
+        pushfirst!(matrices, ["translate", translation(value[1], value[2], value[3])])
+    elseif matrix_operation == "scale"
+        value = Float64.(value)
+        pushfirst!(matrices, ["scale", scaling(value[1], value[2], value[3])])
+    elseif matrix_operation == "rotate-x"
+        value = Float64(value[1])
+        pushfirst!(matrices, ["rotate-x", rotation_x(value)])
+    elseif matrix_operation == "rotate-y"
+        value = Float64(value[1])
+        pushfirst!(matrices, ["rotate-y", rotation_y(value)])
+    elseif matrix_operation == "rotate-z"
+        value = Float64(value[1])
+        pushfirst!(matrices, ["rotate-z", rotation_z(value)])
+    end
 end
 
 function __array_to_ColorRGB(array)
