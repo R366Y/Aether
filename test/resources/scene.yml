@@ -39,14 +39,16 @@ materials:
 # ======================================================
 transforms:
   - define: standard-transform
-    translate: [1, 1, 2]
-    scale: [0.5, 0.5, 0.5]
-    rotate-x: 3.14
-    rotate-y: 1.570796
-    rotate-z: 0.735
+    value:
+    - [translate, 1, 1, 2]
+    - [scale, 0.5, 0.5, 0.5]
+    - [rotate-x, 3.14]
+    - [rotate-y, 1.570796]
+    - [rotate-z, 0.735]
   - define: large-object
     extend: standard-transform
-    scale: [3.5, 3.5, 3.5 ]
+    value:
+    - [rotate-z, 0.8]
 # ======================================================
 # objects in the scene
 # ======================================================
@@ -58,8 +60,8 @@ gobjects:
       diffuse: 0
       specular: 0
     transform:
-      rotate-x: 1.5707963267948966  # pi/2
-      translate: [0, 0, 500]
+      - [rotate-x, 1.5707963267948966]  # pi/2
+      - [translate, 0, 0, 500]
   - add: sphere
     material:
       color: [ 0.373, 0.404, 0.550 ]

@@ -17,6 +17,7 @@ function import_yaml_scene_file(filename::String)
     camera = parse_camera_data(data)
     parse_lights_data(data, world)
     materials = parse_materials_data(data)
+    transforms = parse_transforms_data(data)
     return camera, world
 end
 
@@ -78,7 +79,50 @@ function parse_materials_data(yaml_data::Dict)
 end
 
 function parse_transforms_data(yaml_data::Dict)
+    transforms_data = yaml_data["transforms"]
 
+    transforms = Dict()
+    for transform_yaml in transforms_data
+        transform_name = transform_yaml["define"]
+        # transformation order declared in the yaml file 
+        # must be reverted when executed thus following the law of matrix multiplication
+        # i.e. the last transformation must come first in the order of matrix multiplications
+        matrices = []
+        # check if the transformation extends another transformation
+        if haskey(transform_yaml,"extend")
+            extended = transform_yaml["extend"]
+            matrices = deepcopy(transforms[extended])
+        end
+        for matr_trans in transform_yaml["value"]
+            matr_op = matr_trans[1]
+            value = matr_trans[2:end]
+            if matr_op == "translate"
+                value = Float64.(value)
+                # remove entry if already exists in case 
+                # the transformation extends an existing one
+                filter!(x-> x[1] != "translate", matrices)
+                pushfirst!(matrices, ["translate", translation(value[1], value[2], value[3])])
+            elseif matr_op == "scale"
+                value = Float64.(value)
+                filter!(x-> x[1] != "scale", matrices)
+                pushfirst!(matrices, ["scale", scaling(value[1], value[2], value[3])])
+            elseif matr_op == "rotate-x"
+                value = Float64(value[1])
+                filter!(x-> x[1] != "rotate-x", matrices)
+                pushfirst!(matrices, ["rotate-x", rotation_x(value)])
+            elseif matr_op == "rotate-y"
+                value = Float64(value[1])
+                filter!(x-> x[1] != "rotate-y", matrices)
+                pushfirst!(matrices, ["rotate-y", rotation_y(value)])
+            elseif matr_op == "rotate-z"
+                value = Float64(value[1])
+                filter!(x-> x[1] != "rotate-z", matrices)
+                pushfirst!(matrices, ["rotate-z", rotation_z(value)])
+            end
+        end
+        push!(transforms, transform_name=>matrices)
+    end
+    return transforms
 end
 
 function parse_objects_data(yaml_data::Dict)

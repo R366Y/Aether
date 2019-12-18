@@ -41,12 +41,12 @@ const data = YAML.load(open("resources/scene.yml"))
 
     @testset "A scene description can have default transformations" begin
         transforms = data["transforms"]
-        t1 = transforms[1]
-        @test t1["translate"] == [1, 1, 2]
-        @test t1["scale"] == [0.5, 0.5, 0.5]
-        @test t1["rotate-x"] == 3.14
-        @test t1["rotate-y"] == 1.570796
-        @test t1["rotate-z"] == 0.735
+        t1 = transforms[1]["value"]
+        @test t1[1] == ["translate", 1, 1, 2]
+        @test t1[2] == ["scale", 0.5, 0.5, 0.5]
+        @test t1[3] == ["rotate-x", 3.14]
+        @test t1[4] == ["rotate-y", 1.570796]
+        @test t1[5] == ["rotate-z", 0.735]
     end
 
     @testset "A scene description has objects" begin
@@ -56,6 +56,6 @@ const data = YAML.load(open("resources/scene.yml"))
         m1 = go1["material"]
         t1 = go1["transform"]
         @test m1 == Dict("color"=>[ 1, 1, 1 ], "ambient"=>1, "diffuse"=>0, "specular"=>0)
-        @test t1 == Dict("rotate-x"=>1.5707963267948966, "translate"=>[0, 0, 500])
+        @test t1 == [["rotate-x",1.5707963267948966], ["translate",0, 0, 500]]
     end
 end

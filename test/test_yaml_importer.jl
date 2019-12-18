@@ -7,7 +7,7 @@ using Aether.SceneImporters
 using Aether.WorldModule
 
 import YAML
-import Aether.SceneImporters: parse_materials_data
+import Aether.SceneImporters: parse_materials_data, parse_transforms_data
 
 @testset "Yaml file importer" begin
     @testset "Importer returns an instance of Camera" begin 
@@ -30,7 +30,7 @@ import Aether.SceneImporters: parse_materials_data
         @test l2.intensity == ColorRGB(0.2, 0.2, 0.2)
     end
 
-    @testset "Test predefined materials if present" begin
+    @testset "Test parsing predefined materials if present" begin
         data = YAML.load(open("resources/scene.yml"))
         materials = parse_materials_data(data)
         white_mat = materials["white-material"]
@@ -41,5 +41,18 @@ import Aether.SceneImporters: parse_materials_data
         @test white_mat.specular == 0.0
         @test white_mat.reflective == 0.1
         @test blue_mat.color == ColorRGB(0.537, 0.831, 0.914)
+    end
+
+    @testset "Test parsing predefined transformations if present" begin
+        data = YAML.load(open("resources/scene.yml"))
+        transformations = parse_transforms_data(data)
+        standard_t = transformations["standard-transform"]
+        large_obj_t = transformations["large-object"]
+        @test standard_t[1][2] == rotation_z(0.735)
+        @test standard_t[2][2] == rotation_y(1.570796)
+        @test standard_t[3][2] == rotation_x(3.14)
+        @test standard_t[4][2] == scaling(0.5, 0.5, 0.5)
+        @test standard_t[5][2] == translation(1., 1., 2.)
+        @test large_obj_t[1][2] == rotation_z(0.8)
     end
 end
