@@ -64,13 +64,6 @@ gobjects:
       - [translate, 0, 0, 500]
   - add: sphere
     material:
-      color: [ 0.373, 0.404, 0.550 ]
-      diffuse: 0.2
-      ambient: 0.0
-      specular: 1.0
-      shininess: 200
-      reflective: 0.7
-      transparency: 0.7
-      refractive-index: 1.5
+      extend: white-material
     transform:
-      extend: large-object
+      - large-object

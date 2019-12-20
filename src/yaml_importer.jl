@@ -120,10 +120,15 @@ function parse_objects_data(yaml_data::Dict, materials, transforms, world)
         end
 
         if haskey(gobject_yaml, "material")
-            # TODO: check if extend is in materials
             material_yaml = gobject_yaml["material"]
             material = default_material()
+            # check if the material extends another material
+            if haskey(material_yaml,"extend")
+                extended = material_yaml["extend"]
+                material = deepcopy(materials[extended])
+            end
             for mat_prop in collect(keys(material_yaml))
+                mat_prop == "extend" && continue
                 value = material_yaml[mat_prop]
                 __set_material_property(material, mat_prop, value)
             end
@@ -135,8 +140,12 @@ function parse_objects_data(yaml_data::Dict, materials, transforms, world)
             transformation_yaml = gobject_yaml["transform"]
             matrices = []
             for matr_trans in transformation_yaml
+                # check if the transformation extends another transformation
+                if typeof(matr_trans) == String
+                    matrices = deepcopy(transforms[matr_trans])
+                    continue
+                end
                 matr_op = matr_trans[1]
-                matr_op == "extend" && continue
                 value = matr_trans[2:end]
                 __add_transform(matr_op, value, matrices)
             end

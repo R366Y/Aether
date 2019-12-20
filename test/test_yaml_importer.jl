@@ -70,4 +70,21 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         @test plane.material == material
         @test plane.transform == translation(0., 0., 500.) * rotation_x(1.5707963267948966) 
     end
+
+    @testset "World objects' materials can extend a predefined material" begin
+        camera, world = import_yaml_scene_file("resources/scene.yml")
+        sphere = world.objects[2]
+        white_mat = sphere.material
+        @test white_mat.color == ColorRGB(1., 1., 1.)
+        @test white_mat.diffuse == 0.7
+        @test white_mat.ambient == 0.1
+        @test white_mat.specular == 0.0
+        @test white_mat.reflective == 0.1
+    end
+    @testset "World objects' materials can extend a predefined transformation" begin
+        camera, world = import_yaml_scene_file("resources/scene.yml")
+        sphere = world.objects[2]
+        @test sphere.transform == rotation_z(0.8) * rotation_y(1.570796) * rotation_x(3.14) * 
+                                  scaling(0.5, 0.5, 0.5) * translation(1., 1., 2.)
+    end
 end
