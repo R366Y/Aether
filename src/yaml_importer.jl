@@ -20,7 +20,6 @@ function import_yaml_scene_file(filename::String)
     parse_lights_data(data, world)
     materials = parse_materials_data(data)
     transforms = parse_transforms_data(data)
-    # TODO: check if materials and transforms are empty
     parse_objects_data(data, materials, transforms, world)
     return camera, world
 end
@@ -54,9 +53,11 @@ function parse_lights_data(yaml_data::Dict, world::World)
 end
 
 function parse_materials_data(yaml_data::Dict)
-    materials_data = yaml_data["materials"]
-    
     materials = Dict()
+    if !haskey(yaml_data, "materials")
+        return materials
+    end
+    materials_data = yaml_data["materials"]
     for material_yaml in materials_data
         material_name = material_yaml["define"]
         material = default_material()
@@ -77,14 +78,17 @@ function parse_materials_data(yaml_data::Dict)
 end
 
 function parse_transforms_data(yaml_data::Dict)
-    transforms_data = yaml_data["transforms"]
-
     transforms = Dict()
+    if !haskey(yaml_data, "transforms")
+        return transforms
+    end
+    transforms_data = yaml_data["transforms"]
     for transform_yaml in transforms_data
         transform_name = transform_yaml["define"]
         # transformation order declared in the yaml file 
         # must be reverted when executed thus following the law of matrix multiplication
         # i.e. the last transformation must come first in the order of matrix multiplications
+        # see __add_transform
         matrices = []
         # check if the transformation extends another transformation
         if haskey(transform_yaml,"extend")
@@ -136,7 +140,6 @@ function parse_objects_data(yaml_data::Dict, materials, transforms, world)
         end
 
         if haskey(gobject_yaml, "transform")
-            # TODO: check if extend is in transforms
             transformation_yaml = gobject_yaml["transform"]
             matrices = []
             for matr_trans in transformation_yaml
@@ -149,6 +152,7 @@ function parse_objects_data(yaml_data::Dict, materials, transforms, world)
                 value = matr_trans[2:end]
                 __add_transform(matr_op, value, matrices)
             end
+            println(matrices)
             matrices = [m[2] for m in matrices]
             if !isempty(matrices)
                 transform = identity_matrix(Float64)
@@ -204,6 +208,8 @@ function __check_and_set(matrices, matrix_operation, value)
             return 
         end
     end
+    # add the transformation in the first position of the array
+    # because the order of the matrix multiplication is inverted
     pushfirst!(matrices,value)
 end
 
