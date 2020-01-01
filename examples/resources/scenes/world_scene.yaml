@@ -17,6 +17,17 @@ lights:
     at: [ -10, 10, -10 ]
     intensity: [ 1, 1, 1 ]
 
+transforms:
+  - define: left-wall-transform
+    value:
+      - [scale, 10, 0.01, 10]
+      - [rotate-x, 1.570796326794] # pi/2
+      - [rotate-y, -0.785398163397] # pi/4
+      - [translate, 0, 0, 5]
+  - define: rigth-wall-transform
+    extend: left-wall-transform
+    value: 
+      - [rotate-y, 0.785398163397] # pi/4
 # ======================================================
 # objects in the scene
 # ======================================================
@@ -32,19 +43,13 @@ gobjects:
       color: [ 1, 0.9, 0.9 ]
       specular: 0
     transform:
-      - [scale, 10, 0.01, 10]
-      - [rotate-x, 1.570796326794] # pi/2
-      - [rotate-y, -0.785398163397] # pi/4
-      - [translate, 0, 0, 5]
+      - left-wall-transform
   - add: sphere
     material:
       color: [ 1, 0.9, 0.9 ]
       specular: 0
     transform: 
-      - [scale, 10, 0.01, 10]
-      - [rotate-x, 1.570796326794] # pi/2
-      - [rotate-y, 0.785398163397] # pi/4
-      - [translate, 0, 0, 5]
+      - rigth-wall-transform
   - add: sphere
     material:
       color: [ 0.1, 1, 0.5 ]

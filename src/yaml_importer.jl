@@ -21,6 +21,8 @@ function import_yaml_scene_file(filename::String)
     materials = parse_materials_data(data)
     transforms = parse_transforms_data(data)
     parse_objects_data(data, materials, transforms, world)
+    # TODO: return list of gobjects and lights instead of world
+    # because gobjects can be grouped later and divide the scene with AABB
     return camera, world
 end
 
@@ -85,7 +87,7 @@ function parse_transforms_data(yaml_data::Dict)
     transforms_data = yaml_data["transforms"]
     for transform_yaml in transforms_data
         transform_name = transform_yaml["define"]
-        # transformation order declared in the yaml file 
+        # transformation order declared in the yaml file
         # must be reverted when executed thus following the law of matrix multiplication
         # i.e. the last transformation must come first in the order of matrix multiplications
         # see __add_transform
@@ -152,7 +154,6 @@ function parse_objects_data(yaml_data::Dict, materials, transforms, world)
                 value = matr_trans[2:end]
                 __add_transform(matr_op, value, matrices)
             end
-            println(matrices)
             matrices = [m[2] for m in matrices]
             if !isempty(matrices)
                 transform = identity_matrix(Float64)
@@ -181,7 +182,7 @@ function __set_material_property(material, material_property, value)
 end
 
 function __add_transform(matrix_operation, value, matrices)
-    # remove entry if already exists in case 
+    # remove entry if already exists in case
     # the transformation extends an existing one
     if matrix_operation == "translate"
         value = Float64.(value)
@@ -205,7 +206,7 @@ function __check_and_set(matrices, matrix_operation, value)
     for i in 1:length(matrices)
         if matrices[i][1] == matrix_operation
             matrices[i] = value
-            return 
+            return
         end
     end
     # add the transformation in the first position of the array
