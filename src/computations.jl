@@ -89,4 +89,4 @@ function compute_refractive_indices!(
     comps
 end
 
-end  # module ComputationsModule
+end

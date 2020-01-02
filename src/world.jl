@@ -28,6 +28,13 @@ import Aether.BaseGeometricType: GeometricObject,
                                  set_transform,
                                  Intersection
 
+"""
+    struct World
+
+The World struct contains the objects to be rendered and the lights of the scene.
+The field `objects` is an Array of GeometricObject.
+The field `lights` is an Array of LightType.
+"""
 mutable struct World{T<:GeometricObject}
     objects::Array{T,1}
     lights::Array{LightType,1}
@@ -37,19 +44,41 @@ mutable struct World{T<:GeometricObject}
     end
 end
 
+"""
+    add_objects(world::World, objs...)
+
+Add the objs to the World structure.
+"""
 function add_objects(world::World, objs...)
     push!(world.objects, objs...)
 end
 
+"""
+    add_lights!(world::World, lights...)
+
+Add the lights to the World structure. It removes all the lights already
+present if any.
+"""
 function add_lights!(world::World, lights...)
     empty!(world.lights)
     push!(world.lights, lights...)
 end
 
+"""
+    append_light!(world::World, light::LightType)
+
+Add a light to the World light array.
+"""
 function append_light!(world::World, light::LightType)
     push!(world.lights, light)
 end
 
+"""
+    default_world()
+
+Returns a default instance of World with a light and two spheres,
+mainly used for testing.
+"""
 function default_world()
     light = PointLight(point3D(-10.0, 10.0, -10.0), ColorRGB(1.0, 1.0, 1.0))
     s1 = default_sphere()
@@ -65,6 +94,14 @@ function default_world()
     return w
 end
 
+"""
+    color_at(world::World, ray::Ray, remaining::Int64)
+
+Returns the color from the intersection of a ray and one of the objects of the
+scene, if there is no intersection returns black color.
+The parameter `remaining` is the max number of allowed recursive calls of this
+function.
+"""
 function color_at(world::World, ray::Ray, remaining::Int64)
     intersections = intersect_world(world, ray)
     i = hit(intersections)
@@ -76,6 +113,13 @@ function color_at(world::World, ray::Ray, remaining::Int64)
     return color
 end
 
+"""
+    shade_hit(world::World, comps::Computations, remaining::Int64)
+
+Calculate the color at the intersection of a geometric object.
+The color is given by the sum of lighting (shading) function + reflected +
+refracted (if applicable) + reflactance (if applicable).
+"""
 function shade_hit(world::World, comps::Computations, remaining::Int64)
     surface = black
     for light in world.lights
@@ -102,6 +146,13 @@ function shade_hit(world::World, comps::Computations, remaining::Int64)
     end
 end
 
+"""
+    intersect_world(world::World, ray::Ray)
+
+Test the ray for intersection against all the geometric objects contained
+in the scene. Returns an array of type Intersection, with the intersections
+sorted by distance from the ray origin.
+"""
 function intersect_world(world::World, ray::Ray)
     result = Intersection[]
     for obj in world.objects
@@ -116,6 +167,12 @@ function intersect_world(world::World, ray::Ray)
     return result
 end
 
+"""
+    is_shadowed(world::World, point::Vec3D, light::LightType)
+
+Check if a point is a shadowed by an object from the scene, in that case
+returns `true` `false` otherwise.
+"""
 function is_shadowed(world::World, point::Vec3D, light::LightType)
     v = light.position - point
     distance = norm(v)
@@ -131,6 +188,12 @@ function is_shadowed(world::World, point::Vec3D, light::LightType)
     return false
 end
 
+"""
+    reflected_color(world::World, comps::Computations, remaining::Int64)
+
+Returns the reflected color given the reflected ray at an object intersection.
+If the `reflective` property of a material is equal to 0.0 returns black.
+"""
 function reflected_color(world::World, comps::Computations, remaining::Int64)
     if comps.gobject.material.reflective == 0.0 || remaining <= 0
         return black
@@ -141,6 +204,12 @@ function reflected_color(world::World, comps::Computations, remaining::Int64)
     return color * comps.gobject.material.reflective
 end
 
+"""
+    refracted_color(world::World, comps::Computations, remaining::Int64)
+
+Returns the refracted color at an object intersection if the material's
+transparency is bigger than 0.0 otherwise returns black.
+"""
 function refracted_color(world::World, comps::Computations, remaining::Int64)
     if comps.gobject.material.transparency == 0.0 || remaining == 0
         return black
@@ -169,6 +238,13 @@ function refracted_color(world::World, comps::Computations, remaining::Int64)
     return color
 end
 
+"""
+    schlick(comps::Computations)
+
+This function is an approximation of the Fresnel Effect and it is needed
+to calculate the reflectance if the the material at the intersections is both
+reflective and refractive.
+"""
 function schlick(comps::Computations)
     # Approximation of Fresnel Effect
 
@@ -189,4 +265,4 @@ function schlick(comps::Computations)
     return r0 + (1.0 - r0) * (1 - cosv)^5
 end
 
-end  # module WorldModule
+end
