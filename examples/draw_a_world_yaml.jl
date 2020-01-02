@@ -1,9 +1,13 @@
 using Aether.CanvasModule
 using Aether.Renders
 using Aether.SceneImporters
+using Aether.WorldModule
 
 function draw_world()
-    camera, world = import_yaml_scene_file("examples/resources/scenes/world_scene.yaml")
+    camera, lights, gobjects = import_yaml_scene_file("examples/resources/scenes/world_scene.yml")
+    world = World()
+    add_lights!(world, lights...)
+    add_objects(world, gobjects...)
     canvas = render(camera, world)
     return canvas
 end

@@ -14,16 +14,15 @@ using Aether.Shapes
 using Aether.WorldModule
 
 function import_yaml_scene_file(filename::String)
-    world = World()
     data = YAML.load(open(filename))
     camera = parse_camera_data(data)
-    parse_lights_data(data, world)
+    lights = parse_lights_data(data)
     materials = parse_materials_data(data)
     transforms = parse_transforms_data(data)
-    parse_objects_data(data, materials, transforms, world)
+    gobjects = parse_objects_data(data, materials, transforms)
     # TODO: return list of gobjects and lights instead of world
     # because gobjects can be grouped later and divide the scene with AABB
-    return camera, world
+    return camera, lights, gobjects
 end
 
 function parse_camera_data(yaml_data::Dict)
@@ -41,7 +40,7 @@ function parse_camera_data(yaml_data::Dict)
     return camera
 end
 
-function parse_lights_data(yaml_data::Dict, world::World)
+function parse_lights_data(yaml_data::Dict)
     lights_data = yaml_data["lights"]
 
     lights = LightType[]
@@ -51,7 +50,7 @@ function parse_lights_data(yaml_data::Dict, world::World)
         l = PointLight(point3D(at), ColorRGB(color[1], color[2], color[3]))
         push!(lights, l)
     end
-    add_lights!(world, lights...)
+    return lights
 end
 
 function parse_materials_data(yaml_data::Dict)
@@ -107,8 +106,9 @@ function parse_transforms_data(yaml_data::Dict)
     return transforms
 end
 
-function parse_objects_data(yaml_data::Dict, materials, transforms, world)
+function parse_objects_data(yaml_data::Dict, materials, transforms)
     gobjects_data = yaml_data["gobjects"]
+    gobjects = GeometricObject[]
 
     for gobject_yaml in gobjects_data
         gobject_type = gobject_yaml["add"]
@@ -164,8 +164,9 @@ function parse_objects_data(yaml_data::Dict, materials, transforms, world)
             end
         end
 
-        add_objects(world, gobject)
+        push!(gobjects, gobject)
     end
+    return gobjects
 end
 
 function __set_material_property(material, material_property, value)
