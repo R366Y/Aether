@@ -17,4 +17,5 @@ end
 function show_scene()
     canvas = draw_world()
     show_image(canvas)
+    save_image(canvas, "renders/cover_image.png")
 end
