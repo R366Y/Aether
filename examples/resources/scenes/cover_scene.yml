@@ -2,8 +2,8 @@
 # the camera
 # ======================================================
 camera:
-  width: 200
-  height: 200
+  width: 400
+  height: 400
   field-of-view: 0.785
   from: [ -6, 6, -10 ]
   to: [ 6, 0, 6 ]
@@ -78,9 +78,7 @@ gobjects:
       transparency: 0.7
       refractive-index: 1.5
     transform:
-      - [ translate, 1, -1, 1 ]
-      - [ scale, 3.5, 3.5, 3.5 ]
-      #- [ scale, 0.5, 0.5, 0.5 ]
+      - large-object
   - add: cube
     material: 
       extend: white-material

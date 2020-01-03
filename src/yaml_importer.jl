@@ -183,8 +183,6 @@ function __set_material_property(material, material_property, value)
 end
 
 function __add_transform(matrix_operation, value, matrices)
-    # remove entry if already exists in case
-    # the transformation extends an existing one
     if matrix_operation == "translate"
         value = Float64.(value)
         __check_and_set(matrices, matrix_operation, ["translate", translation(value[1], value[2], value[3])])
@@ -204,12 +202,6 @@ function __add_transform(matrix_operation, value, matrices)
 end
 
 function __check_and_set(matrices, matrix_operation, value)
-    for i in 1:length(matrices)
-        if matrices[i][1] == matrix_operation
-            matrices[i] = value
-            return
-        end
-    end
     # add the transformation in the first position of the array
     # because the order of the matrix multiplication is inverted
     pushfirst!(matrices,value)
