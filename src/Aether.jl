@@ -38,9 +38,10 @@ include("world.jl")
 include("renders.jl")
 
 include("bounding_box.jl")
+include("yaml_importer.jl")
 
 # Horrible way to simulate cyclical module dependencies that are not
-# supported in Julia. I need to use bounding box inside groups.jl but
-# bounding box to work needs both groups and shapes.
+# supported in Julia. I need to use bounding box inside groups.jl but 
+# to get bounding box to work, both groups and shapes are needed.
 @reexport using Aether.AccelerationStructures
 end # module

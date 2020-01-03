@@ -1,0 +1,77 @@
+# ======================================================
+# the camera
+# ======================================================
+camera:
+  width: 300
+  height: 150
+  field-of-view: 1.047197 # pi/3 
+  from: [ 0, 1.5, -5 ]
+  to: [ 0, 1, 0 ]
+  up: [ 0, 1, 0 ]
+
+# ======================================================
+# light sources
+# ======================================================
+lights:
+  - add: light
+    at: [ -10, 10, -10 ]
+    intensity: [ 1, 1, 1 ]
+
+transforms:
+  - define: left-wall-transform
+    value:
+      - [scale, 10, 0.01, 10]
+      - [rotate-x, 1.570796326794] # pi/2
+      - [rotate-y, -0.785398163397] # pi/4
+      - [translate, 0, 0, 5]
+  - define: rigth-wall-transform
+    value: 
+      - [scale, 10, 0.01, 10]
+      - [rotate-x, 1.570796326794] # pi/2
+      - [rotate-y, 0.785398163397] # pi/4
+      - [translate, 0, 0, 5]
+# ======================================================
+# objects in the scene
+# ======================================================
+gobjects:
+  - add: sphere
+    material:
+      color: [ 1, 0.9, 0.9 ]
+      specular: 0
+    transform:
+      - [scale, 10, 0.01, 10]
+  - add: sphere
+    material:
+      color: [ 1, 0.9, 0.9 ]
+      specular: 0
+    transform:
+      - left-wall-transform
+  - add: sphere
+    material:
+      color: [ 1, 0.9, 0.9 ]
+      specular: 0
+    transform: 
+      - rigth-wall-transform
+  - add: sphere
+    material:
+      color: [ 0.1, 1, 0.5 ]
+      specular: 0.3
+      diffuse: 0.7
+    transform: 
+      - [translate, -0.5, 1, 0.5]
+  - add: sphere
+    material:
+      color: [ 0.5, 1., 0.1 ]
+      specular: 0.3
+      diffuse: 0.7
+    transform: 
+      - [scale, 0.5, 0.5, 0.5]
+      - [translate, 1.5, 0.5, -0.5]
+  - add: sphere
+    material:
+      color: [ 1., 0.8, 0.1 ]
+      specular: 0.3
+      diffuse: 0.7
+    transform: 
+      - [scale, 0.33, 0.33, 0.33]
+      - [translate, -1.5, 0.33, -0.75]

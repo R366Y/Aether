@@ -11,7 +11,7 @@ export Canvas, write_pixel!, pixel_at, show_image, empty_canvas, save_image
     struct Canvas
 
 Canvas is the data structure where the computations of the raytracer is written i.e contains the final image.
-Fields `width` and `height` defines the width and height of the image.
+Fields `width` and `height` define the width and height of the image.
 """
 struct Canvas
     width::Int64
@@ -58,7 +58,7 @@ end
 """
     pixel_at(canvas::Canvas, x::Int64, y::Int64)
 
-Returns the color of a pixel at the given coordinates `x` and `y`. 
+Returns the color of a pixel at the given coordinates `x` and `y`.
 """
 function pixel_at(canvas::Canvas, x::Int64, y::Int64)
     return canvas.__data[y, x]
@@ -76,7 +76,7 @@ end
 """
     save_image(canvas::Canvas, filename = "renders/render.png")
 
-Saves an image to the hard drive. Optionally file name can be passed to `filename` field. 
+Saves an image to the hard drive. Optionally file name can be passed to `filename` field.
 """
 function save_image(canvas::Canvas, filename = "renders/render.png")
     save(filename, _convertCanvasToRGB(canvas))
