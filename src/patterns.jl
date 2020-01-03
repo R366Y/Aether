@@ -11,7 +11,7 @@ export Pattern,
        pattern_at_shape,
        set_pattern_transform
 
-import Aether.BaseGeometricType: GeometricObject
+import Aether.BaseGeometricType: GeometricObject, world_to_object
 import Aether.ColorsModule: ColorRGB, black, white
 import Aether.HomogeneousCoordinates: Vec3D
 import Aether.MatrixTransformations: Matrix4x4, identity_matrix
@@ -28,7 +28,7 @@ function pattern_at_shape(
     object::GeometricObject,
     world_point::Vec3D,
 )::ColorRGB
-    object_point = object.inverse * world_point
+    object_point =  world_to_object(object, world_point)
     pattern_point = pattern.inverse * object_point
 
     return pattern_at(pattern, pattern_point)

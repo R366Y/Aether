@@ -20,8 +20,6 @@ function import_yaml_scene_file(filename::String)
     materials = parse_materials_data(data)
     transforms = parse_transforms_data(data)
     gobjects = parse_objects_data(data, materials, transforms)
-    # TODO: return list of gobjects and lights instead of world
-    # because gobjects can be grouped later and divide the scene with AABB
     return camera, lights, gobjects
 end
 
