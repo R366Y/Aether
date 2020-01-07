@@ -27,7 +27,7 @@ using Test
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
-                          normalv, false)
+                          normalv, 1.0)
         @test float_equal(result, ColorRGB(1.9, 1.9, 1.9))
     end
 
@@ -38,7 +38,7 @@ using Test
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
-                          normalv, false)
+                          normalv, 1.0)
         @test float_equal(result, ColorRGB(1., 1., 1.))
     end
 
@@ -49,7 +49,7 @@ using Test
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
-                          normalv, false)
+                          normalv, 1.0)
         @test float_equal(result, ColorRGB(0.7364, 0.7364, 0.7364))
     end
 
@@ -60,7 +60,7 @@ using Test
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 10., -10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
-                          normalv, false)
+                          normalv, 1.0)
         @test float_equal(result, ColorRGB(1.6364, 1.6364, 1.6364))
     end
 
@@ -71,7 +71,7 @@ using Test
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., 10.), ColorRGB(1., 1., 1.))
         result = lighting(m, default_sphere(), light, position, eyev,
-                          normalv, false)
+                          normalv, 1.0)
         @test float_equal(result, ColorRGB(0.1, 0.1, 0.1))
     end
 
@@ -81,7 +81,7 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
-        in_shadow = true
+        in_shadow = 0.0
         result = lighting(m, default_sphere(), light,
                  position, eyev, normalv, in_shadow)
         @test float_equal(result, ColorRGB(0.1, 0.1, 0.1))
@@ -97,8 +97,8 @@ using Test
         eyev = vector3D(0., 0., -1.)
         normalv = vector3D(0., 0., -1.)
         light = PointLight(point3D(0., 0., -10.), white)
-        c1 = lighting(m, s, light, point3D(0.9, 0., 0.), eyev, normalv, false)
-        c2 = lighting(m, s, light, point3D(1.1, 0., 0.), eyev, normalv, false)
+        c1 = lighting(m, s, light, point3D(0.9, 0., 0.), eyev, normalv, 1.0)
+        c2 = lighting(m, s, light, point3D(1.1, 0., 0.), eyev, normalv, 1.0)
         @test float_equal(c1, white)
         @test float_equal(c2, black)
     end

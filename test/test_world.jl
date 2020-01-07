@@ -4,6 +4,7 @@ using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
 using Aether.Lights
 using Aether.Patterns
+using Aether.Shaders
 using Aether.Shapes
 using Aether.WorldModule
 using Aether.Rays
@@ -108,6 +109,64 @@ import Aether.BaseGeometricType: set_transform, Intersection
         @test !is_shadowed(w, p, w.lights[1])
     end
 
+    @testset "is_shadow tests for occlusion between two points" begin
+        w = default_world()
+        l = PointLight(point3D(-10., -10., -10.), ColorRGB(1.0, 1.0, 1.0))
+
+        input = NamedTuple[]
+        ks = (:point, :result)
+        push!(input, NamedTuple{ks}((point3D(-10., -10., 10.), false)))
+        push!(input, NamedTuple{ks}((point3D(10., 10., 10.), true)))
+        push!(input, NamedTuple{ks}((point3D(-20., -20., -20.), false)))
+        push!(input, NamedTuple{ks}((point3D(-5., -5., -5.), false)))
+
+        for i in input
+            @test is_shadowed(w, i.point, l) == i.result
+        end
+    end
+
+    @testset "Point lights evaluate the light intensity at a given point" begin
+        w = default_world()
+        light = w.lights[1]
+        
+        input = NamedTuple[]
+        ks = (:point, :result)
+        push!(input, NamedTuple{ks}((point3D(0., 1.0001, 0.), 1.0)))
+        push!(input, NamedTuple{ks}((point3D(-1.0001, 0., 0.), 1.0)))
+        push!(input, NamedTuple{ks}((point3D(0., 0., -1.0001), 1.0)))
+        push!(input, NamedTuple{ks}((point3D(0., 0., 1.0001), 0.0)))
+        push!(input, NamedTuple{ks}((point3D(1.0001, 0., 0.), 0.0)))
+        push!(input, NamedTuple{ks}((point3D(0., -1.0001, 0.), 0.0)))
+        push!(input, NamedTuple{ks}((point3D(0., 0., 0.), 0.0)))
+
+        for i in input
+            @test intensity_at(light, i.point, w) == i.result
+        end
+    end
+
+    @testset "lighting() uses light intensity to attenuate color" begin
+        w = default_world()
+        add_lights!(w, PointLight(point3D(0., 0., -10.), white))
+        shape = w.objects[1]
+        shape.material.ambient = 0.1
+        shape.material.diffuse = 0.9
+        shape.material.specular = 0.
+        shape.material.color = white
+        pt = point3D(0., 0., -1.)
+        eyev = vector3D(0., 0., -1.)
+        normalv = vector3D(0., 0., -1.)
+
+        input = NamedTuple[]
+        ks = (:intensity, :result)
+        push!(input, NamedTuple{ks}((1.0, white)))
+        push!(input, NamedTuple{ks}((0.5, ColorRGB(0.55, 0.55, 0.55))))
+        push!(input, NamedTuple{ks}((0.0, ColorRGB(0.1, 0.1, 0.1))))
+        
+        for i in input
+            @test lighting(shape.material, shape, w.lights[1], pt, eyev, normalv,i.intensity) == i.result
+        end
+    end
+    
     @testset "shade_hit is given an intersection in shadow" begin
         w = default_world()
         add_lights!(w, PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.)))

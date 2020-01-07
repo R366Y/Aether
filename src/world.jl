@@ -7,6 +7,7 @@ export World,
        append_light!,
        intersect_world,
        color_at,
+       intensity_at,
        shade_hit,
        is_shadowed,
        reflected_color,
@@ -114,6 +115,18 @@ function color_at(world::World, ray::Ray, remaining::Int64)
 end
 
 """
+    intensity_at(light::LightType, point::Vec3D, world::World)
+
+Evaluates the light intensity at a give point.
+"""
+function intensity_at(light::LightType, point::Vec3D, world::World)
+    if is_shadowed(world, point, light)
+        return 0.0
+    end
+    return 1.0
+end
+
+"""
     shade_hit(world::World, comps::Computations, remaining::Int64)
 
 Calculate the color at the intersection of a geometric object.
@@ -123,7 +136,7 @@ refracted (if applicable) + reflactance (if applicable).
 function shade_hit(world::World, comps::Computations, remaining::Int64)
     surface = black
     for light in world.lights
-        shadowed = is_shadowed(world, comps.over_point, light)
+        light_intensity = intensity_at(light, comps.over_point, world)
         surface += lighting(
             comps.gobject.material,
             comps.gobject,
@@ -131,7 +144,7 @@ function shade_hit(world::World, comps::Computations, remaining::Int64)
             comps.over_point,
             comps.eyev,
             comps.normalv,
-            shadowed,
+            light_intensity,
         )
     end
     reflected = reflected_color(world, comps, remaining)
