@@ -1,3 +1,4 @@
+using Aether.AccelerationStructures
 using Aether.CanvasModule
 using Aether.Renders
 using Aether.SceneImporters
@@ -7,6 +8,7 @@ using Aether.BaseGeometricType: group_of
 function draw_world()
     camera, lights, gobjects = import_yaml_scene_file("examples/resources/scenes/cover_scene.yml")
     scene = group_of(gobjects)
+    divide!(scene,4)
     world = World()
     add_lights!(world, lights...)
     add_objects(world, scene)

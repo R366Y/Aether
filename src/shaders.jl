@@ -19,7 +19,7 @@ function lighting(
     point::Vec3D,
     eyev::Vec3D,
     normalv::Vec3D,
-    in_shadow::Bool,
+    light_intensity::Float64
 )
     color = material.color
     if material.pattern != nothing
@@ -38,7 +38,7 @@ function lighting(
     light_dot_normal = dot(lightv, normalv)
     diffuse = ColorRGB()
     specular = ColorRGB()
-    if light_dot_normal >= 0.0 && !in_shadow
+    if light_dot_normal >= 0.0 && light_intensity > 0.0
         diffuse = effective_color * material.diffuse * light_dot_normal
 
         # reflect_dot_eye represents the cosine of the angle between the
@@ -52,7 +52,7 @@ function lighting(
             specular = light.intensity * material.specular * factor
         end
     end
-    return ambient + diffuse + specular
+    return ambient + light_intensity * (diffuse + specular)
 end
 
 end

@@ -53,7 +53,7 @@ end
 
 for op in (:+, :*, :-, :/)
     @eval begin
-        @inline function $(op)(a::Float64, c1::ColorRGB)
+        @inline function $(op)(a::Float64, c::ColorRGB)
             return ColorRGB(
                 map(($op), a, c.r),
                 map(($op), a, c.g),

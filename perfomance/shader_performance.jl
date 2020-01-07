@@ -16,7 +16,7 @@ eyev = vector3D(0., 0., -1.)
 normalv = vector3D(0., 0., -1.)
 light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
 @code_warntype lighting(m, default_sphere(), light, position, eyev,
-                  normalv, false)
+                  normalv, 1.0)
 
 @btime lighting(m, default_sphere(), light, position, eyev,
-                  normalv, false)
+                  normalv, 1.0)
