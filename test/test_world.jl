@@ -88,25 +88,25 @@ import Aether.BaseGeometricType: set_transform, Intersection
     @testset "No shadow when nothing is collinear with point and light" begin
         w = default_world()
         p = point3D(0., 10., 0.)
-        @test !is_shadowed(w, p, w.lights[1])
+        @test !is_shadowed(w, p, w.lights[1].position)
     end
 
     @testset "The shadow when an object is between with point and light" begin
         w = default_world()
         p = point3D(10., -10., 10.)
-        @test is_shadowed(w, p, w.lights[1])
+        @test is_shadowed(w, p, w.lights[1].position)
     end
 
     @testset "No shadow when an object is behind the light" begin
         w = default_world()
         p = point3D(-20., 20., -20.)
-        @test !is_shadowed(w, p, w.lights[1])
+        @test !is_shadowed(w, p, w.lights[1].position)
     end
 
     @testset "No shadow when an object is behind the point" begin
         w = default_world()
         p = point3D(-2., 2., -2.)
-        @test !is_shadowed(w, p, w.lights[1])
+        @test !is_shadowed(w, p, w.lights[1].position)
     end
 
     @testset "is_shadow tests for occlusion between two points" begin
@@ -121,7 +121,7 @@ import Aether.BaseGeometricType: set_transform, Intersection
         push!(input, NamedTuple{ks}((point3D(-5., -5., -5.), false)))
 
         for i in input
-            @test is_shadowed(w, i.point, l) == i.result
+            @test is_shadowed(w, i.point, l.position) == i.result
         end
     end
 
@@ -164,6 +164,27 @@ import Aether.BaseGeometricType: set_transform, Intersection
         
         for i in input
             @test lighting(shape.material, shape, w.lights[1], pt, eyev, normalv,i.intensity) == i.result
+        end
+    end
+
+    #TODO: fixme!!!
+    @testset "The area light intensity function" begin
+        w = default_world()
+        corner = point3D(-0.5, -0.5, -5.)
+        v1 = vector3D(1., 0., 0.)
+        v2 = vector3D(0., 1., 0.)
+        light = AreaLight(corner, v1, 2, v2, 2, white)
+
+        input = NamedTuple[]
+        ks = (:point, :result)
+        push!(input, NamedTuple{ks}((point3D(0., 0., 2.), 0.0)))
+        push!(input, NamedTuple{ks}((point3D(1., -1., 2.), 0.25)))
+        push!(input, NamedTuple{ks}((point3D(1.5, 0., 2.), 0.5)))
+        push!(input, NamedTuple{ks}((point3D(1.25, 1.25, 3.), 0.75)))
+        push!(input, NamedTuple{ks}((point3D(0., 0., -2.), 1.0)))
+
+        for i in input
+            @test_skip intensity_at(light, i.point, w) == i.result
         end
     end
     
