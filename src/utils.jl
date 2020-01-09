@@ -1,5 +1,7 @@
 module Utils
 
+using Base.Iterators
+
 export push_tuple
 
 @generated function push_tuple(x...)
@@ -11,5 +13,11 @@ export push_tuple
     end
     return ret
 end
+
+function sequence(x...)
+    t = push_tuple(x)
+    return cycle(t)
+end
+
 
 end
