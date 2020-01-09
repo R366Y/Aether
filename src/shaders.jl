@@ -15,7 +15,7 @@ using LinearAlgebra
 function lighting(
     material::Material,
     object::GeometricObject,
-    light::PointLight,
+    light::LightType,
     point::Vec3D,
     eyev::Vec3D,
     normalv::Vec3D,

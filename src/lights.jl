@@ -43,6 +43,11 @@ end
 @inline ==(p1::PointLight, p2::PointLight) =
     p1.position == p2.position && p1.intensity == p2.intensity
 
+"""
+    point_on_light(light::AreaLight, u::Int, v::Int)
+
+Returns the point in the middle of the cell at the given coordinates (u,v)
+"""
 function point_on_light(light::AreaLight, u::Int, v::Int)
     return light.corner + 
            light.uvec * (u + 0.5) +

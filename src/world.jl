@@ -115,16 +115,37 @@ function color_at(world::World, ray::Ray, remaining::Int64)
 end
 
 """
-    intensity_at(light::LightType, point::Vec3D, world::World)
+    intensity_at(light::PointLight, point::Vec3D, world::World)
 
-Evaluates the light intensity at a give point.
+Evaluates the light intensity for a point light at a give point.
 """
-function intensity_at(light::LightType, point::Vec3D, world::World)
-    if is_shadowed(world, point, light)
+function intensity_at(light::PointLight, point::Vec3D, world::World)
+    if is_shadowed(world, point, light.position)
         return 0.0
     end
     return 1.0
 end
+
+"""
+    intensity_at(light::AreaLight, point::Vec3D, world::World)
+
+Evaluates the light intensity for an area light at a give point.
+"""
+function intensity_at(light::AreaLight, point::Vec3D, world::World)
+    total = 0.0
+
+    for v in 1:light.vsteps
+        for u in 1:light.usteps
+            light_position = point_on_light(light, u, v)
+            if !is_shadowed(world, point, light_position)
+                # println("Point $point")
+                # println("Light position $light_position")
+                total += 1.0
+            end
+        end
+    end
+    return total / light.samples
+end 
 
 """
     shade_hit(world::World, comps::Computations, remaining::Int64)
@@ -186,8 +207,8 @@ end
 Check if a point is a shadowed by an object from the scene, in that case
 returns `true` `false` otherwise.
 """
-function is_shadowed(world::World, point::Vec3D, light::LightType)
-    v = light.position - point
+function is_shadowed(world::World, point::Vec3D, light_position::Vec3D)
+    v = light_position - point
     distance = norm(v)
     direction = normalize(v)
 
