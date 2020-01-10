@@ -1,6 +1,7 @@
 using Aether.ColorsModule
 using Aether.HomogeneousCoordinates
 using Aether.Lights
+using Aether.Utils
 using Test
 
 @testset "Lights" begin
@@ -31,7 +32,8 @@ using Test
         v1 = vector3D(2., 0., 0.)
         v2 = vector3D(0., 0., 1.)
         light = AreaLight(corner, v1, 4, v2, 2, white)
-
+        light.jitter_by = Generator(0.5)
+        
         input = NamedTuple[]
         ks = (:u, :v, :result)
         push!(input, NamedTuple{ks}((0, 0, point3D(0.25, 0., 0.25))))
@@ -41,7 +43,27 @@ using Test
         push!(input, NamedTuple{ks}((3, 1, point3D(1.75, 0., 0.75))))
 
         for i in input
-            @test point_on_light(light, i.u, i.v) == i.result
+            @test point_on_light(light, i.u, i.v) == i.result 
+        end
+    end
+    
+    @testset "Finding a single point on a jittered area light" begin
+        corner = point3D(0., 0., 0.)
+        v1 = vector3D(2., 0., 0.)
+        v2 = vector3D(0., 0., 1.)
+        light = AreaLight(corner, v1, 4, v2, 2, white)
+        light.jitter_by = Generator(0.3, 0.7)
+        
+        input = NamedTuple[]
+        ks = (:u, :v, :result)
+        push!(input, NamedTuple{ks}((0, 0, point3D(0.15, 0., 0.35))))
+        push!(input, NamedTuple{ks}((1, 0, point3D(0.65, 0., 0.35))))
+        push!(input, NamedTuple{ks}((0, 1, point3D(0.15, 0., 0.85))))
+        push!(input, NamedTuple{ks}((2, 0, point3D(1.15, 0., 0.35))))
+        push!(input, NamedTuple{ks}((3, 1, point3D(1.65, 0., 0.85))))
+
+        for i in input
+            @test point_on_light(light, i.u, i.v) == i.result 
         end
     end
 end 

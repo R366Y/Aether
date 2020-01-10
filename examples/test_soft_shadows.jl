@@ -1,3 +1,4 @@
+using Aether.BaseGeometricType
 using Aether.CameraModule
 using Aether.CanvasModule
 using Aether.ColorsModule
@@ -7,11 +8,13 @@ using Aether.Materials
 using Aether.MatrixTransformations
 using Aether.Shapes
 using Aether.Renders
+using Aether.Utils
 using Aether.WorldModule
 
 function draw_world()
     world = World()
-    area_light = AreaLight(point3D(-1.0, 2.0, 4.0), vector3D(2., 0., 0.), 2, vector3D(0., 2., 0.), 2, white)
+    area_light = AreaLight(point3D(-1.0, 2.0, 4.0), vector3D(2., 0., 0.), 8, vector3D(0., 2., 0.), 8, white)
+    area_light.jitter_by = Generator(0.7, 0.3, 0.9, 0.1, 0.5)
     point_light = PointLight(point3D(-1.0, 2.0, 4.0), white)
     add_lights!(world, area_light)
 
