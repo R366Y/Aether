@@ -118,6 +118,7 @@ end
     intensity_at(light::PointLight, point::Vec3D, world::World)
 
 Evaluates the light intensity for a point light at a give point.
+For a point light is 0 if it is in shadow 1 otherwise.
 """
 function intensity_at(light::PointLight, point::Vec3D, world::World)
     if is_shadowed(world, point, light.position)
