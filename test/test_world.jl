@@ -2,12 +2,15 @@ using Test
 using Aether.ColorsModule
 using Aether.ComputationsModule
 using Aether.HomogeneousCoordinates
+using Aether.MatrixTransformations
 using Aether.Lights
 using Aether.Patterns
 using Aether.Shaders
 using Aether.Shapes
 using Aether.WorldModule
 using Aether.Rays
+using Aether.Utils
+
 import Aether: ϵ
 import Aether.BaseGeometricType: set_transform, Intersection
 
@@ -167,13 +170,14 @@ import Aether.BaseGeometricType: set_transform, Intersection
         end
     end
 
-    #TODO: fixme!!!
+
     @testset "The area light intensity function" begin
         w = default_world()
         corner = point3D(-0.5, -0.5, -5.)
         v1 = vector3D(1., 0., 0.)
         v2 = vector3D(0., 1., 0.)
         light = AreaLight(corner, v1, 2, v2, 2, white)
+        light.jitter_by = Generator(0.5)
 
         input = NamedTuple[]
         ks = (:point, :result)
@@ -184,7 +188,29 @@ import Aether.BaseGeometricType: set_transform, Intersection
         push!(input, NamedTuple{ks}((point3D(0., 0., -2.), 1.0)))
 
         for i in input
-            @test_skip intensity_at(light, i.point, w) == i.result
+            @test intensity_at(light, i.point, w) == i.result
+        end
+    end
+
+
+    @testset "The area light with jittered samples" begin
+        w = default_world()
+        corner = point3D(-0.5, -0.5, -5.)
+        v1 = vector3D(1., 0., 0.)
+        v2 = vector3D(0., 1., 0.)
+        light = AreaLight(corner, v1, 2, v2, 2, white)
+
+        input = NamedTuple[]
+        ks = (:point, :result)
+        push!(input, NamedTuple{ks}((point3D(0., 0., 2.), 0.0)))
+        push!(input, NamedTuple{ks}((point3D(1., -1., 2.), 0.5)))
+        push!(input, NamedTuple{ks}((point3D(1.5, 0., 2.), 0.75)))
+        push!(input, NamedTuple{ks}((point3D(1.25, 1.25, 3.), 0.75)))
+        push!(input, NamedTuple{ks}((point3D(0., 0., -2.), 1.0)))
+
+        for i in input
+            light.jitter_by = Generator(0.7, 0.3, 0.9, 0.1, 0.5)
+            @test intensity_at(light, i.point, w) == i.result
         end
     end
     

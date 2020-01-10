@@ -134,12 +134,10 @@ Evaluates the light intensity for an area light at a give point.
 function intensity_at(light::AreaLight, point::Vec3D, world::World)
     total = 0.0
 
-    for v in 1:light.vsteps
-        for u in 1:light.usteps
+    for v in 0:light.vsteps - 1
+        for u in 0:light.usteps - 1
             light_position = point_on_light(light, u, v)
             if !is_shadowed(world, point, light_position)
-                # println("Point $point")
-                # println("Light position $light_position")
                 total += 1.0
             end
         end
