@@ -5,6 +5,7 @@ using Aether.Materials
 using Aether.Patterns
 using Aether.Shaders
 using Aether.Shapes
+using Aether.Utils
 
 import Aether: ϵ
 
@@ -112,5 +113,31 @@ using Test
         m = default_material()
         @test m.transparency == 0.
         @test m.refractive_index == 1.0
+    end
+
+    @testset "lighting() samples the area light" begin
+        corner = point3D(-0.5, -0.5, -5.)
+        v1 = vector3D(1., 0., 0.)
+        v2 = vector3D(0., 1., 0.)
+        light = AreaLight(corner, v1, 2, v2, 2, white)
+        light.jitter_by = Generator(0.5)
+        shape = default_sphere()
+        shape.material.ambient = 0.1
+        shape.material.diffuse = 0.9
+        shape.material.specular = 0.
+        shape.material.color = white
+        eye = point3D(0., 0., -5.)
+
+        input = NamedTuple[]
+        ks = (:point, :result)
+        push!(input, NamedTuple{ks}((point3D(0., 0., -1.), ColorRGB(0.9965, 0.9965, 0.9965))))
+        push!(input, NamedTuple{ks}((point3D(0., 0.7071, -0.7071), ColorRGB(0.6232, 0.6232, 0.6232))))
+
+        for i in input
+            pt = i.point
+            eyev = normalize(eye - pt)
+            normalv = vector3D(pt.x, pt.y, pt.z)
+            @test_skip lighting(shape.material, shape, light, pt, eyev, normalv, 1.0) == i.result
+        end
     end
 end

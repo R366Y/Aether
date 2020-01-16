@@ -14,7 +14,7 @@ using Aether.WorldModule
 function draw_world()
     world = World()
     area_light = AreaLight(point3D(-1.0, 2.0, 4.0), vector3D(2., 0., 0.), 8, vector3D(0., 2., 0.), 8, white)
-    area_light.jitter_by = Generator(0.7, 0.3, 0.9, 0.1, 0.5)
+    area_light.jitter_by = RandomGenerator(13)
     point_light = PointLight(point3D(-1.0, 2.0, 4.0), white)
     add_lights!(world, area_light)
 
@@ -40,7 +40,9 @@ function draw_world()
     the_floor.material.diffuse = 0.67
     the_floor.material.specular = 0
 
-    add_objects(world,the_floor, s1, s2)
+    spheres = group_of(GeometricObject[s1,s2])
+
+    add_objects(world,the_floor, spheres)
     camera = Camera(800, 320, π/3)
     camera_set_transform(camera, view_transform(
                                       point3D(-3., 1., 2.5),
