@@ -2,7 +2,7 @@ module BaseGeometricType
 
 export GeometricObject, GroupType, Group, Intersection
 export add_child!, group_of, make_subgroup!
-export set_transform, r_intersect, local_intersect, normal_at, local_normal_at
+export set_transform, cast_shadow, r_intersect, local_intersect, normal_at, local_normal_at
 export world_to_object, get_parent_group, normal_to_world, hit
 
 import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D, normalize
@@ -25,6 +25,22 @@ The shape MUST have the two fields `transform` and `inverse`.
 function set_transform(shape::T, matrix::Matrix4x4) where {T<:GeometricObject}
     shape.transform = matrix
     shape.inverse = inv(matrix)
+end
+
+
+"""
+    cast_shadow(shape::GeometricObject)
+
+Returns true if shape casts shadows, false otherwise.
+If the shadow property of a struct implementing GeometricObject is equal to false, 
+the shape won't take part in shadow calculations and therefore won't cast any shadow. 
+Useful for creating objects emitting light. 
+"""
+function cast_shadow(shape::T) where {T<:GeometricObject}
+    if hasproperty(shape, :shadow)
+        return shape.shadow
+    end
+    return true
 end
 
 """

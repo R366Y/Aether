@@ -18,6 +18,7 @@ mutable struct Cylinder <: GeometricObject
     maximum::Float64
     closed::Bool
     parent::Union{GroupType,Nothing}
+    shadow::Bool
 
     function Cylinder()
         new(
@@ -28,6 +29,7 @@ mutable struct Cylinder <: GeometricObject
             Inf,
             false,
             nothing,
+            true
         )
     end
 end
