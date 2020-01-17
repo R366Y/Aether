@@ -25,6 +25,7 @@ mutable struct Triangle <: TriangleType
     e2::Vecf64
     normal::Vecf64
     parent::Union{GroupType,Nothing}
+    shadow::Bool
 
     function Triangle(p1::Vecf64, p2::Vecf64, p3::Vecf64)
         e1 = p2 - p1
@@ -35,7 +36,7 @@ mutable struct Triangle <: TriangleType
             default_material(),
             p1, p2, p3,
             e1, e2, 
-            normal, nothing)
+            normal, nothing, true)
     end
 end
 
@@ -53,6 +54,7 @@ mutable struct SmoothTriangle <: TriangleType
     e2::Vecf64
     normal::Vecf64
     parent::Union{GroupType,Nothing}
+    shadow::Bool
 
     function SmoothTriangle(p1::Vecf64, p2::Vecf64, p3::Vecf64,
                             n1::Vecf64, n2::Vecf64, n3::Vecf64)
@@ -65,7 +67,7 @@ mutable struct SmoothTriangle <: TriangleType
             p1, p2, p3, 
             n1, n2, n3,
             e1, e2, 
-            normal, nothing)
+            normal, nothing, true)
     end
 end
 

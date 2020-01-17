@@ -18,6 +18,7 @@ mutable struct Sphere <: GeometricObject
     inverse::Matrix4x4
     material::Material
     parent::Union{GroupType,Nothing}
+    shadow::Bool
 
     function Sphere(center::Vec3D, radius::Float64)
         new(
@@ -27,6 +28,7 @@ mutable struct Sphere <: GeometricObject
             identity_matrix(Float64),
             default_material(),
             nothing,
+            true
         )
     end
 end

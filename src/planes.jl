@@ -14,6 +14,7 @@ mutable struct Plane <: GeometricObject
     inverse::Matrix4x4
     material::Material
     parent::Union{GroupType,Nothing}
+    shadow::Bool
 
     function Plane()
         new(
@@ -21,6 +22,7 @@ mutable struct Plane <: GeometricObject
             identity_matrix(Float64),
             default_material(),
             nothing,
+            true
         )
     end
 end

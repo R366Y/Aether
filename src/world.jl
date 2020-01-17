@@ -25,6 +25,7 @@ using Aether.Shapes
 
 import Aether.BaseGeometricType: GeometricObject,
                                  hit,
+                                 cast_shadow,
                                  r_intersect,
                                  set_transform,
                                  Intersection
@@ -215,7 +216,7 @@ function is_shadowed(world::World, point::Vec3D, light_position::Vec3D)
     intersections = intersect_world(world, r)
 
     h = hit(intersections)
-    if h != nothing && h.t < distance
+    if h != nothing && h.t < distance && cast_shadow(h.gobject)
         return true
     end
     return false

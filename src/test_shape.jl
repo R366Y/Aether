@@ -10,6 +10,7 @@ mutable struct TestShape <: GeometricObject
     material::Material
     parent::Union{GroupType,Nothing}
     saved_ray::Union{Ray, Nothing}
+    shadow::Bool
 
     function TestShape()
         new(
@@ -18,6 +19,7 @@ mutable struct TestShape <: GeometricObject
             default_material(),
             nothing,
             nothing,
+            true
         )
     end
 end

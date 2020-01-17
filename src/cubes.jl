@@ -14,6 +14,7 @@ mutable struct Cube <: GeometricObject
     inverse::Matrix4x4
     material::Material
     parent::Union{GroupType,Nothing}
+    shadow::Bool
 
     function Cube()
         new(
@@ -21,6 +22,7 @@ mutable struct Cube <: GeometricObject
             identity_matrix(Float64),
             default_material(),
             nothing,
+            true
         )
     end
 end
