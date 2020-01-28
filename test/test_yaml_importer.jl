@@ -87,4 +87,10 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         @test sphere.transform == rotation_z(0.8) * rotation_z(0.735) * rotation_y(1.570796) * 
                                   rotation_x(3.14) * scaling(0.5, 0.5, 0.5) * translation(1., 1., 2.)
     end
+
+    @testset "Shadows on objects can be deactivated" begin
+        camera, lights, gobjects = import_yaml_scene_file("resources/scene.yml")
+        sphere = gobjects[2]
+        @test !sphere.shadow
+    end
 end

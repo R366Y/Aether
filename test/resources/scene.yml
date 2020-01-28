@@ -63,6 +63,7 @@ gobjects:
       - [rotate-x, 1.5707963267948966]  # pi/2
       - [translate, 0, 0, 500]
   - add: sphere
+    shadow: false
     material:
       extend: white-material
     transform:

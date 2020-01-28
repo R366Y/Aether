@@ -123,6 +123,10 @@ function parse_objects_data(yaml_data::Dict, materials, transforms)
             gobject = default_sphere()
         end
 
+        if haskey(gobject_yaml, "shadow")
+            gobject.shadow = gobject_yaml["shadow"]
+        end
+
         if haskey(gobject_yaml, "material")
             material_yaml = gobject_yaml["material"]
             material = default_material()
