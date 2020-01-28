@@ -93,4 +93,10 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         sphere = gobjects[2]
         @test !sphere.shadow
     end
+
+    @testset "Objects can be groups and groups have children" begin
+        camera, lights, gobjects = import_yaml_scene_file("resources/scene.yml")
+        group = gobjects[3]
+        @test group.shapes[1] == Cube()
+    end
 end

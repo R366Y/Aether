@@ -68,3 +68,6 @@ gobjects:
       extend: white-material
     transform:
       - large-object
+  - add: group
+    children:
+      - add: cube

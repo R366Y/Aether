@@ -1,3 +1,4 @@
+import Base: ==
 import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject,
                                  local_intersect,
@@ -26,6 +27,9 @@ mutable struct Cube <: GeometricObject
         )
     end
 end
+
+@inline ==(c1::Cube, c2::Cube) =
+    c1.transform == c2.transform && c1.material == c2.material
 
 function local_intersect(cube::Cube, ray::Ray)
     result = ()

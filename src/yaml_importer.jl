@@ -109,66 +109,79 @@ function parse_objects_data(yaml_data::Dict, materials, transforms)
     gobjects = GeometricObject[]
 
     for gobject_yaml in gobjects_data
-        gobject_type = gobject_yaml["add"]
-        gobject = TestShape()
-        if gobject_type == "cone"
-            gobject = Cone()
-        elseif gobject_type == "cube"
-            gobject = Cube()
-        elseif gobject_type == "cylinder"
-            gobject = Cylinder()
-        elseif gobject_type == "plane"
-            gobject = Plane()
-        elseif gobject_type == "sphere"
-            gobject = default_sphere()
-        end
-
-        if haskey(gobject_yaml, "shadow")
-            gobject.shadow = gobject_yaml["shadow"]
-        end
-
-        if haskey(gobject_yaml, "material")
-            material_yaml = gobject_yaml["material"]
-            material = default_material()
-            # check if the material extends another material
-            if haskey(material_yaml,"extend")
-                extended = material_yaml["extend"]
-                material = deepcopy(materials[extended])
+        if gobject_yaml["add"] == "group"
+            shapes = GeometricObject[]
+            for child_gobject in gobject_yaml["children"]
+                child = __parse_gobject_yaml(child_gobject, materials, transforms)
+                push!(shapes, child)
             end
-            for mat_prop in collect(keys(material_yaml))
-                mat_prop == "extend" && continue
-                value = material_yaml[mat_prop]
-                __set_material_property(material, mat_prop, value)
-            end
-            gobject.material = material
+            gobject = group_of(shapes)
+        else
+            gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
         end
-
-        if haskey(gobject_yaml, "transform")
-            transformation_yaml = gobject_yaml["transform"]
-            matrices = []
-            for matr_trans in transformation_yaml
-                # check if the transformation extends another transformation
-                if typeof(matr_trans) == String
-                    matrices = deepcopy(transforms[matr_trans])
-                    continue
-                end
-                matr_op = matr_trans[1]
-                value = matr_trans[2:end]
-                __add_transform(matr_op, value, matrices)
-            end
-            matrices = [m[2] for m in matrices]
-            if !isempty(matrices)
-                transform = identity_matrix(Float64)
-                for matrix in matrices
-                    transform = transform * matrix
-                end
-                set_transform(gobject, transform)
-            end
-        end
-
         push!(gobjects, gobject)
     end
     return gobjects
+end
+
+function __parse_gobject_yaml(gobject_yaml, materials, transforms)
+    gobject_type = gobject_yaml["add"]
+    gobject = TestShape()
+    if gobject_type == "cone"
+        gobject = Cone()
+    elseif gobject_type == "cube"
+        gobject = Cube()
+    elseif gobject_type == "cylinder"
+        gobject = Cylinder()
+    elseif gobject_type == "plane"
+        gobject = Plane()
+    elseif gobject_type == "sphere"
+        gobject = default_sphere()
+    end
+
+    if haskey(gobject_yaml, "shadow")
+        gobject.shadow = gobject_yaml["shadow"]
+    end
+
+    if haskey(gobject_yaml, "material")
+        material_yaml = gobject_yaml["material"]
+        material = default_material()
+        # check if the material extends another material
+        if haskey(material_yaml,"extend")
+            extended = material_yaml["extend"]
+            material = deepcopy(materials[extended])
+        end
+        for mat_prop in collect(keys(material_yaml))
+            mat_prop == "extend" && continue
+            value = material_yaml[mat_prop]
+            __set_material_property(material, mat_prop, value)
+        end
+        gobject.material = material
+    end
+
+    if haskey(gobject_yaml, "transform")
+        transformation_yaml = gobject_yaml["transform"]
+        matrices = []
+        for matr_trans in transformation_yaml
+            # check if the transformation extends another transformation
+            if typeof(matr_trans) == String
+                matrices = deepcopy(transforms[matr_trans])
+                continue
+            end
+            matr_op = matr_trans[1]
+            value = matr_trans[2:end]
+            __add_transform(matr_op, value, matrices)
+        end
+        matrices = [m[2] for m in matrices]
+        if !isempty(matrices)
+            transform = identity_matrix(Float64)
+            for matrix in matrices
+                transform = transform * matrix
+            end
+            set_transform(gobject, transform)
+        end
+    end
+    return gobject
 end
 
 function __set_material_property(material, material_property, value)
