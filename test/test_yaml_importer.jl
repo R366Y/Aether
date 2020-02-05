@@ -84,7 +84,7 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
     @testset "World objects' materials can extend a predefined transformation" begin
         camera, lights, gobjects = import_yaml_scene_file("resources/scene.yml")
         sphere = gobjects[2]
-        @test sphere.transform == rotation_z(0.8) * rotation_z(0.735) * rotation_y(1.570796) * 
+        @test sphere.transform == rotation_z(0.8) * rotation_z(0.735) * rotation_y(1.570796) *
                                   rotation_x(3.14) * scaling(0.5, 0.5, 0.5) * translation(1., 1., 2.)
     end
 
@@ -97,6 +97,9 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
     @testset "Objects can be groups and groups have children" begin
         camera, lights, gobjects = import_yaml_scene_file("resources/scene.yml")
         group = gobjects[3]
+        @test group.transform == translation(0., 2., 0.)
         @test group.shapes[1] == Cube()
+        group2 = group.shapes[2]
+        @test group2.shapes[1] == default_sphere()
     end
 end

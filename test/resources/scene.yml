@@ -69,5 +69,10 @@ gobjects:
     transform:
       - large-object
   - add: group
+    transform:
+      - [translate, 0, 2, 0]
     children:
       - add: cube
+      - add: group
+        children:
+          - add: sphere

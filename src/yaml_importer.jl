@@ -109,16 +109,7 @@ function parse_objects_data(yaml_data::Dict, materials, transforms)
     gobjects = GeometricObject[]
 
     for gobject_yaml in gobjects_data
-        if gobject_yaml["add"] == "group"
-            shapes = GeometricObject[]
-            for child_gobject in gobject_yaml["children"]
-                child = __parse_gobject_yaml(child_gobject, materials, transforms)
-                push!(shapes, child)
-            end
-            gobject = group_of(shapes)
-        else
-            gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
-        end
+        gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
         push!(gobjects, gobject)
     end
     return gobjects
@@ -137,6 +128,13 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms)
         gobject = Plane()
     elseif gobject_type == "sphere"
         gobject = default_sphere()
+    elseif gobject_type == "group"
+        shapes = GeometricObject[]
+        for child_gobject in gobject_yaml["children"]
+            child = __parse_gobject_yaml(child_gobject, materials, transforms)
+            push!(shapes, child)
+        end
+        gobject = group_of(shapes)
     end
 
     if haskey(gobject_yaml, "shadow")
@@ -198,28 +196,24 @@ function __set_material_property(material, material_property, value)
 end
 
 function __add_transform(matrix_operation, value, matrices)
-    if matrix_operation == "translate"
-        value = Float64.(value)
-        __check_and_set(matrices, matrix_operation, ["translate", translation(value[1], value[2], value[3])])
-    elseif matrix_operation == "scale"
-        value = Float64.(value)
-        __check_and_set(matrices, matrix_operation, ["scale", scaling(value[1], value[2], value[3])])
-    elseif matrix_operation == "rotate-x"
-        value = Float64(value[1])
-        __check_and_set(matrices, matrix_operation, ["rotate-x", rotation_x(value)])
-    elseif matrix_operation == "rotate-y"
-        value = Float64(value[1])
-        __check_and_set(matrices, matrix_operation, ["rotate-y", rotation_y(value)])
-    elseif matrix_operation == "rotate-z"
-        value = Float64(value[1])
-        __check_and_set(matrices, matrix_operation, ["rotate-z", rotation_z(value)])
-    end
-end
-
-function __check_and_set(matrices, matrix_operation, value)
     # add the transformation in the first position of the array
     # because the order of the matrix multiplication is inverted
-    pushfirst!(matrices,value)
+    if matrix_operation == "translate"
+        value = Float64.(value)
+        pushfirst!(matrices, ["translate", translation(value[1], value[2], value[3])])
+    elseif matrix_operation == "scale"
+        value = Float64.(value)
+        pushfirst!(matrices, ["scale", scaling(value[1], value[2], value[3])])
+    elseif matrix_operation == "rotate-x"
+        value = Float64(value[1])
+        pushfirst!(matrices, ["rotate-x", rotation_x(value)])
+    elseif matrix_operation == "rotate-y"
+        value = Float64(value[1])
+        pushfirst!(matrices, ["rotate-y", rotation_y(value)])
+    elseif matrix_operation == "rotate-z"
+        value = Float64(value[1])
+        pushfirst!(matrices, ["rotate-z", rotation_z(value)])
+    end
 end
 
 function __array_to_ColorRGB(array)
