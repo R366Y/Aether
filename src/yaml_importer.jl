@@ -107,14 +107,24 @@ end
 function parse_objects_data(yaml_data::Dict, materials, transforms)
     gobjects_data = yaml_data["gobjects"]
     gobjects = GeometricObject[]
+    predefined_objects = Dict()
 
     for gobject_yaml in gobjects_data
-        gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
+        if haskey(gobject_yaml, "define")
+            gobject_name = gobject_yaml["define"]
+            # TODO: add predefined objects as parameter
+            gobject = __parse_gobject_yaml(gobject_yaml["value"], materials, transforms)
+            push!(predefined_objects, gobject_name => gobject)
+        else
+            # TODO: add predefined objects as parameter
+            gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
+        end
         push!(gobjects, gobject)
     end
     return gobjects
 end
 
+# TODO: add predefined objects as parameter
 function __parse_gobject_yaml(gobject_yaml, materials, transforms)
     gobject_type = gobject_yaml["add"]
     gobject = TestShape()
@@ -135,6 +145,8 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms)
             push!(shapes, child)
         end
         gobject = group_of(shapes)
+    # TODO: else check if gobject_type is inside to predefined_objects
+    # then deepcopy it
     end
 
     if haskey(gobject_yaml, "shadow")
