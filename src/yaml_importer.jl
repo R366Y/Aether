@@ -3,6 +3,7 @@ module SceneImporters
 export import_yaml_scene_file
 
 import YAML
+using Aether
 using Aether.BaseGeometricType
 using Aether.CameraModule
 using Aether.ColorsModule
@@ -107,15 +108,24 @@ end
 function parse_objects_data(yaml_data::Dict, materials, transforms)
     gobjects_data = yaml_data["gobjects"]
     gobjects = GeometricObject[]
+    predefined_objects = Dict()
 
     for gobject_yaml in gobjects_data
-        gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
+        if haskey(gobject_yaml, "define")
+            gobject_name = gobject_yaml["define"]
+            gobject = __parse_gobject_yaml(gobject_yaml["value"], materials, transforms)
+            push!(predefined_objects, gobject_name => gobject)
+        else
+            # TODO: add predefined objects as parameter
+            gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_objects)
+        end
         push!(gobjects, gobject)
     end
     return gobjects
 end
 
-function __parse_gobject_yaml(gobject_yaml, materials, transforms)
+# TODO: add predefined objects as parameter
+function __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_obj = nothing)
     gobject_type = gobject_yaml["add"]
     gobject = TestShape()
     if gobject_type == "cone"
@@ -135,6 +145,18 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms)
             push!(shapes, child)
         end
         gobject = group_of(shapes)
+    elseif gobject_type == "obj"
+        file_path = gobject_yaml["file"]
+        parser = parse_obj_file(file_path)
+        gobject = obj_to_group(parser)
+    else
+        if isnothing(predefined_obj)
+            throw(ArgumentError("You must pass a list of predefined objects if $gobject_type is not one of the standard objects!"))
+        end
+        if !haskey(predefined_obj, gobject_type)
+            throw(ArgumentError("$gobject_type is not one of the standard objects and it has not been defined!"))
+        end
+        gobject = deepcopy(predefined_obj[gobject_type])
     end
 
     if haskey(gobject_yaml, "shadow")

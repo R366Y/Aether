@@ -102,4 +102,29 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         group2 = group.shapes[2]
         @test group2.shapes[1] == default_sphere()
     end
+
+    @testset "Define a gobject and load an object file" begin
+        camera, lights, gobjects = import_yaml_scene_file("resources/scene_with_obj_files.yml")
+        group = gobjects[1]
+        t1 = group.shapes[1]
+        t2 = group.shapes[2]
+        t3 = group.shapes[3]
+        t4 = group.shapes[4]
+
+        smooth_triangle1 = SmoothTriangle(point3D(0., 1., 0.), point3D(-1., 0., 0.), point3D(0., -1., 0.),
+                                          vector3D(0., 1., 0.), vector3D(-1., 0., 0.), vector3D(1., 0., 0.))
+        smooth_triangle2 = SmoothTriangle(point3D(0., 1., 0.),  point3D(0., -1., 0.), point3D(1., 0., 0.),
+                                          vector3D(0., 1., 0.), vector3D(1., 0., 0.), vector3D(1., 0., 0.))
+
+        @test t1.p1 == smooth_triangle1.p1
+        @test t1.p2 == smooth_triangle1.p2
+        @test t1.p3 == smooth_triangle1.p3
+
+        @test t2.p1 == smooth_triangle2.p1
+        @test t2.p2 == smooth_triangle2.p2
+        @test t2.p3 == smooth_triangle2.p3
+
+        @test t3 == t1
+        @test t4 == t2
+    end
 end
