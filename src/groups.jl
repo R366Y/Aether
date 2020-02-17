@@ -34,6 +34,16 @@ function add_child!(group::Group, shape::GeometricObject)
     push!(group.shapes, shape)
 end
 
+function apply_material(group::Group, material)
+    for shape in group.shapes
+        if typeof(shape) == Group
+            apply_material(shape, material)
+        else
+            shape.material = material
+        end
+    end
+end
+
 function group_of(shapes::Array{GeometricObject,1})
     g = Group()
     g.shapes = vcat(g.shapes, shapes)

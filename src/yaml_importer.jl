@@ -113,18 +113,16 @@ function parse_objects_data(yaml_data::Dict, materials, transforms)
     for gobject_yaml in gobjects_data
         if haskey(gobject_yaml, "define")
             gobject_name = gobject_yaml["define"]
-            gobject = __parse_gobject_yaml(gobject_yaml["value"], materials, transforms)
+            gobject = __parse_gobject_yaml(gobject_yaml["value"], materials, transforms, predefined_objects)
             push!(predefined_objects, gobject_name => gobject)
         else
-            # TODO: add predefined objects as parameter
             gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_objects)
+            push!(gobjects, gobject)
         end
-        push!(gobjects, gobject)
     end
     return gobjects
 end
 
-# TODO: add predefined objects as parameter
 function __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_obj = nothing)
     gobject_type = gobject_yaml["add"]
     gobject = TestShape()
@@ -134,6 +132,15 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_ob
         gobject = Cube()
     elseif gobject_type == "cylinder"
         gobject = Cylinder()
+        if haskey(gobject_yaml, "min")
+            gobject.minimum = gobject_yaml["min"]
+        end
+        if haskey(gobject_yaml, "max")
+            gobject.maximum = gobject_yaml["max"]
+        end
+        if haskey(gobject_yaml, "closed")
+            gobject.closed = gobject_yaml["closed"]
+        end
     elseif gobject_type == "plane"
         gobject = Plane()
     elseif gobject_type == "sphere"
@@ -141,7 +148,7 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_ob
     elseif gobject_type == "group"
         shapes = GeometricObject[]
         for child_gobject in gobject_yaml["children"]
-            child = __parse_gobject_yaml(child_gobject, materials, transforms)
+            child = __parse_gobject_yaml(child_gobject, materials, transforms, predefined_obj)
             push!(shapes, child)
         end
         gobject = group_of(shapes)
@@ -176,7 +183,12 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_ob
             value = material_yaml[mat_prop]
             __set_material_property(material, mat_prop, value)
         end
-        gobject.material = material
+
+        if typeof(gobject) == Group
+            apply_material(gobject, material)
+        else
+            gobject.material = material
+        end
     end
 
     if haskey(gobject_yaml, "transform")

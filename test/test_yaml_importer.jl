@@ -116,6 +116,13 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         smooth_triangle2 = SmoothTriangle(point3D(0., 1., 0.),  point3D(0., -1., 0.), point3D(1., 0., 0.),
                                           vector3D(0., 1., 0.), vector3D(1., 0., 0.), vector3D(1., 0., 0.))
 
+        material = default_material()
+        material.color = ColorRGB(1., 0., 0.1)
+        material.ambient = 0.1
+        material.diffuse = 0.6
+        material.specular = 0.3 
+        material.shininess = 15
+
         @test t1.p1 == smooth_triangle1.p1
         @test t1.p2 == smooth_triangle1.p2
         @test t1.p3 == smooth_triangle1.p3
@@ -126,5 +133,8 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
 
         @test t3 == t1
         @test t4 == t2
+
+        @test t1.material == material
+        @test t2.material == material
     end
 end

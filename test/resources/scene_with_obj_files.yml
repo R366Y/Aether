@@ -29,3 +29,9 @@ gobjects:
       add: obj
       file: resources/faces_with_normals.obj
   - add: polygon
+    material:
+      color: [ 1, 0, 0.1 ] 
+      ambient: 0.1 
+      diffuse: 0.6 
+      specular: 0.3 
+      shininess: 15 
