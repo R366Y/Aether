@@ -106,27 +106,35 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
     @testset "Define a gobject and load an object file" begin
         camera, lights, gobjects = import_yaml_scene_file("resources/scene_with_obj_files.yml")
         group = gobjects[1]
-        t1 = g.shapes[1]
-        t2 = g.shapes[2]
-        t3 = g.shapes[3]
-        t4 = g.shapes[4]
-        @test t1.p1 == parser.vertices[1]
-        @test t1.p2 == parser.vertices[2]
-        @test t1.p3 == parser.vertices[3]
+        t1 = group.shapes[1]
+        t2 = group.shapes[2]
+        t3 = group.shapes[3]
+        t4 = group.shapes[4]
 
-        @test t2.p1 == parser.vertices[1]
-        @test t2.p2 == parser.vertices[3]
-        @test t2.p3 == parser.vertices[4]
+        smooth_triangle1 = SmoothTriangle(point3D(0., 1., 0.), point3D(-1., 0., 0.), point3D(0., -1., 0.),
+                                          vector3D(0., 1., 0.), vector3D(-1., 0., 0.), vector3D(1., 0., 0.))
+        smooth_triangle2 = SmoothTriangle(point3D(0., 1., 0.),  point3D(0., -1., 0.), point3D(1., 0., 0.),
+                                          vector3D(0., 1., 0.), vector3D(1., 0., 0.), vector3D(1., 0., 0.))
 
-        @test t1.n1 == parser.normals[4]
-        @test t1.n2 == parser.normals[1]
-        @test t1.n3 == parser.normals[2]
+        material = default_material()
+        material.color = ColorRGB(1., 0., 0.1)
+        material.ambient = 0.1
+        material.diffuse = 0.6
+        material.specular = 0.3 
+        material.shininess = 15
 
-        @test t2.n1 == parser.normals[4]
-        @test t2.n2 == parser.normals[2]
-        @test t2.n3 == parser.normals[3]
+        @test t1.p1 == smooth_triangle1.p1
+        @test t1.p2 == smooth_triangle1.p2
+        @test t1.p3 == smooth_triangle1.p3
+
+        @test t2.p1 == smooth_triangle2.p1
+        @test t2.p2 == smooth_triangle2.p2
+        @test t2.p3 == smooth_triangle2.p3
 
         @test t3 == t1
         @test t4 == t2
+
+        @test t1.material == material
+        @test t2.material == material
     end
 end

@@ -3,6 +3,7 @@ module SceneImporters
 export import_yaml_scene_file
 
 import YAML
+using Aether
 using Aether.BaseGeometricType
 using Aether.CameraModule
 using Aether.ColorsModule
@@ -112,20 +113,17 @@ function parse_objects_data(yaml_data::Dict, materials, transforms)
     for gobject_yaml in gobjects_data
         if haskey(gobject_yaml, "define")
             gobject_name = gobject_yaml["define"]
-            # TODO: add predefined objects as parameter
-            gobject = __parse_gobject_yaml(gobject_yaml["value"], materials, transforms)
+            gobject = __parse_gobject_yaml(gobject_yaml["value"], materials, transforms, predefined_objects)
             push!(predefined_objects, gobject_name => gobject)
         else
-            # TODO: add predefined objects as parameter
-            gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms)
+            gobject = __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_objects)
+            push!(gobjects, gobject)
         end
-        push!(gobjects, gobject)
     end
     return gobjects
 end
 
-# TODO: add predefined objects as parameter
-function __parse_gobject_yaml(gobject_yaml, materials, transforms)
+function __parse_gobject_yaml(gobject_yaml, materials, transforms, predefined_obj = nothing)
     gobject_type = gobject_yaml["add"]
     gobject = TestShape()
     if gobject_type == "cone"
@@ -134,6 +132,15 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms)
         gobject = Cube()
     elseif gobject_type == "cylinder"
         gobject = Cylinder()
+        if haskey(gobject_yaml, "min")
+            gobject.minimum = gobject_yaml["min"]
+        end
+        if haskey(gobject_yaml, "max")
+            gobject.maximum = gobject_yaml["max"]
+        end
+        if haskey(gobject_yaml, "closed")
+            gobject.closed = gobject_yaml["closed"]
+        end
     elseif gobject_type == "plane"
         gobject = Plane()
     elseif gobject_type == "sphere"
@@ -141,12 +148,22 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms)
     elseif gobject_type == "group"
         shapes = GeometricObject[]
         for child_gobject in gobject_yaml["children"]
-            child = __parse_gobject_yaml(child_gobject, materials, transforms)
+            child = __parse_gobject_yaml(child_gobject, materials, transforms, predefined_obj)
             push!(shapes, child)
         end
         gobject = group_of(shapes)
-    # TODO: else check if gobject_type is inside to predefined_objects
-    # then deepcopy it
+    elseif gobject_type == "obj"
+        file_path = gobject_yaml["file"]
+        parser = parse_obj_file(file_path)
+        gobject = obj_to_group(parser)
+    else
+        if isnothing(predefined_obj)
+            throw(ArgumentError("You must pass a list of predefined objects if $gobject_type is not one of the standard objects!"))
+        end
+        if !haskey(predefined_obj, gobject_type)
+            throw(ArgumentError("$gobject_type is not one of the standard objects and it has not been defined!"))
+        end
+        gobject = deepcopy(predefined_obj[gobject_type])
     end
 
     if haskey(gobject_yaml, "shadow")
@@ -166,7 +183,12 @@ function __parse_gobject_yaml(gobject_yaml, materials, transforms)
             value = material_yaml[mat_prop]
             __set_material_property(material, mat_prop, value)
         end
-        gobject.material = material
+
+        if typeof(gobject) == Group
+            apply_material(gobject, material)
+        else
+            gobject.material = material
+        end
     end
 
     if haskey(gobject_yaml, "transform")
