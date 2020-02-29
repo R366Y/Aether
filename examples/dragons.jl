@@ -127,7 +127,7 @@ function draw_world()
     add_lights!(world, l1, l2, l3, l4)
     add_objects(world, scene)
 
-    camera = Camera(500, 200, 1.2)
+    camera = Camera(1024, 768, 1.2)
     camera_set_transform(
         camera,
         view_transform(

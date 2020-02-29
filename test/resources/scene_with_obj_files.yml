@@ -24,10 +24,39 @@ lights:
 # objects in the scene
 # ======================================================
 gobjects:
+  - define: pedestal
+    value:
+      add: cylinder
+      min: -0.15
+      max: 0
+      closed: true
+      material:
+        color: [ 0.2, 0.2, 0.2 ] 
+        ambient: 0 
+        diffuse: 0.8 
+        specular: 0 
+        reflective: 0.2 
+
   - define: polygon
     value:
       add: obj
       file: resources/faces_with_normals.obj
+  - define: raw-bbox 
+    value: 
+      add: cube 
+      shadow: false 
+      transform: 
+        - [ translate, 1, 1, 1 ] 
+        - [ scale, 3.73335, 2.5845, 1.6283 ] 
+        - [ translate, -3.9863, -0.1217, -1.1820 ]
+
+  - define: bbox 
+    value: 
+      add: raw-bbox 
+      transform: 
+        - [ translate, 0, 0.1217, 0] 
+        - [ scale, 0.268, 0.268, 0.268 ] 
+
   - add: polygon
     material:
       color: [ 1, 0, 0.1 ] 
@@ -35,3 +64,25 @@ gobjects:
       diffuse: 0.6 
       specular: 0.3 
       shininess: 15 
+
+  - add: bbox
+
+  - add: group
+    children:
+      - add: polygon
+        material:
+          color: [ 1, 0, 0.1 ] 
+          ambient: 0.1 
+          diffuse: 0.6 
+          specular: 0.3 
+          shininess: 15
+      - add: bbox
+        material: 
+          ambient: 0 
+          diffuse: 0.4 
+          specular: 0 
+          transparency: 0.6 
+          refractive-index: 1 
+      - add: pedestal
+
+

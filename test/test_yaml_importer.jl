@@ -81,6 +81,7 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
         @test white_mat.specular == 0.0
         @test white_mat.reflective == 0.1
     end
+
     @testset "World objects' materials can extend a predefined transformation" begin
         camera, lights, gobjects = import_yaml_scene_file("resources/scene.yml")
         sphere = gobjects[2]
@@ -136,5 +137,32 @@ import Aether.SceneImporters: parse_materials_data, parse_transforms_data
 
         @test t1.material == material
         @test t2.material == material
+    end
+
+    @testset "Define a gobject that uses another defined gobject" begin
+        camera, lights, gobjects = import_yaml_scene_file("resources/scene_with_obj_files.yml")
+        bbox = gobjects[2]
+        t = scaling(0.268, 0.268, 0.268) * translation(0., 0.1217, 0.) * translation(-3.9863, -0.1217, -1.1820) * 
+            scaling(3.73335, 2.5845, 1.6283) * translation(1.,1.,1.)
+        @test round.(bbox.transform, digits=5) == round.(t, digits=5)
+    end 
+
+    @testset "Define groups and children" begin
+        camera, lights, gobjects = import_yaml_scene_file("resources/scene_with_obj_files.yml")
+        bbox = gobjects[2]
+        bbox2 = gobjects[3].shapes[2]
+        pedestal = gobjects[3].shapes[3]
+        @test bbox.transform == bbox2.transform
+        @test bbox !== bbox2
+        @test bbox.material !== bbox2.material
+        @test gobject_material(bbox2).ambient == 0.
+        @test gobject_material(bbox2).diffuse == 0.4
+        @test gobject_material(bbox2).transparency == 0.6
+
+        @test gobject_material(pedestal).color == ColorRGB(0.2, 0.2, 0.2)
+        @test gobject_material(pedestal).ambient == 0.
+        @test gobject_material(pedestal).diffuse == 0.8
+        @test gobject_material(pedestal).specular == 0.
+        @test gobject_material(pedestal).reflective == 0.2
     end
 end
