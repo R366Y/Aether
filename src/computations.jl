@@ -3,7 +3,7 @@ module ComputationsModule
 export Computations, prepare_computations
 
 import Aether.HomogeneousCoordinates: dot, Vec3D
-import Aether.Materials: getObjectMaterial
+import Aether.Materials: gobject_material
 import Aether.Rays: Ray, positionr, reflect
 
 import Aether: ϵ
@@ -68,7 +68,7 @@ function compute_refractive_indices!(
             if length(containers) == 0
                 comps.n1 = 1.0
             else
-                comps.n1 = getObjectMaterial(containers[end]).refractive_index
+                comps.n1 = gobject_material(containers[end]).refractive_index
             end
         end
 
@@ -82,7 +82,7 @@ function compute_refractive_indices!(
             if length(containers) == 0
                 comps.n2 = 1.0
             else
-                comps.n2 = getObjectMaterial(containers[end]).refractive_index
+                comps.n2 = gobject_material(containers[end]).refractive_index
             end
         end
     end

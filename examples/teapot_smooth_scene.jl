@@ -24,12 +24,17 @@ function draw_world()
         floor_plane.material.pattern,
         rotation_y(0.3) * scaling(0.25, 0.25, 0.25),
     )
-    floor_plane.material.ambient = 0.2
-    floor_plane.material.diffuse = 0.9
-    floor_plane.material.specular = 0.0
+    floor_plane.material.ambient = 0.1
+    floor_plane.material.diffuse = 0.3
+    floor_plane.material.specular = 0.9
+    floor_plane.material.shininess = 300
+    floor_plane.material.reflective = 0.5
 
 	obj_file = parse_obj_file("examples/resources/teapot_smooth.obj")
-	teapot = obj_to_group(obj_file)
+    teapot = obj_to_group(obj_file)
+    material = default_material()
+    material.color = ColorRGB(1.0, 0.0, 0.2)
+    apply_material(teapot, material)
 	divide!(teapot, 15)
     set_transform(teapot, scaling(0.145, 0.145, 0.145) * rotation_y(3/4 * pi) * rotation_x(-π/2) )
 
