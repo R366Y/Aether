@@ -86,23 +86,23 @@ gobjects:
       specular: 0 
       transparency: 0.6 
       refractive-index: 1 
-  # - add: group 
-  #   transform: 
-  #   - [ translate, 2, 1, -1 ] 
-  #   children: 
-  #     - add: pedestal 
-  #     - add: group 
-  #       transform: 
-  #         - [ rotate-y, 4 ] 
-  #         - [ scale, 0.75, 0.75, 0.75 ] 
-  #       children: 
-  #         - add: dragon 
-  #           material: 
-  #             color: [ 1, 0.5, 0.1 ] 
-  #             ambient: 0.1 
-  #             diffuse: 0.6 
-  #             specular: 0.3        
-  #             shininess: 15 
+  - add: group 
+    transform: 
+    - [ translate, 2, 1, -1 ] 
+    children: 
+      - add: pedestal 
+      - add: group 
+        transform: 
+          - [ rotate-y, 4 ] 
+          - [ scale, 0.75, 0.75, 0.75 ] 
+        children: 
+          - add: dragon 
+            material: 
+              color: [ 1, 0.5, 0.1 ] 
+              ambient: 0.1 
+              diffuse: 0.6 
+              specular: 0.3        
+              shininess: 15 
 
   # - add: group 
   #   transform: 
