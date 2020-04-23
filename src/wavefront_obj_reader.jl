@@ -1,17 +1,17 @@
 import Aether.BaseGeometricType: Group, add_child!
-import Aether.HomogeneousCoordinates: Vecf64, point3D, vector3D
+import Aether.HomogeneousCoordinates: Vec3D, point3D, vector3D
 import Aether.Shapes: Triangle, SmoothTriangle
 
 mutable struct ObjFile
-    vertices::Array{Vecf64,1}
-    normals::Array{Vecf64,1}
+    vertices::Array{Vec3D,1}
+    normals::Array{Vec3D,1}
     default_group::Group
     named_groups::Dict
     active_group::Group
 
     function ObjFile()
         g = Group()
-        new(Vecf64[], Vecf64[], g, Dict(), g)
+        new(Vec3D[], Vec3D[], g, Dict(), g)
     end
 end
 

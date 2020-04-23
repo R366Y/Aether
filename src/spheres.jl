@@ -12,7 +12,7 @@ import Aether.MatrixTransformations: Matrix4x4, identity_matrix
 import Aether.Rays: Ray
 
 mutable struct Sphere <: GeometricObject
-    center::Vec3D{Float64}
+    center::Vec3D
     radius::Float64
     transform::Matrix4x4
     inverse::Matrix4x4

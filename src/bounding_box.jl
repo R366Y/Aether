@@ -17,7 +17,7 @@ import Aether.BaseGeometricType: GeometricObject,
 								 GroupType, Group,
 								 make_subgroup!
 import Aether.CSolidGeometry: CSG
-import Aether.HomogeneousCoordinates: point3D, vector3D, Vecf64
+import Aether.HomogeneousCoordinates: point3D, vector3D, Vec3D
 import Aether.MatrixTransformations: Matrix4x4
 import Aether.Rays: Ray
 import Aether.Shapes: Cone,
@@ -29,14 +29,14 @@ import Aether.Shapes: Cone,
 				      TestShape
 
 mutable struct BoundingBox
-	min::Vecf64
-	max::Vecf64
+	min::Vec3D
+	max::Vec3D
 
 	BoundingBox() = new(point3D(Inf, Inf, Inf), point3D(-Inf, -Inf, -Inf))
-	BoundingBox(minimum::Vecf64, maximum::Vecf64) = new(minimum, maximum)
+	BoundingBox(minimum::Vec3D, maximum::Vec3D) = new(minimum, maximum)
 end
 
-function resize_bb!(box::BoundingBox, point::Vecf64)
+function resize_bb!(box::BoundingBox, point::Vec3D)
 	point.x < box.min.x ? box.min.x = point.x : nothing
 	point.y < box.min.y ? box.min.y = point.y : nothing
 	point.z < box.min.z ? box.min.z = point.z : nothing
@@ -113,7 +113,7 @@ function bounds_of(csg::CSG)
 	return box
 end
 
-function box_contains_point(box::BoundingBox, point::Vecf64)
+function box_contains_point(box::BoundingBox, point::Vec3D)
 	return  box.min.x <= point.x <= box.max.x &&
 			box.min.y <= point.y <= box.max.y &&
 			box.min.z <= point.z <= box.max.z

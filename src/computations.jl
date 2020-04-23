@@ -12,13 +12,13 @@ import Aether.BaseGeometricType: GeometricObject, Intersection, normal_at
 mutable struct Computations{O<:GeometricObject}
     t::Float64
     gobject::O
-    point::Vec3D{Float64}
-    eyev::Vec3D{Float64}
-    normalv::Vec3D{Float64}
+    point::Vec3D
+    eyev::Vec3D
+    normalv::Vec3D
     inside::Bool
-    over_point::Vec3D{Float64}
-    under_point::Vec3D{Float64}
-    reflectv::Vec3D{Float64}
+    over_point::Vec3D
+    under_point::Vec3D
+    reflectv::Vec3D
     n1::Float64
     n2::Float64
 

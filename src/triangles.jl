@@ -4,7 +4,7 @@ import Aether: ϵ
 import Aether.BaseGeometricType: GeometricObject, GroupType, Intersection
 import Aether.HomogeneousCoordinates: point3D,
                                       vector3D,
-                                      Vecf64,
+                                      Vec3D,
                                       normalize,
                                       cross,
                                       dot
@@ -18,16 +18,16 @@ mutable struct Triangle <: TriangleType
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    p1::Vecf64
-    p2::Vecf64
-    p3::Vecf64
-    e1::Vecf64
-    e2::Vecf64
-    normal::Vecf64
+    p1::Vec3D
+    p2::Vec3D
+    p3::Vec3D
+    e1::Vec3D
+    e2::Vec3D
+    normal::Vec3D
     parent::Union{GroupType,Nothing}
     shadow::Bool
 
-    function Triangle(p1::Vecf64, p2::Vecf64, p3::Vecf64)
+    function Triangle(p1::Vec3D, p2::Vec3D, p3::Vec3D)
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
@@ -44,20 +44,20 @@ mutable struct SmoothTriangle <: TriangleType
     transform::Matrix4x4
     inverse::Matrix4x4
     material::Material
-    p1::Vecf64
-    p2::Vecf64
-    p3::Vecf64
-    n1::Vecf64
-    n2::Vecf64
-    n3::Vecf64
-    e1::Vecf64
-    e2::Vecf64
-    normal::Vecf64
+    p1::Vec3D
+    p2::Vec3D
+    p3::Vec3D
+    n1::Vec3D
+    n2::Vec3D
+    n3::Vec3D
+    e1::Vec3D
+    e2::Vec3D
+    normal::Vec3D
     parent::Union{GroupType,Nothing}
     shadow::Bool
 
-    function SmoothTriangle(p1::Vecf64, p2::Vecf64, p3::Vecf64,
-                            n1::Vecf64, n2::Vecf64, n3::Vecf64)
+    function SmoothTriangle(p1::Vec3D, p2::Vec3D, p3::Vec3D,
+                            n1::Vec3D, n2::Vec3D, n3::Vec3D)
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
