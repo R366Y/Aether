@@ -31,8 +31,8 @@ mutable struct Triangle <: TriangleType
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
-        new(identity_matrix(Float64),
-            identity_matrix(Float64),
+        new(identity_matrix(),
+            identity_matrix(),
             default_material(),
             p1, p2, p3,
             e1, e2, 
@@ -61,8 +61,8 @@ mutable struct SmoothTriangle <: TriangleType
         e1 = p2 - p1
         e2 = p3 - p1
         normal = normalize(cross(e2, e1))
-        new(identity_matrix(Float64),
-            identity_matrix(Float64),
+        new(identity_matrix(),
+            identity_matrix(),
             default_material(),
             p1, p2, p3, 
             n1, n2, n3,

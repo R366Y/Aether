@@ -14,7 +14,7 @@ using LinearAlgebra
 
 import Aether.BaseGeometricType: r_intersect, set_transform, normal_at
 
-function draw_sphere(matrix_transformation::SMatrix = identity_matrix(Float64))
+function draw_sphere(matrix_transformation::SMatrix = identity_matrix())
     ray_origin = point3D(0., 0., -5.)
     wall_z = 10.
     wall_size = 7.0
@@ -54,7 +54,7 @@ function draw_sphere(matrix_transformation::SMatrix = identity_matrix(Float64))
 end
 
 function show_sphere()
-    canvas = draw_sphere(identity_matrix(Float64))
+    canvas = draw_sphere(identity_matrix())
     show_image(canvas)
 end
 

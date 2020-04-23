@@ -18,8 +18,8 @@ mutable struct Plane <: GeometricObject
 
     function Plane()
         new(
-            identity_matrix(Float64),
-            identity_matrix(Float64),
+            identity_matrix(),
+            identity_matrix(),
             default_material(),
             nothing,
             true

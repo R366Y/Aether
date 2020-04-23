@@ -11,7 +11,7 @@ import Aether.Shapes: TestShape
 @testset "Shapes" begin
     @testset "The default transformation" begin
         s = TestShape()
-        @test s.transform == identity_matrix(Float64)
+        @test s.transform == identity_matrix()
     end
 
     @testset "Assigning a transformation" begin

@@ -26,7 +26,7 @@ mutable struct CSG <: GroupType
 end
 
 function CSG(operation::String, s1::GeometricObject, s2::GeometricObject)
-    c = CSG(identity_matrix(Float64), identity_matrix(Float64),
+    c = CSG(identity_matrix(), identity_matrix(),
             nothing, operation, s1, s2, nothing)
     s1.parent = c
     s2.parent = c

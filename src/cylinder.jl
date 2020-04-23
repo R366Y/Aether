@@ -22,8 +22,8 @@ mutable struct Cylinder <: GeometricObject
 
     function Cylinder()
         new(
-            identity_matrix(Float64),
-            identity_matrix(Float64),
+            identity_matrix(),
+            identity_matrix(),
             default_material(),
             -Inf,
             Inf,

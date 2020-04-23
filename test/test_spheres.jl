@@ -58,7 +58,7 @@ import Aether: ϵ
 
     @testset "A sphere default transformation" begin
         s = default_sphere()
-        @test s.transform == identity_matrix(Float64)
+        @test s.transform == identity_matrix()
     end
 
     @testset "Intersecting a scaled sphere with a ray" begin
@@ -124,7 +124,7 @@ end
 
     @testset "A helper for producing a sphere with a glassy material" begin
         s = glass_sphere()
-        @test s.transform == identity_matrix(Float64)
+        @test s.transform == identity_matrix()
         @test s.material.transparency == 1.
         @test s.material.refractive_index == 1.5
     end

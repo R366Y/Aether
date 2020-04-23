@@ -41,7 +41,7 @@ function draw_sphere(matrix_transformation::SMatrix)
 end
 
 function show_sphere()
-    canvas = draw_sphere(identity_matrix(Float64))
+    canvas = draw_sphere(identity_matrix())
     show_image(canvas)
 end
 
