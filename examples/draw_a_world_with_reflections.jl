@@ -58,5 +58,6 @@ function draw_world()
 end
 
 function show_scene()
-    show_image(draw_world())
+    save_image(draw_world(), "renders/scene_with_reflections.png")
+    show_image_with_default_reader(joinpath("renders", "scene_with_reflections.png"))
 end
