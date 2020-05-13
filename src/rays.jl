@@ -25,4 +25,4 @@ end
 function reflect(v::Vec3D, normal::Vec3D)
     return v - normal * 2.0 * dot(v, normal)
 end
-end  # module Rays
+end

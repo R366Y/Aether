@@ -60,9 +60,7 @@ Calculate the intersection bewteen a ray and a shape after the ray has been tran
 to local coordinates. Standard implementation returns an empty `Tuple`.
 This function MUST be implemented for every shape.
 """
-function local_intersect(shape::T, ray::Ray) where {T<:GeometricObject}
-    return ()
-end
+function local_intersect end
 
 """
     normal_at(shape::GeometricObject, world_point::Vec3D, u::Union{Float64, Nothing} = nothing, v::Union{Float64, Nothing} = nothing)
