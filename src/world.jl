@@ -40,9 +40,14 @@ The field `lights` is an Array of LightType.
 mutable struct World{T<:GeometricObject}
     objects::Array{T,1}
     lights::Array{LightType,1}
+    intersections_buffer::Dict
 
     function World()
-        new{GeometricObject}(GeometricObject[], LightType[default_point_light()])
+        buffer = Dict()
+        for tid in 1:Threads.nthreads()
+            push!(buffer, tid=>Intersection[])
+        end
+        new{GeometricObject}(GeometricObject[], LightType[default_point_light()], buffer)
     end
 end
 
@@ -188,7 +193,8 @@ in the scene. Returns an array of type Intersection, with the intersections
 sorted by distance from the ray origin.
 """
 function intersect_world(world::World, ray::Ray)
-    result = Intersection[]
+    result = world.intersections_buffer[Threads.threadid()]
+    empty!(result)
     for obj in world.objects
         xs = r_intersect(obj, ray)
         if length(xs) != 0

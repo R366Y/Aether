@@ -35,6 +35,6 @@ end
 
 function show_scene()
     canvas = draw_world()
-    show_image(canvas)
     save_image(canvas, "renders/teddy_scene.png")
+    show_image_with_default_reader(joinpath("renders", "teddy_scene.png"))
 end

@@ -117,6 +117,6 @@ end
 
 function show_scene()
     canvas = draw_world()
-    show_image(canvas)
     save_image(canvas, "renders/reflections_and_refractions.png")
+    show_image_with_default_reader(joinpath("renders", "reflections_and_refractions.png"))
 end

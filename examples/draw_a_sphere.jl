@@ -32,7 +32,12 @@ function draw_sphere(matrix_transformation::SMatrix)
             position = point3D(world_x, world_y, wall_z)
             r = Ray(ray_origin, normalize(position - ray_origin))
             xs = r_intersect(shape, r)
-            if hit(xs) !== nothing
+            result = Intersection[]
+            if length(xs) != 0
+                push!(result, xs...)
+            end
+            h = hit(result)
+            if h !== nothing
                 write_pixel!(canvas, x, y, color)
             end
         end
@@ -40,23 +45,28 @@ function draw_sphere(matrix_transformation::SMatrix)
     return canvas
 end
 
+function _save_and_display(canvas)
+    save_image(canvas, "renders/sphere.png")
+    show_image_with_default_reader(joinpath("renders", "sphere.png"))
+end
+
 function show_sphere()
-    canvas = draw_sphere(identity_matrix(Float64))
-    show_image(canvas)
+    canvas = draw_sphere(identity_matrix())
+    _save_and_display(canvas)
 end
 
 function show_scaled_sphere()
     canvas = draw_sphere(scaling(1., 0.5, 1.))
-    show_image(canvas)
+    _save_and_display(canvas)
 end
 
 function show_shrinked_rotated_sphere()
     canvas = draw_sphere(rotation_z(pi / 4) * scaling(0.5, 1., 1.))
-    show_image(canvas)
+    _save_and_display(canvas)
 end
 
 function show_shrinked_skewed_sphere()
     canvas = draw_sphere(shearing(1., 0., 0., 0., 0., 0.) *
                          scaling(0.5, 1., 1.))
-    show_image(canvas)
+    _save_and_display(canvas)
 end

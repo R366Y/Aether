@@ -16,8 +16,8 @@ export Matrix4x4,
 
 const Matrix4x4 = SMatrix{4,4,Float64,16}
 
-function identity_matrix(T::Type)
-    return SMatrix{4,4,T,16}(I)
+function identity_matrix()
+    return SMatrix{4,4,Float64,16}(I)
 end
 
 function translation(x::Float64, y::Float64, z::Float64)

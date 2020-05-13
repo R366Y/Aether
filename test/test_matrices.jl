@@ -92,7 +92,7 @@ end
       to = point3D(0., 0., -1.)
       up = vector3D(0., 1., 0.)
       t = view_transform(from, to, up)
-      @test t == identity_matrix(Float64)
+      @test t == identity_matrix()
    end
 
    @testset "A view transformation matrix looking in positive z direction" begin

@@ -14,8 +14,8 @@ mutable struct TestShape <: GeometricObject
 
     function TestShape()
         new(
-            identity_matrix(Float64),
-            identity_matrix(Float64),
+            identity_matrix(),
+            identity_matrix(),
             default_material(),
             nothing,
             nothing,

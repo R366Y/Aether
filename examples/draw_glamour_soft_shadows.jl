@@ -65,6 +65,6 @@ end
 
 function show_scene()
     canvas = draw_world()
-    show_image(canvas)
     save_image(canvas, "renders/glamour_soft_shadows.png")
+    show_image_with_default_reader(joinpath("renders", "glamour_soft_shadows.png"))
 end

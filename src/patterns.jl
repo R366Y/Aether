@@ -42,7 +42,7 @@ mutable struct StripePattern <: Pattern
     inverse::Matrix4x4
 
     function StripePattern(a::ColorRGB, b::ColorRGB)
-        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+        new(a, b, identity_matrix(), identity_matrix())
     end
 end
 
@@ -64,7 +64,7 @@ mutable struct GradientPattern <: Pattern
     inverse::Matrix4x4
 
     function GradientPattern(a::ColorRGB, b::ColorRGB)
-        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+        new(a, b, identity_matrix(), identity_matrix())
     end
 end
 
@@ -81,7 +81,7 @@ mutable struct RingPattern <: Pattern
     inverse::Matrix4x4
 
     function RingPattern(a::ColorRGB, b::ColorRGB)
-        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+        new(a, b, identity_matrix(), identity_matrix())
     end
 end
 
@@ -99,7 +99,7 @@ mutable struct CheckerPattern <: Pattern
     inverse::Matrix4x4
 
     function CheckerPattern(a::ColorRGB, b::ColorRGB)
-        new(a, b, identity_matrix(Float64), identity_matrix(Float64))
+        new(a, b, identity_matrix(), identity_matrix())
     end
 end
 
@@ -120,8 +120,8 @@ mutable struct TestPattern <: Pattern
         new(
             nothing,
             nothing,
-            identity_matrix(Float64),
-            identity_matrix(Float64),
+            identity_matrix(),
+            identity_matrix(),
         )
     end
 end

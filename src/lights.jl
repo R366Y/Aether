@@ -10,23 +10,23 @@ using Aether.Utils
 abstract type LightType end
 
 struct PointLight <: LightType
-    position::Vecf64
+    position::Vec3D
     intensity::ColorRGB
 end
 
 mutable struct AreaLight <: LightType
-    position::Vecf64
+    position::Vec3D
     intensity::ColorRGB
-    corner::Vecf64
-    uvec::Vecf64
+    corner::Vec3D
+    uvec::Vec3D
     usteps::Int
-    vvec::Vecf64
+    vvec::Vec3D
     vsteps::Int
     samples::Int
     jitter_by
 
-    function AreaLight(corner::Vecf64, uvec::Vecf64, usteps::Int, 
-                       vvec::Vecf64, vsteps::Int, intensity::ColorRGB)
+    function AreaLight(corner::Vec3D, uvec::Vec3D, usteps::Int, 
+                       vvec::Vec3D, vsteps::Int, intensity::ColorRGB)
         uvec = uvec / Float64(usteps)
         vvec = vvec / Float64(vsteps)
         samples = usteps * vsteps

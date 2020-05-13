@@ -66,7 +66,7 @@ import Aether.Shapes: default_sphere, set_transform
 
     @testset "The default pattern transformation" begin
         pattern = TestPattern()
-        @test pattern.transform == identity_matrix(Float64)
+        @test pattern.transform == identity_matrix()
     end
 
     @testset "Assigning a transformation" begin

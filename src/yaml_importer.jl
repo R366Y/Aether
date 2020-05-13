@@ -221,7 +221,7 @@ function __parse_gobject__transform!(gobject::GeometricObject, gobject_yaml::Dic
         end
         matrices = [m[2] for m in matrices]
         if !isempty(matrices)
-            transform = identity_matrix(Float64)
+            transform = identity_matrix()
             for matrix in matrices
                 transform = transform * matrix
             end

@@ -20,8 +20,8 @@ mutable struct Group <: GroupType
 
     function Group()
         new(
-            identity_matrix(Float64),
-            identity_matrix(Float64),
+            identity_matrix(),
+            identity_matrix(),
             nothing,
             GeometricObject[],
             nothing

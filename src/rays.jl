@@ -8,8 +8,8 @@ using Aether.HomogeneousCoordinates
 using Aether.MatrixTransformations
 
 struct Ray
-    origin::Vec3D{Float64}
-    direction::Vec3D{Float64}
+    origin::Vec3D
+    direction::Vec3D
 end
 
 function positionr(ray::Ray, t::Float64)
@@ -25,4 +25,4 @@ end
 function reflect(v::Vec3D, normal::Vec3D)
     return v - normal * 2.0 * dot(v, normal)
 end
-end  # module Rays
+end

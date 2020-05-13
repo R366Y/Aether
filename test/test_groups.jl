@@ -8,7 +8,7 @@ using Aether.Shapes
 @testset "Groups" begin
     @testset "Creating a new group" begin
         g = Group()
-        @test g.transform == identity_matrix(Float64)
+        @test g.transform == identity_matrix()
         @test length(g.shapes) == 0
     end
 

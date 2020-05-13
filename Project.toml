@@ -4,8 +4,8 @@ authors = ["R366Y <nicomn@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
-ImageView = "86fae568-95e7-573e-a6b2-d8a6b900c9ef"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"

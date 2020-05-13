@@ -19,4 +19,4 @@ light = PointLight(point3D(0., 0., -10.), ColorRGB(1., 1., 1.))
                   normalv, 1.0)
 
 @btime lighting(m, default_sphere(), light, position, eyev,
-                  normalv, 1.0)
+                  normalv, 1.0);

@@ -18,6 +18,5 @@ end
 
 function show_scene()
     canvas = draw_world()
-    show_image(canvas)
-    # save_image(canvas, "renders/cover_image.png")
-end
+    save_image(canvas, "renders/dragons_yaml.png")
+    show_image_with_default_reader(joinpath("renders", "dragons_yaml.png"))

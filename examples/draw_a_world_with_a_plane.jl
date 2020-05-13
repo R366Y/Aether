@@ -54,5 +54,6 @@ function draw_world()
 end
 
 function show_scene()
-    show_image(draw_world())
+    save_image(draw_world(), "renders/patterns_and_plane.png")
+    show_image_with_default_reader(joinpath("renders", "patterns_and_plane.png"))
 end

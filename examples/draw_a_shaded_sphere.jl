@@ -14,7 +14,7 @@ using LinearAlgebra
 
 import Aether.BaseGeometricType: r_intersect, set_transform, normal_at
 
-function draw_sphere(matrix_transformation::SMatrix = identity_matrix(Float64))
+function draw_sphere(matrix_transformation::SMatrix = identity_matrix())
     ray_origin = point3D(0., 0., -5.)
     wall_z = 10.
     wall_size = 7.0
@@ -40,7 +40,11 @@ function draw_sphere(matrix_transformation::SMatrix = identity_matrix(Float64))
             position = point3D(world_x, world_y, wall_z)
             r = Ray(ray_origin, normalize(position - ray_origin))
             xs = r_intersect(shape, r)
-            h = hit(xs)
+            result = Intersection[]
+            if length(xs) != 0
+                push!(result, xs...)
+            end
+            h = hit(result)
             if h !== nothing
                 point = positionr(r, h.t)
                 normal = normal_at(h.gobject, point)
@@ -53,23 +57,28 @@ function draw_sphere(matrix_transformation::SMatrix = identity_matrix(Float64))
     return canvas
 end
 
+function _save_and_display(canvas)
+    save_image(canvas, "renders/shaded_sphere.png")
+    show_image_with_default_reader(joinpath("renders", "shaded_sphere.png"))
+end
+
 function show_sphere()
-    canvas = draw_sphere(identity_matrix(Float64))
-    show_image(canvas)
+    canvas = draw_sphere(identity_matrix())
+    _save_and_display(canvas)
 end
 
 function show_scaled_sphere()
     canvas = draw_sphere(scaling(1., 0.5, 1.))
-    show_image(canvas)
+    _save_and_display(canvas)
 end
 
 function show_shrinked_rotated_sphere()
     canvas = draw_sphere(rotation_z(pi / 4) * scaling(0.5, 1., 1.))
-    show_image(canvas)
+    _save_and_display(canvas)
 end
 
 function show_shrinked_skewed_sphere()
     canvas = draw_sphere(shearing(1., 0., 0., 0., 0., 0.) *
                          scaling(0.5, 1., 1.))
-    show_image(canvas)
+    _save_and_display(canvas)
 end

@@ -3,9 +3,9 @@ module CanvasModule
 using Aether.ColorsModule
 using StaticArrays
 using Images
-using ImageView
 
-export Canvas, write_pixel!, pixel_at, show_image, empty_canvas, save_image
+export Canvas, write_pixel!, pixel_at, empty_canvas
+export show_image_with_default_reader, save_image
 
 """
     struct Canvas
@@ -65,12 +65,12 @@ function pixel_at(canvas::Canvas, x::Int64, y::Int64)
 end
 
 """
-    show_image(canvas::Canvas)
+    show_image_with_default_reader(filename::string)
 
-Creates a window and visualize the canvas.
+Show an image with the default image viewer
 """
-function show_image(canvas::Canvas)
-    imshow(_convertCanvasToRGB(canvas))
+function show_image_with_default_reader(filename)
+    run(`cmd /c mspaint $filename`)
 end
 
 """
@@ -80,6 +80,7 @@ Saves an image to the hard drive. Optionally file name can be passed to `filenam
 """
 function save_image(canvas::Canvas, filename = "renders/render.png")
     save(filename, _convertCanvasToRGB(canvas))
+    return filename
 end
 
 function _convertCanvasToRGB(canvas::Canvas)
